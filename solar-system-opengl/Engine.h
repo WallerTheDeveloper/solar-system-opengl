@@ -14,17 +14,16 @@ public:
     void renderLoop(std::function<void()> renderCallback = nullptr);
 
 private:
-    void initGLFW();
-    void initGLAD();
-    void processInput(GLFWwindow* window);
-    GLFWwindow* createWindow(std::string name, int width, int height);
-
-
     GLFWwindow* window;
     std::string windowName;
     int windowWidth;
     int windowHeight;
     bool isInitialized;
+
+    void initGLFW();
+    void initGLAD();
+    void processInput(GLFWwindow* window);
+    GLFWwindow* createWindow(std::string name, int width, int height);
 };
 
 #endif
