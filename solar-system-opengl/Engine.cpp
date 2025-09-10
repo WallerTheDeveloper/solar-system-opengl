@@ -31,7 +31,7 @@ Engine::~Engine() {
     std::cout << "Engine destroyed" << std::endl;
 }
 
-void Engine::renderLoop(std::function<void()> renderCallback) {
+void Engine::renderLoop(std::function<void(BufferObjects*, ObjectData*)> renderCallback, BufferObjects* buffers, ObjectData* objectData) {
     if (!isInitialized || !window) {
         std::cerr << "Engine not properly initialized. Cannot start render loop." << std::endl;
         return;
@@ -45,10 +45,9 @@ void Engine::renderLoop(std::function<void()> renderCallback) {
 
         processInput(window);
 
-        if (renderCallback) {
-            renderCallback();
+        if (renderCallback && buffers) {
+            renderCallback(buffers, objectData);
         }
-
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -80,6 +79,60 @@ BufferObjects Engine::setupBuffers(const BufferConfig& config) {
     }
 
     return buffers;
+}
+
+SphereData Engine::generateSphere(float radius, unsigned int sectorCount, unsigned int stackCount) {
+    SphereData sphere;
+
+    float x, y, z, xy;
+    float sectorStep = 2 * M_PI / sectorCount;
+    float stackStep = M_PI / stackCount;
+    float sectorAngle, stackAngle;
+
+    // Generate vertices
+    for (unsigned int i = 0; i <= stackCount; ++i) {
+        stackAngle = M_PI / 2 - i * stackStep;        
+        xy = radius * cosf(stackAngle);               
+        z = radius * sinf(stackAngle);                
+
+        for (unsigned int j = 0; j <= sectorCount; ++j) {
+            sectorAngle = j * sectorStep;             
+
+            x = xy * cosf(sectorAngle);               
+            y = xy * sinf(sectorAngle);               
+
+            sphere.vertices.push_back(x);
+            sphere.vertices.push_back(y);
+            sphere.vertices.push_back(z);
+        }
+    }
+
+    unsigned int k1, k2;
+    for (unsigned int i = 0; i < stackCount; ++i) {
+        k1 = i * (sectorCount + 1);
+        k2 = k1 + sectorCount + 1;
+
+        for (unsigned int j = 0; j < sectorCount; ++j, ++k1, ++k2) 
+        {
+            if (i != 0) 
+            {
+                sphere.indices.push_back(k1);
+                sphere.indices.push_back(k2);
+                sphere.indices.push_back(k1 + 1);
+            }
+
+            if (i != (stackCount - 1)) 
+            {
+                sphere.indices.push_back(k1 + 1);
+                sphere.indices.push_back(k2);
+                sphere.indices.push_back(k2 + 1);
+            }
+        }
+    }
+
+    sphere.indicesCount = sphere.indices.size();
+
+    return sphere;
 }
 
 void Engine::setupVertexAttribPointer(BufferConfig config) 

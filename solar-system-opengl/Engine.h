@@ -7,6 +7,12 @@
 #include <iostream>
 #include <functional>
 #include <stb_image/stb_image.h>
+#include <vector>
+#include <cmath>
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 struct BufferObjects {
     unsigned int VAO = 0;
@@ -43,9 +49,12 @@ class Engine {
 public:
     Engine(std::string windowName, int windowWidth, int windowHeight, bool enable_gl_depth_test);
     ~Engine();
-    void renderLoop(std::function<void()> renderCallback = nullptr);
-    BufferObjects setupBuffers(const BufferConfig& config);
+
+    void renderLoop(std::function<void(BufferObjects*, ObjectData*)> renderCallback = nullptr, BufferObjects* buffers = nullptr, ObjectData* objectData = nullptr);
     void setupVertexAttribPointer(BufferConfig config);
+    BufferObjects setupBuffers(const BufferConfig& config);
+    SphereData generateSphere(float radius, unsigned int sectorCount, unsigned int stackCount);
+
 private:
     GLFWwindow* window;
     std::string windowName;
