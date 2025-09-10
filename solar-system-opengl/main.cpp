@@ -17,97 +17,51 @@ const unsigned int SCR_HEIGHT = 600;
 const std::string WINDOW_NAME = "Solar System Simulation";
 const bool ENABLE_GL_DEPTH_TEST = true;
 
+Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+
 std::unique_ptr<Shader> shader;
 
-void onRender();
+void onRender(BufferObjects* buffers, ObjectData* objectData);
 
 int main()
 {
     try {
         Engine engine(WINDOW_NAME, SCR_WIDTH, SCR_HEIGHT, ENABLE_GL_DEPTH_TEST);
 
-        float vertices[] = {
-            -0.5f, -0.5f, -0.5f,
-             0.5f, -0.5f, -0.5f,
-             0.5f,  0.5f, -0.5f,
-             0.5f,  0.5f, -0.5f,
-            -0.5f,  0.5f, -0.5f,
-            -0.5f, -0.5f, -0.5f,
-
-            -0.5f, -0.5f,  0.5f,
-             0.5f, -0.5f,  0.5f,
-             0.5f,  0.5f,  0.5f,
-             0.5f,  0.5f,  0.5f,
-            -0.5f,  0.5f,  0.5f,
-            -0.5f, -0.5f,  0.5f,
-
-            -0.5f,  0.5f,  0.5f,
-            -0.5f,  0.5f, -0.5f,
-            -0.5f, -0.5f, -0.5f,
-            -0.5f, -0.5f, -0.5f,
-            -0.5f, -0.5f,  0.5f,
-            -0.5f,  0.5f,  0.5f,
-
-             0.5f,  0.5f,  0.5f,
-             0.5f,  0.5f, -0.5f,
-             0.5f, -0.5f, -0.5f,
-             0.5f, -0.5f, -0.5f,
-             0.5f, -0.5f,  0.5f,
-             0.5f,  0.5f,  0.5f,
-
-            -0.5f, -0.5f, -0.5f,
-             0.5f, -0.5f, -0.5f,
-             0.5f, -0.5f,  0.5f,
-             0.5f, -0.5f,  0.5f,
-            -0.5f, -0.5f,  0.5f,
-            -0.5f, -0.5f, -0.5f,
-
-            -0.5f,  0.5f, -0.5f,
-             0.5f,  0.5f, -0.5f,
-             0.5f,  0.5f,  0.5f,
-             0.5f,  0.5f,  0.5f,
-            -0.5f,  0.5f,  0.5f,
-            -0.5f,  0.5f, -0.5f,
-        };
-
-
+        SphereData sphereData = engine.generateSphere(0.5f, 36, 18);
         shader = std::make_unique<Shader>("shaders/object.vert", "shaders/object.frag");
-        shader->use();
 
-        BufferConfig buffersConfig;
-        buffersConfig.useVBO = true;
-        buffersConfig.useVAO = true;
-        buffersConfig.useEBO = false;
+        BufferConfig sphereConfig;
+        sphereConfig.useVBO = true;
+        sphereConfig.useEBO = true;
+        sphereConfig.useVAO = true;
+        sphereConfig.vertexData = sphereData.vertices.data();
+        sphereConfig.vertexDataSize = sphereData.vertices.size() * sizeof(float);
+        sphereConfig.indicesData = sphereData.indices.data();
+        sphereConfig.indicesDataSize = sphereData.indices.size() * sizeof(unsigned int);
+        sphereConfig.vertexAttributePointerIndex = 0;
+        sphereConfig.vertexAttributePointerStride = 3;
+        sphereConfig.vertexAttributePointerOffset = 0;
 
-        buffersConfig.vertexData = vertices;
-        buffersConfig.vertexDataSize = sizeof(vertices);
-        
-        engine.setupBuffers(buffersConfig);
+        BufferObjects sphereBuffers = engine.setupBuffers(sphereConfig);
+        engine.setupVertexAttribPointer(sphereConfig);
 
-        BufferConfig vertexPointerConfig;
-        vertexPointerConfig.vertexAttributePointerIndex = 0;
-        vertexPointerConfig.vertexAttributePointerStride = 3;
-        vertexPointerConfig.vertexAttributePointerOffset = 0;
-        
-        engine.setupVertexAttribPointer(vertexPointerConfig);
-
-        engine.renderLoop(onRender);
+        engine.renderLoop(onRender, &sphereBuffers, &sphereData);
     }
     catch (const std::exception& e) {
         std::cerr << "Application error: " << e.what() << std::endl;
         return -1;
     }
-
     return 0;
 }
-
-void onRender()
+void onRender(BufferObjects* buffers, ObjectData* objectData)
 {
-    if (shader) {
+    if (shader && buffers) {
         shader->use();
 
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(50.0f) * (float)glfwGetTime(), glm::vec3(1.0f, 2.0f, 0.0f));
+        model = glm::rotate(model, (float)glfwGetTime() * glm::radians(30.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+
         glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -3.0f));
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 
@@ -115,13 +69,11 @@ void onRender()
         shader->setMat4("view", view);
         shader->setMat4("projection", projection);
 
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        shader->setVec3("ourColor", 0.0f, 1.0f, 0.0f);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        shader->setVec3("ourColor", 1.0f, 1.0f, 0.0f);
 
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glLineWidth(3.0f);
-        shader->setVec3("ourColor", 0.0f, 0.0f, 0.0f);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+        glBindVertexArray(buffers->VAO);
+        glDrawElements(GL_TRIANGLES, objectData->indicesCount, GL_UNSIGNED_INT, 0);
     }
 }
