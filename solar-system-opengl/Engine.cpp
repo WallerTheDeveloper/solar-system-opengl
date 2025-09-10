@@ -112,7 +112,16 @@ void Engine::initGLAD() {
     std::cout << "GLAD initialized" << std::endl;
 }
 
-GLFWwindow* Engine::createWindow(std::string name, int width, int height) {
+void Engine::processInput(GLFWwindow* window)
+{
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    {
+        glfwSetWindowShouldClose(window, true);
+    }
+}
+
+GLFWwindow* Engine::createWindow(std::string name, int width, int height) 
+{
     GLFWwindow* newWindow = glfwCreateWindow(width, height, name.c_str(), NULL, NULL);
     if (!newWindow) {
         glfwTerminate();
