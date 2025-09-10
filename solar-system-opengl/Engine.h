@@ -30,6 +30,15 @@ struct BufferConfig {
     int vertexAttributePointerOffset = 0;
 };
 
+struct ObjectData {
+    std::vector<float> vertices;
+    std::vector<unsigned int> indices;
+    unsigned int indicesCount;
+};
+
+struct SphereData : ObjectData {
+    
+};
 class Engine {
 public:
     Engine(std::string windowName, int windowWidth, int windowHeight, bool enable_gl_depth_test);
