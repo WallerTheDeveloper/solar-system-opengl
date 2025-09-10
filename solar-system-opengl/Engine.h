@@ -32,10 +32,9 @@ struct BufferConfig {
 
 class Engine {
 public:
-    Engine(std::string windowName, int windowWidth, int windowHeight);
+    Engine(std::string windowName, int windowWidth, int windowHeight, bool enable_gl_depth_test);
     ~Engine();
     void renderLoop(std::function<void()> renderCallback = nullptr);
-
     BufferObjects setupBuffers(const BufferConfig& config);
     void setupVertexAttribPointer(BufferConfig config);
 private:

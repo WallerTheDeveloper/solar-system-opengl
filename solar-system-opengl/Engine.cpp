@@ -1,6 +1,6 @@
 #include "Engine.h"
 
-Engine::Engine(std::string windowName, int windowWidth, int windowHeight)
+Engine::Engine(std::string windowName, int windowWidth, int windowHeight, bool enable_gl_depth_test)
     : windowName(windowName), windowWidth(windowWidth), windowHeight(windowHeight),
     window(nullptr), isInitialized(false) {
 
@@ -8,6 +8,12 @@ Engine::Engine(std::string windowName, int windowWidth, int windowHeight)
         initGLFW();
         window = createWindow(windowName, windowWidth, windowHeight);
         initGLAD();
+
+        if (enable_gl_depth_test)
+        {
+            glEnable(GL_DEPTH_TEST);
+        }
+
         isInitialized = true;
         std::cout << "Engine initialized successfully" << std::endl;
     }
@@ -132,12 +138,4 @@ GLFWwindow* Engine::createWindow(std::string name, int width, int height)
     std::cout << "Window created: " << name << " (" << width << "x" << height << ")" << std::endl;
 
     return newWindow;
-}
-
-void Engine::processInput(GLFWwindow* window)
-{
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-    {
-        glfwSetWindowShouldClose(window, true);
-    }
 }
