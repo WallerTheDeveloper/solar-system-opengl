@@ -49,6 +49,45 @@ void Engine::renderLoop(std::function<void()> renderCallback) {
     }
 }
 
+BufferObjects Engine::setupBuffers(const BufferConfig& config) {
+    BufferObjects buffers;
+
+    if (config.useVAO) {
+        glGenVertexArrays(1, &buffers.VAO);
+        glBindVertexArray(buffers.VAO);
+    }
+
+    if (config.useVBO) {
+        glGenBuffers(1, &buffers.VBO);
+        glBindBuffer(GL_ARRAY_BUFFER, buffers.VBO);
+        if (config.vertexData && config.vertexDataSize > 0) {
+            glBufferData(GL_ARRAY_BUFFER, config.vertexDataSize, config.vertexData, GL_STATIC_DRAW);
+        }
+    }
+
+    if (config.useEBO) {
+        glGenBuffers(1, &buffers.EBO);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers.EBO);
+        if (config.indicesData && config.indicesDataSize > 0) {
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, config.indicesDataSize, config.indicesData, GL_STATIC_DRAW);
+        }
+    }
+
+    return buffers;
+}
+
+void Engine::setupVertexAttribPointer(BufferConfig config) 
+{
+    glVertexAttribPointer(
+        config.vertexAttributePointerIndex,
+        3,
+        GL_FLOAT,
+        GL_FALSE,
+        config.vertexAttributePointerStride * sizeof(float),
+        (void*)(config.vertexAttributePointerOffset * sizeof(float)));
+
+    glEnableVertexAttribArray(config.vertexAttributePointerIndex);
+}
 void Engine::initGLFW() {
     if (!glfwInit()) {
         throw std::runtime_error("Failed to initialize GLFW");
