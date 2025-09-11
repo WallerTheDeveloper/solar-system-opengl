@@ -35,6 +35,7 @@ int main()
         SphereData sphereData = engine.generateSphere(0.5f, 36, 18);
         shader = std::make_unique<Shader>("shaders/object.vert", "shaders/object.frag");
         texture = std::make_unique<Texture>();
+
         BufferConfig sphereDataConfig;
         sphereDataConfig.useVBO = true;
         sphereDataConfig.useEBO = true;
