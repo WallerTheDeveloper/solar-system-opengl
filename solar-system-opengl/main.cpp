@@ -1,7 +1,6 @@
 
 #include "engine.h"
 #include "shader.h"
-#include "camera.h"
 #include "texture.h"
 
 #include <glm/glm.hpp>
@@ -23,12 +22,10 @@ const bool ENABLE_GL_DEPTH_TEST = true;
 
 unsigned int objectTextureID;
 
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
-
 std::unique_ptr<Shader> shader;
 std::unique_ptr<Texture> texture;
 
-void onRender(BufferObjects* buffers, ObjectData* objectData);
+void onRender(BufferObjects* buffers, ObjectData* objectData, Engine* engine);
 
 int main()
 {
@@ -81,7 +78,7 @@ int main()
 
         shader->setInt("texture", 0);
 
-        engine.renderLoop(onRender, &sphereBuffers, &sphereData);
+        engine.renderLoop(onRender, &sphereBuffers, &sphereData, &engine);
     }
     catch (const std::exception& e) {
         std::cerr << "Application error: " << e.what() << std::endl;
@@ -89,7 +86,7 @@ int main()
     }
     return 0;
 }
-void onRender(BufferObjects* buffers, ObjectData* objectData)
+void onRender(BufferObjects* buffers, ObjectData* objectData, Engine* engine)
 {
     if (shader && buffers && objectTextureID) {
 
@@ -99,9 +96,10 @@ void onRender(BufferObjects* buffers, ObjectData* objectData)
 
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::rotate(model, (float)glfwGetTime() * glm::radians(30.0f), glm::vec3(0.85f, 0.85f, 0.0f));
+        
+        glm::mat4 view = engine->camera.getViewMatrix();
+        glm::mat4 projection = glm::perspective(glm::radians(engine->camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 
-        glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -3.0f));
-        glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 
         shader->setMat4("model", model);
         shader->setMat4("view", view);

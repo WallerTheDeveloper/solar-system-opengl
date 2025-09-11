@@ -2,8 +2,8 @@
 
 Engine::Engine(std::string windowName, int windowWidth, int windowHeight, bool enable_gl_depth_test)
     : windowName(windowName), windowWidth(windowWidth), windowHeight(windowHeight),
-    window(nullptr), isInitialized(false) {
-
+    window(nullptr), isInitialized(false), camera(glm::vec3(0.0f, 0.0f, 3.0f))
+{
     try {
         initGLFW();
         window = createWindow(windowName, windowWidth, windowHeight);
@@ -31,7 +31,7 @@ Engine::~Engine() {
     std::cout << "Engine destroyed" << std::endl;
 }
 
-void Engine::renderLoop(std::function<void(BufferObjects*, ObjectData*)> renderCallback, BufferObjects* buffers, ObjectData* objectData) {
+void Engine::renderLoop(std::function<void(BufferObjects*, ObjectData*, Engine*)> renderCallback, BufferObjects* buffers, ObjectData* objectData, Engine* engine) {
     if (!isInitialized || !window) {
         std::cerr << "Engine not properly initialized. Cannot start render loop." << std::endl;
         return;
@@ -43,10 +43,15 @@ void Engine::renderLoop(std::function<void(BufferObjects*, ObjectData*)> renderC
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        float currentFrame = static_cast<float>(glfwGetTime());
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
+
         processInput(window);
 
-        if (renderCallback && buffers) {
-            renderCallback(buffers, objectData);
+        if (renderCallback && buffers && engine) {
+            renderCallback(buffers, objectData, engine);
         }
 
         glfwSwapBuffers(window);
@@ -185,6 +190,24 @@ void Engine::processInput(GLFWwindow* window)
     {
         glfwSetWindowShouldClose(window, true);
     }
+
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+    {
+        camera.processKeyboard(FORWARD, deltaTime);
+    }
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    {
+        camera.processKeyboard(BACKWARD, deltaTime);
+    }
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    {
+        camera.processKeyboard(LEFT, deltaTime);
+    }
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    {
+        camera.processKeyboard(RIGHT, deltaTime);
+    }
+
 }
 
 GLFWwindow* Engine::createWindow(std::string name, int width, int height) 

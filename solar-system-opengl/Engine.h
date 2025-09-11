@@ -10,6 +10,9 @@
 #include <vector>
 #include <cmath>
 
+#include "camera.h"
+
+
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
@@ -52,10 +55,14 @@ struct SphereData : ObjectData {
 //glDeleteBuffers(1, &VBO);
 class Engine {
 public:
+    Camera camera;
+    float deltaTime = 0.0f;	// time between current frame and last frame
+    float lastFrame = 0.0f;
+
     Engine(std::string windowName, int windowWidth, int windowHeight, bool enable_gl_depth_test);
     ~Engine();
 
-    void renderLoop(std::function<void(BufferObjects*, ObjectData*)> renderCallback = nullptr, BufferObjects* buffers = nullptr, ObjectData* objectData = nullptr);
+    void renderLoop(std::function<void(BufferObjects*, ObjectData*, Engine*)> renderCallback = nullptr, BufferObjects* buffers = nullptr, ObjectData* objectData = nullptr, Engine* engine = nullptr);
     void setupVertexAttribPointer(BufferConfig config);
     BufferObjects setupBuffers(const BufferConfig& config);
     SphereData generateSphere(float radius, unsigned int sectorCount, unsigned int stackCount);
