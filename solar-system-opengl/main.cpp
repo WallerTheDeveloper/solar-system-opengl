@@ -26,6 +26,7 @@ unsigned int objectTextureID;
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 
 std::unique_ptr<Shader> shader;
+std::unique_ptr<Texture> texture;
 
 void onRender(BufferObjects* buffers, ObjectData* objectData);
 
@@ -36,7 +37,7 @@ int main()
 
         SphereData sphereData = engine.generateSphere(0.5f, 36, 18);
         shader = std::make_unique<Shader>("shaders/object.vert", "shaders/object.frag");
-
+        texture = std::make_unique<Texture>();
         BufferConfig sphereDataConfig;
         sphereDataConfig.useVBO = true;
         sphereDataConfig.useEBO = true;
@@ -61,24 +62,22 @@ int main()
 
         engine.setupVertexAttribPointer(textureDataConfig);
 
-        
-        Texture texture;  // Initialize texture class
+        texture->generateTexture(1, objectTextureID);
 
-        texture.generateTexture(1, objectTextureID);
-
-        int width, height, numberOfChannels;
+        int width = 0, height, numberOfChannels;
         const char* filename = "textures/sun.jpg";
-        unsigned char* data =  texture.loadTextureImage(filename, width, height, numberOfChannels);
+
+        unsigned char* data =  texture->loadTextureImage(filename, width, height, numberOfChannels);
 
         if (data)
         {
-            texture.specifyTextureImage2D(data, width, height, true);
+            texture->specifyTextureImage2D(data, width, height, true);
         }
         else
         {
             std::cout << "Failed to load texture" << std::endl;
         }
-        texture.freeImageData(data);
+        texture->freeImageData(data);
 
         shader->setInt("texture", 0);
 
@@ -94,8 +93,7 @@ void onRender(BufferObjects* buffers, ObjectData* objectData)
 {
     if (shader && buffers && objectTextureID) {
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, objectTextureID);
+        texture->setTextureActive2D(GL_TEXTURE0, objectTextureID);
 
         shader->use();
 

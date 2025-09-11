@@ -12,6 +12,7 @@ public:
 	unsigned char* loadTextureImage(const char* filename, int& width, int& height, int& numberOfChannels);
 	void specifyTextureImage2D(unsigned char* data, unsigned int width, unsigned int height, bool generateMipmap);
 	void freeImageData(unsigned char* data);
+	void setTextureActive2D(GLenum texture, unsigned int& textureID);
 };
 
 #endif

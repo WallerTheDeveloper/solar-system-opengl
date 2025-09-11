@@ -34,3 +34,9 @@ void Texture::specifyTextureImage2D(unsigned char* data, unsigned int width, uns
         glGenerateMipmap(GL_TEXTURE_2D);
     }
 }
+
+void Texture::setTextureActive2D(GLenum texture, unsigned int& textureID)
+{
+    glActiveTexture(texture);
+    glBindTexture(GL_TEXTURE_2D, textureID);
+}
