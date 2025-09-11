@@ -92,32 +92,26 @@ SphereData Engine::generateSphere(float radius, unsigned int sectorCount, unsign
 
     // Generate vertices
     for (unsigned int i = 0; i <= stackCount; ++i) {
-        stackAngle = M_PI / 2 - i * stackStep;        
-        xy = radius * cosf(stackAngle);               
-        z = radius * sinf(stackAngle);                
+        stackAngle = M_PI / 2 - i * stackStep;
+        xy = radius * cosf(stackAngle);
+        z = radius * sinf(stackAngle);
 
-        for (unsigned int i = 0; i <= stackCount; ++i) {
-            stackAngle = M_PI / 2 - i * stackStep;
-            xy = radius * cosf(stackAngle);
-            z = radius * sinf(stackAngle);
+        for (unsigned int j = 0; j <= sectorCount; ++j) {
+            sectorAngle = j * sectorStep;
 
-            for (unsigned int j = 0; j <= sectorCount; ++j) {
-                sectorAngle = j * sectorStep;
+            x = xy * cosf(sectorAngle);
+            y = xy * sinf(sectorAngle);
 
-                x = xy * cosf(sectorAngle);
-                y = xy * sinf(sectorAngle);
+            // Position
+            sphere.vertices.push_back(x);
+            sphere.vertices.push_back(y);
+            sphere.vertices.push_back(z);
 
-                // Position
-                sphere.vertices.push_back(x);
-                sphere.vertices.push_back(y);
-                sphere.vertices.push_back(z);
-
-                // Texture coordinates
-                float u = (float)j / sectorCount;
-                float v = (float)i / stackCount;
-                sphere.vertices.push_back(u);
-                sphere.vertices.push_back(v);
-            }
+            // Texture coordinates
+            float u = (float)j / sectorCount;
+            float v = (float)i / stackCount;
+            sphere.vertices.push_back(u);
+            sphere.vertices.push_back(v);
         }
     }
 
