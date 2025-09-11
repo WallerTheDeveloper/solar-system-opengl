@@ -6,7 +6,7 @@
 #include <string>
 #include <iostream>
 #include <functional>
-#include <stb_image/stb_image.h>
+
 #include <vector>
 #include <cmath>
 
@@ -32,6 +32,7 @@ struct BufferConfig {
     size_t indicesDataSize = 0;
 
     int vertexAttributePointerIndex = 0;
+    int vertexAttributePointerSize = 0;
     int vertexAttributePointerStride = 0;
     int vertexAttributePointerOffset = 0;
 };
@@ -45,6 +46,10 @@ struct ObjectData {
 struct SphereData : ObjectData {
     
 };
+
+// TODO: buffers cleanup
+//glDeleteVertexArrays(1, &VAO);
+//glDeleteBuffers(1, &VBO);
 class Engine {
 public:
     Engine(std::string windowName, int windowWidth, int windowHeight, bool enable_gl_depth_test);
@@ -54,7 +59,6 @@ public:
     void setupVertexAttribPointer(BufferConfig config);
     BufferObjects setupBuffers(const BufferConfig& config);
     SphereData generateSphere(float radius, unsigned int sectorCount, unsigned int stackCount);
-
 private:
     GLFWwindow* window;
     std::string windowName;

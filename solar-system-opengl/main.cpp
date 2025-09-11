@@ -2,10 +2,14 @@
 #include "engine.h"
 #include "shader.h"
 #include "camera.h"
+#include "texture.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image/stb_image.h>
+
 
 #include <iostream>
 #include <string>
@@ -16,6 +20,8 @@ const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 const std::string WINDOW_NAME = "Solar System Simulation";
 const bool ENABLE_GL_DEPTH_TEST = true;
+
+unsigned int objectTextureID;
 
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 
@@ -31,20 +37,50 @@ int main()
         SphereData sphereData = engine.generateSphere(0.5f, 36, 18);
         shader = std::make_unique<Shader>("shaders/object.vert", "shaders/object.frag");
 
-        BufferConfig sphereConfig;
-        sphereConfig.useVBO = true;
-        sphereConfig.useEBO = true;
-        sphereConfig.useVAO = true;
-        sphereConfig.vertexData = sphereData.vertices.data();
-        sphereConfig.vertexDataSize = sphereData.vertices.size() * sizeof(float);
-        sphereConfig.indicesData = sphereData.indices.data();
-        sphereConfig.indicesDataSize = sphereData.indices.size() * sizeof(unsigned int);
-        sphereConfig.vertexAttributePointerIndex = 0;
-        sphereConfig.vertexAttributePointerStride = 3;
-        sphereConfig.vertexAttributePointerOffset = 0;
+        BufferConfig sphereDataConfig;
+        sphereDataConfig.useVBO = true;
+        sphereDataConfig.useEBO = true;
+        sphereDataConfig.useVAO = true;
+        sphereDataConfig.vertexData = sphereData.vertices.data();
+        sphereDataConfig.vertexDataSize = sphereData.vertices.size() * sizeof(float);
+        sphereDataConfig.indicesData = sphereData.indices.data();
+        sphereDataConfig.indicesDataSize = sphereData.indices.size() * sizeof(unsigned int);
+        sphereDataConfig.vertexAttributePointerIndex = 0;
+        sphereDataConfig.vertexAttributePointerSize = 3;
+        sphereDataConfig.vertexAttributePointerStride = 5;
+        sphereDataConfig.vertexAttributePointerOffset = 0;
 
-        BufferObjects sphereBuffers = engine.setupBuffers(sphereConfig);
-        engine.setupVertexAttribPointer(sphereConfig);
+        BufferObjects sphereBuffers = engine.setupBuffers(sphereDataConfig);
+        engine.setupVertexAttribPointer(sphereDataConfig);
+
+        BufferConfig textureDataConfig;
+        textureDataConfig.vertexAttributePointerIndex = 1;
+        textureDataConfig.vertexAttributePointerSize = 2;
+        textureDataConfig.vertexAttributePointerStride = 5;
+        textureDataConfig.vertexAttributePointerOffset = 3;
+
+        engine.setupVertexAttribPointer(textureDataConfig);
+
+        
+        Texture texture;  // Initialize texture class
+
+        texture.generateTexture(1, objectTextureID);
+
+        int width, height, numberOfChannels;
+        const char* filename = "textures/sun.jpg";
+        unsigned char* data =  texture.loadTextureImage(filename, width, height, numberOfChannels);
+
+        if (data)
+        {
+            texture.specifyTextureImage2D(data, width, height, true);
+        }
+        else
+        {
+            std::cout << "Failed to load texture" << std::endl;
+        }
+        texture.freeImageData(data);
+
+        shader->setInt("texture", 0);
 
         engine.renderLoop(onRender, &sphereBuffers, &sphereData);
     }
@@ -56,11 +92,15 @@ int main()
 }
 void onRender(BufferObjects* buffers, ObjectData* objectData)
 {
-    if (shader && buffers) {
+    if (shader && buffers && objectTextureID) {
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, objectTextureID);
+
         shader->use();
 
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::rotate(model, (float)glfwGetTime() * glm::radians(30.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+        model = glm::rotate(model, (float)glfwGetTime() * glm::radians(30.0f), glm::vec3(0.85f, 0.85f, 0.0f));
 
         glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -3.0f));
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
@@ -71,7 +111,6 @@ void onRender(BufferObjects* buffers, ObjectData* objectData)
 
         shader->setVec3("ourColor", 1.0f, 1.0f, 0.0f);
 
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
         glBindVertexArray(buffers->VAO);
         glDrawElements(GL_TRIANGLES, objectData->indicesCount, GL_UNSIGNED_INT, 0);

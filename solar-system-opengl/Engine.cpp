@@ -52,6 +52,7 @@ void Engine::renderLoop(std::function<void(BufferObjects*, ObjectData*)> renderC
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
+    
 }
 
 BufferObjects Engine::setupBuffers(const BufferConfig& config) {
@@ -95,15 +96,28 @@ SphereData Engine::generateSphere(float radius, unsigned int sectorCount, unsign
         xy = radius * cosf(stackAngle);               
         z = radius * sinf(stackAngle);                
 
-        for (unsigned int j = 0; j <= sectorCount; ++j) {
-            sectorAngle = j * sectorStep;             
+        for (unsigned int i = 0; i <= stackCount; ++i) {
+            stackAngle = M_PI / 2 - i * stackStep;
+            xy = radius * cosf(stackAngle);
+            z = radius * sinf(stackAngle);
 
-            x = xy * cosf(sectorAngle);               
-            y = xy * sinf(sectorAngle);               
+            for (unsigned int j = 0; j <= sectorCount; ++j) {
+                sectorAngle = j * sectorStep;
 
-            sphere.vertices.push_back(x);
-            sphere.vertices.push_back(y);
-            sphere.vertices.push_back(z);
+                x = xy * cosf(sectorAngle);
+                y = xy * sinf(sectorAngle);
+
+                // Position
+                sphere.vertices.push_back(x);
+                sphere.vertices.push_back(y);
+                sphere.vertices.push_back(z);
+
+                // Texture coordinates
+                float u = (float)j / sectorCount;
+                float v = (float)i / stackCount;
+                sphere.vertices.push_back(u);
+                sphere.vertices.push_back(v);
+            }
         }
     }
 
@@ -139,7 +153,7 @@ void Engine::setupVertexAttribPointer(BufferConfig config)
 {
     glVertexAttribPointer(
         config.vertexAttributePointerIndex,
-        3,
+        config.vertexAttributePointerSize,
         GL_FLOAT,
         GL_FALSE,
         config.vertexAttributePointerStride * sizeof(float),
