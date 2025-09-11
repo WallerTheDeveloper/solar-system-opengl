@@ -1,9 +1,12 @@
 #include "Engine.h"
 
+Engine* Engine::instance = nullptr;
+
 Engine::Engine(std::string windowName, int windowWidth, int windowHeight, bool enable_gl_depth_test)
     : windowName(windowName), windowWidth(windowWidth), windowHeight(windowHeight),
     window(nullptr), isInitialized(false), camera(glm::vec3(0.0f, 0.0f, 3.0f))
 {
+    instance = this;
     try {
         initGLFW();
         window = createWindow(windowName, windowWidth, windowHeight);
@@ -210,6 +213,51 @@ void Engine::processInput(GLFWwindow* window)
 
 }
 
+void Engine::framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+    if (!instance)
+    {
+        return;
+    }
+    glViewport(0, 0, width, height);
+}
+
+void Engine::mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
+{
+    if (!instance)
+    {
+        return;
+    }
+
+    float xpos = static_cast<float>(xposIn);
+    float ypos = static_cast<float>(yposIn);
+
+    if (instance->firstMouse)
+    {
+        instance->lastMouseX = xpos;
+        instance->lastMouseY = ypos;
+        instance->firstMouse = false;
+    }
+
+    float xoffset = xpos - instance->lastMouseX;
+    float yoffset = instance->lastMouseY - ypos;
+
+    instance->lastMouseX = xpos;
+    instance->lastMouseY = ypos;
+
+    instance->camera.processMouseMovement(xoffset, yoffset);
+}
+
+void Engine::scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+    if (!instance)
+    {
+        return;
+    }
+
+    instance->camera.processMouseScroll(static_cast<float>(yoffset));
+}
+
 GLFWwindow* Engine::createWindow(std::string name, int width, int height) 
 {
     GLFWwindow* newWindow = glfwCreateWindow(width, height, name.c_str(), NULL, NULL);
@@ -220,6 +268,10 @@ GLFWwindow* Engine::createWindow(std::string name, int width, int height)
 
     glfwMakeContextCurrent(newWindow);
     std::cout << "Window created: " << name << " (" << width << "x" << height << ")" << std::endl;
+
+    glfwSetFramebufferSizeCallback(newWindow, framebuffer_size_callback);
+    glfwSetCursorPosCallback(newWindow, mouse_callback);
+    glfwSetScrollCallback(newWindow, scroll_callback);
 
     return newWindow;
 }

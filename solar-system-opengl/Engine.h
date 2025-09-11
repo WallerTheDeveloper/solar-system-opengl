@@ -67,15 +67,22 @@ public:
     BufferObjects setupBuffers(const BufferConfig& config);
     SphereData generateSphere(float radius, unsigned int sectorCount, unsigned int stackCount);
 private:
+    static Engine* instance;
     GLFWwindow* window;
     std::string windowName;
     int windowWidth;
     int windowHeight;
     bool isInitialized;
+    float lastMouseX = (float)windowWidth / 2.0f;
+    float lastMouseY = (float)windowHeight / 2.0f;
+    bool firstMouse = true;
 
     void initGLFW();
     void initGLAD();
     void processInput(GLFWwindow* window);
+    static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+    static void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
+    static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
     GLFWwindow* createWindow(std::string name, int width, int height);
 };
 
