@@ -35,7 +35,7 @@ int main()
     try {
         Engine engine(WINDOW_NAME, SCR_WIDTH, SCR_HEIGHT, ENABLE_GL_DEPTH_TEST);
 
-        SphereData sphereData = engine.generateSphere(0.5f, 36, 18);
+        SphereData sphereData = engine.generateSphere(1.0f, 36, 18);
         shader = std::make_unique<Shader>("shaders/object.vert", "shaders/object.frag");
         texture = std::make_unique<Texture>();
 
@@ -108,7 +108,7 @@ void onRender(BufferObjects* buffers, ObjectData* objectData, Engine* engine)
         float deltaTime = currentTime - lastTime;
         lastTime = currentTime;
 
-        const float TIME_SCALE = 1000000.0f;
+        const float TIME_SCALE = 1000000.0f/2.0f;
         const float SCALE_FACTOR = 1e-10f;  
 
         for (auto& body : celestialBodies) {

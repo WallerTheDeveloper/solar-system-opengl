@@ -194,23 +194,28 @@ void Engine::processInput(GLFWwindow* window)
         glfwSetWindowShouldClose(window, true);
     }
 
+    float speedMultiplier = 1.0f;
+    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) 
+    {
+        speedMultiplier = 5.0f;
+    }
+
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
-        camera.processKeyboard(FORWARD, deltaTime);
+        camera.processKeyboard(FORWARD, deltaTime, speedMultiplier);
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
     {
-        camera.processKeyboard(BACKWARD, deltaTime);
+        camera.processKeyboard(BACKWARD, deltaTime, speedMultiplier);
     }
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
-        camera.processKeyboard(LEFT, deltaTime);
+        camera.processKeyboard(LEFT, deltaTime, speedMultiplier);
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
-        camera.processKeyboard(RIGHT, deltaTime);
+        camera.processKeyboard(RIGHT, deltaTime, speedMultiplier);
     }
-
 }
 
 void Engine::framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -272,6 +277,8 @@ GLFWwindow* Engine::createWindow(std::string name, int width, int height)
     glfwSetFramebufferSizeCallback(newWindow, framebuffer_size_callback);
     glfwSetCursorPosCallback(newWindow, mouse_callback);
     glfwSetScrollCallback(newWindow, scroll_callback);
+
+    glfwSetInputMode(newWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     return newWindow;
 }

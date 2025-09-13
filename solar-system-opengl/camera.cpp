@@ -71,22 +71,22 @@ glm::mat4 Camera::lookAt(glm::vec3 from, glm::vec3 to, glm::vec3 up)
     );
 }
 
-void Camera::processKeyboard(Camera_Movement direction, float deltaTime)
+void Camera::processKeyboard(Camera_Movement direction, float deltaTime, float speedMultiplier) 
 {
-    float velocity = MovementSpeed * deltaTime;
-    if (direction == FORWARD)
+    float velocity = MovementSpeed * deltaTime * speedMultiplier;
+    if (direction == FORWARD) 
     {
         Position += Front * velocity;
     }
-    if (direction == BACKWARD)
+    if (direction == BACKWARD) 
     {
         Position -= Front * velocity;
     }
-    if (direction == LEFT)
+    if (direction == LEFT) 
     {
         Position -= Right * velocity;
     }
-    if (direction == RIGHT)
+    if (direction == RIGHT) 
     {
         Position += Right * velocity;
     }
@@ -130,4 +130,4 @@ void Camera::updateCameraVectors()
     Front = glm::normalize(front);
     Right = glm::normalize(glm::cross(Front, WorldUp));
     Up = glm::normalize(glm::cross(Right, Front));
-}
+}   

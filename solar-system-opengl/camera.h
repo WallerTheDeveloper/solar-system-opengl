@@ -10,7 +10,8 @@ enum Camera_Movement {
     FORWARD,
     BACKWARD,
     LEFT,
-    RIGHT
+    RIGHT,
+    SHIFT
 };
 
 // Default camera values
@@ -40,7 +41,7 @@ public:
     glm::mat4 getViewMatrix();
     glm::mat4 lookAt(glm::vec3 from, glm::vec3 to, glm::vec3 up);
 
-    void processKeyboard(Camera_Movement direction, float deltaTime);
+    void processKeyboard(Camera_Movement direction, float deltaTime, float speedMultiplier = 1.0f);
 
     void processMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true);
 
