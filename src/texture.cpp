@@ -21,8 +21,7 @@ void Texture::setTextureFilteringParamsInt(GLint parameter)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, parameter);
 }
 
-unsigned char* Texture::loadTextureImage(const char* filename, int& width,
-                                         int& height, int& numberOfChannels) {
+unsigned char* Texture::loadTextureImage(const char* filename, int& width, int& height, int& numberOfChannels) {
     stbi_set_flip_vertically_on_load(true);
     unsigned char* data = stbi_load(filename, &width, &height, &numberOfChannels, 0);
     return data;

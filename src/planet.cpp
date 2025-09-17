@@ -34,6 +34,7 @@ void Planet::create(const char* texturePath)
   texture->setTextureWrappingParamsInt(GL_REPEAT);
   texture->setTextureFilteringParamsInt(GL_LINEAR);
 
+  cout << "Buffers created successfully for planet " << name << endl;
   int width = 0, height, numberOfChannels;
 
   unsigned char* data = texture->loadTextureImage(texturePath, width, height, numberOfChannels);
