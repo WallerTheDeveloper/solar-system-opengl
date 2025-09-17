@@ -1,4 +1,4 @@
-#include "Engine.h"
+#include "../headers/engine.h"
 
 Engine* Engine::instance = nullptr;
 
@@ -34,7 +34,7 @@ Engine::~Engine() {
     std::cout << "Engine destroyed" << std::endl;
 }
 
-void Engine::renderLoop(std::function<void(BufferObjects*, ObjectData*, Engine*)> renderCallback, BufferObjects* buffers, ObjectData* objectData, Engine* engine) {
+void Engine::render(std::function<void(Engine*)> renderCallback, Engine* engine) {
     if (!isInitialized || !window) {
         std::cerr << "Engine not properly initialized. Cannot start render loop." << std::endl;
         return;
@@ -53,8 +53,8 @@ void Engine::renderLoop(std::function<void(BufferObjects*, ObjectData*, Engine*)
 
         processInput(window);
 
-        if (renderCallback && buffers && engine) {
-            renderCallback(buffers, objectData, engine);
+        if (renderCallback && engine) {
+            renderCallback(engine);
         }
 
         glfwSwapBuffers(window);
@@ -63,43 +63,74 @@ void Engine::renderLoop(std::function<void(BufferObjects*, ObjectData*, Engine*)
     
 }
 
-BufferObjects Engine::setupBuffers(const BufferConfig& config) {
-    BufferObjects buffers;
-
-    if (config.useVAO) {
-        glGenVertexArrays(1, &buffers.VAO);
-        glBindVertexArray(buffers.VAO);
-    }
-
-    if (config.useVBO) {
-        glGenBuffers(1, &buffers.VBO);
-        glBindBuffer(GL_ARRAY_BUFFER, buffers.VBO);
-        if (config.vertexData && config.vertexDataSize > 0) {
-            glBufferData(GL_ARRAY_BUFFER, config.vertexDataSize, config.vertexData, GL_STATIC_DRAW);
-        }
-    }
-
-    if (config.useEBO) {
-        glGenBuffers(1, &buffers.EBO);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers.EBO);
-        if (config.indicesData && config.indicesDataSize > 0) {
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, config.indicesDataSize, config.indicesData, GL_STATIC_DRAW);
-        }
-    }
-
-    return buffers;
+Engine& Engine::getInstance() {
+  if (!instance) {
+    throw std::runtime_error(
+        "Engine not initialized! Create Engine instance first.");
+  }
+  return *instance;
 }
 
-SphereData Engine::generateSphere(float radius, unsigned int sectorCount, unsigned int stackCount) {
-    SphereData sphere;
+bool Engine::isEngineInitialized() 
+{ 
+    return instance != nullptr;
+}
 
+void Engine::generateVAO(unsigned int* VAO)
+{ 
+    glGenVertexArrays(1, VAO);
+}
+
+void Engine::generateBuffer(unsigned int* buffer)
+{
+    glGenBuffers(1, buffer);
+}
+
+void Engine::bindVAO(unsigned int VAO) 
+{ 
+    glBindVertexArray(VAO);
+}
+
+void Engine::bindBuffer(GLenum target, unsigned int buffer)
+{ 
+    //example: glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBindBuffer(target, buffer);
+}
+
+void Engine::setBufferData(GLenum target, GLsizeiptr size, const void* data, GLenum usage) {
+    // example VBO: glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW); 
+    // example EBO: glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indicies), indicies, GL_STATIC_DRAW);
+    glBufferData(target, size, data, usage);
+}
+  void Engine::deleteVAO(int size, unsigned int& VAO)
+{
+    glDeleteVertexArrays(size, &VAO);
+}
+
+void Engine::deleteBuffers(int size, const unsigned int& buffer) 
+{
+    glDeleteBuffers(size, &buffer);
+}
+
+void Engine::defineVertexLayout(unsigned int shaderLayoutIndex, int size, GLenum type, GLboolean normalizeData, int stride, const void* offset)
+{
+  // example:   glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+  glVertexAttribPointer(shaderLayoutIndex, size, type, normalizeData, stride, offset);
+
+  glEnableVertexAttribArray(shaderLayoutIndex);
+}
+
+SphereMeshData Engine::generateSphereMesh(float radius, unsigned int sectorCount, unsigned int stackCount) {
+    SphereMeshData data;
+    
     float x, y, z, xy;
     float sectorStep = 2 * M_PI / sectorCount;
     float stackStep = M_PI / stackCount;
     float sectorAngle, stackAngle;
 
     // Generate vertices
-    for (unsigned int i = 0; i <= stackCount; ++i) {
+    for (unsigned int i = 0; i <= stackCount; ++i) 
+    {
         stackAngle = M_PI / 2 - i * stackStep;
         xy = radius * cosf(stackAngle);
         z = radius * sinf(stackAngle);
@@ -111,15 +142,15 @@ SphereData Engine::generateSphere(float radius, unsigned int sectorCount, unsign
             y = xy * sinf(sectorAngle);
 
             // Position
-            sphere.vertices.push_back(x);
-            sphere.vertices.push_back(y);
-            sphere.vertices.push_back(z);
+            data.vertices.push_back(x);
+            data.vertices.push_back(y);
+            data.vertices.push_back(z);
 
             // Texture coordinates
             float u = (float)j / sectorCount;
             float v = (float)i / stackCount;
-            sphere.vertices.push_back(u);
-            sphere.vertices.push_back(v);
+            data.vertices.push_back(u);
+            data.vertices.push_back(v);
         }
     }
 
@@ -132,37 +163,25 @@ SphereData Engine::generateSphere(float radius, unsigned int sectorCount, unsign
         {
             if (i != 0) 
             {
-                sphere.indices.push_back(k1);
-                sphere.indices.push_back(k2);
-                sphere.indices.push_back(k1 + 1);
+                data.indices.push_back(k1);
+                data.indices.push_back(k2);
+                data.indices.push_back(k1 + 1);
             }
 
             if (i != (stackCount - 1)) 
             {
-                sphere.indices.push_back(k1 + 1);
-                sphere.indices.push_back(k2);
-                sphere.indices.push_back(k2 + 1);
+                data.indices.push_back(k1 + 1);
+                data.indices.push_back(k2);
+                data.indices.push_back(k2 + 1);
             }
         }
     }
 
-    sphere.indicesCount = sphere.indices.size();
+    data.indicesCount = data.indices.size();
 
-    return sphere;
+    return data;
 }
 
-void Engine::setupVertexAttribPointer(BufferConfig config) 
-{
-    glVertexAttribPointer(
-        config.vertexAttributePointerIndex,
-        config.vertexAttributePointerSize,
-        GL_FLOAT,
-        GL_FALSE,
-        config.vertexAttributePointerStride * sizeof(float),
-        (void*)(config.vertexAttributePointerOffset * sizeof(float)));
-
-    glEnableVertexAttribArray(config.vertexAttributePointerIndex);
-}
 void Engine::initGLFW() {
     if (!glfwInit()) {
         throw std::runtime_error("Failed to initialize GLFW");

@@ -3,15 +3,14 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <string>
-#include <iostream>
-#include <functional>
 
-#include <vector>
 #include <cmath>
+#include <functional>
+#include <iostream>
+#include <string>
+#include <vector>
 
 #include "camera.h"
-
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -23,49 +22,50 @@ struct BufferObjects {
     unsigned int EBO = 0;
 };
 
-struct BufferConfig {
-    bool useVBO = true;
-    bool useVAO = false;
-    bool useEBO = false;
-
-    const void* vertexData = nullptr;
-    size_t vertexDataSize = 0;
-
-    const void* indicesData = nullptr;
-    size_t indicesDataSize = 0;
-
-    int vertexAttributePointerIndex = 0;
-    int vertexAttributePointerSize = 0;
-    int vertexAttributePointerStride = 0;
-    int vertexAttributePointerOffset = 0;
-};
-
-struct ObjectData {
+struct ObjectMeshData {
     std::vector<float> vertices;
     std::vector<unsigned int> indices;
     unsigned int indicesCount;
 };
 
-struct SphereData : ObjectData {
+struct SphereMeshData : ObjectMeshData {
     
 };
 
-// TODO: buffers cleanup
-//glDeleteVertexArrays(1, &VAO);
-//glDeleteBuffers(1, &VBO);
+
 class Engine {
 public:
     Camera camera;
-    float deltaTime = 0.0f;	// time between current frame and last frame
+    float deltaTime = 0.0f;  // time between current frame and last frame
     float lastFrame = 0.0f;
+
+    static Engine& getInstance();
+    static bool isEngineInitialized();
 
     Engine(std::string windowName, int windowWidth, int windowHeight, bool enable_gl_depth_test);
     ~Engine();
 
-    void renderLoop(std::function<void(BufferObjects*, ObjectData*, Engine*)> renderCallback = nullptr, BufferObjects* buffers = nullptr, ObjectData* objectData = nullptr, Engine* engine = nullptr);
-    void setupVertexAttribPointer(BufferConfig config);
-    BufferObjects setupBuffers(const BufferConfig& config);
-    SphereData generateSphere(float radius, unsigned int sectorCount, unsigned int stackCount);
+    void render(std::function<void(Engine*)> renderCallback = nullptr,
+                Engine* engine = nullptr);
+
+    // Buffers
+    void generateVAO(unsigned int* VAO);
+    void generateBuffer(unsigned int* buffer);
+    
+    void bindVAO(unsigned int VAO);
+    void bindBuffer(GLenum target, unsigned int buffer);
+
+    void setBufferData(GLenum target, GLsizeiptr size, const void* data, GLenum usage);
+    void defineVertexLayout(unsigned int shaderLayoutIndex, int size,
+                            GLenum type, GLboolean normalizeData, int stride,
+                            const void* offset); 
+
+    void deleteVAO(int size, unsigned int& VAO);
+    void deleteBuffers(int size, const unsigned int& buffer);
+
+    // Primitives mesh generation
+    SphereMeshData generateSphereMesh(float radius, unsigned int sectorCount, unsigned int stackCount);
+
 private:
     static Engine* instance;
     GLFWwindow* window;

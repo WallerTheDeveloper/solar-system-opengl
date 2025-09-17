@@ -414,6 +414,9 @@ FodyWeavers.xsd
 !.vscode/extensions.json
 !.vscode/*.code-snippets
 
+# CLion fils
+.idea
+
 # Local History for Visual Studio Code
 .history/
 

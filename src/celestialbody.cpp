@@ -1,9 +1,11 @@
-#include "AstronomicalObject.h"
+#include "../headers/celestialbody.h"
 
-AstronomicalObject::AstronomicalObject(
+CelestialBody::CelestialBody(
+    Engine* engine, 
     std::string name, float mass, float radius, 
     float semiMajorAxis, float eccentricity, float orbitalPeriod, 
-    float currentAngle, glm::vec3 position, glm::vec3 velocity) :
+    float currentAngle, glm::vec3 position, glm::vec3 velocity) : 
+    engine(engine),
     name(name), mass(mass), radius(radius), 
     semiMajorAxis(semiMajorAxis), eccentricity(eccentricity), orbitalPeriod(orbitalPeriod), 
     currentAngle(currentAngle), position(position), velocity(velocity)
@@ -11,7 +13,7 @@ AstronomicalObject::AstronomicalObject(
 
 }
 
-void AstronomicalObject::updateOrbitalPositions(float deltaTime)
+void CelestialBody::updateOrbitalPositions(float deltaTime)
 {
     if (this->name == "Sun")
     {

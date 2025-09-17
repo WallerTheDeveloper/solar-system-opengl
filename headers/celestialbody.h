@@ -1,9 +1,11 @@
-#ifndef ASTRONOMICALOBJECT_H
-#define ASTRONOMICALOBJECT_H
+#ifndef CELESTIALBODY_H
+#define CELESTIALBODY_H
 
 #include <glm/glm.hpp>
-
 #include <string>
+
+#include "engine.h"
+#include "shader.h"
 
 #ifndef SUN_MASS
 #define SUN_MASS 1.989e30f
@@ -15,10 +17,20 @@
 
 using namespace std;
 
-class AstronomicalObject
+class CelestialBody
 {
 public:
-    AstronomicalObject(std::string name, float mass, float radius, float semiMajorAxis, float eccentricity, float orbitalPeriod, float currentAngle, glm::vec3 position, glm::vec3 velocity);
+    CelestialBody(
+        Engine* engine, 
+        std::string name, 
+        float mass,
+        float radius, 
+        float semiMajorAxis, 
+        float eccentricity, 
+        float orbitalPeriod, 
+        float currentAngle, 
+        glm::vec3 position, 
+        glm::vec3 velocity);
 
     std::string name;
     float mass;           // kg
@@ -31,6 +43,11 @@ public:
     glm::vec3 velocity;
 
     void updateOrbitalPositions(float deltaTime);
+    virtual void create(const char* texturePath) = 0;
+    virtual void render(glm::mat4 model, glm::mat4 view,
+                        glm::mat4 projection) = 0;
+   protected:
+    Engine* engine;
 };
 
 #endif
