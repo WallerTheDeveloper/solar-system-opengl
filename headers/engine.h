@@ -3,6 +3,7 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include "debug_utils.h"
 
 #include <cmath>
 #include <functional>

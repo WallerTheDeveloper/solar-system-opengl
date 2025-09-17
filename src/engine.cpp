@@ -1,4 +1,4 @@
-#include "../headers/engine.h"
+#include "engine.h"
 
 Engine* Engine::instance = nullptr;
 
@@ -6,24 +6,32 @@ Engine::Engine(std::string windowName, int windowWidth, int windowHeight, bool e
     : windowName(windowName), windowWidth(windowWidth), windowHeight(windowHeight),
     window(nullptr), isInitialized(false), camera(glm::vec3(0.0f, 15.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 0.0f, -90.0f)
 {
-    instance = this;
-    try {
-        initGLFW();
-        window = createWindow(windowName, windowWidth, windowHeight);
-        initGLAD();
+  instance = this;
+  try {
+    initGLFW();
+    window = createWindow(windowName, windowWidth, windowHeight);
+    initGLAD();
 
-        if (enable_gl_depth_test)
-        {
-            glEnable(GL_DEPTH_TEST);
-        }
+    initializeBasicDebugging();
 
-        isInitialized = true;
-        std::cout << "Engine initialized successfully" << std::endl;
+    if (enable_gl_depth_test) {
+      GL_CHECK(glEnable(GL_DEPTH_TEST));
+      std::cout << "Depth testing enabled" << std::endl;
     }
-    catch (const std::exception& e) {
-        std::cerr << "Engine initialization failed: " << e.what() << std::endl;
-        isInitialized = false;
-    }
+
+    GL_CHECK(glEnable(GL_CULL_FACE));
+    GL_CHECK(glCullFace(GL_BACK));
+    GL_CHECK(glFrontFace(GL_CCW));
+
+    std::cout << "OpenGL state configured successfully" << std::endl;
+
+    isInitialized = true;
+    std::cout << "Engine initialized successfully" << std::endl;
+  }
+  catch (const std::exception& e) {
+    std::cerr << "Engine initialization failed: " << e.what() << std::endl;
+    isInitialized = false;
+  }
 }
 
 Engine::~Engine() {
