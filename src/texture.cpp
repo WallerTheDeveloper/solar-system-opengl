@@ -1,4 +1,4 @@
-#include "../headers/texture.h"
+#include "texture.h"
 
 unsigned int Texture::generateTexture(unsigned int count)
 {

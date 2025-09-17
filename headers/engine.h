@@ -16,12 +16,6 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-struct BufferObjects {
-    unsigned int VAO = 0;
-    unsigned int VBO = 0;
-    unsigned int EBO = 0;
-};
-
 struct ObjectMeshData {
     std::vector<float> vertices;
     std::vector<unsigned int> indices;
