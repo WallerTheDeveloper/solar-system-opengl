@@ -55,20 +55,7 @@ void Planet::create(const char* texturePath)
     } else {
         cout << "Failed to load texture: " << texturePath << " - using fallback color" << endl;
 
-        unsigned char colorData[3];
-        if (name == "Sun") {
-            colorData[0] = 255; colorData[1] = 255; colorData[2] = 0; // Yellow
-        } else if (name == "Mercury") {
-            colorData[0] = 169; colorData[1] = 169; colorData[2] = 169; // Gray
-        } else if (name == "Venus") {
-            colorData[0] = 255; colorData[1] = 165; colorData[2] = 0; // Orange
-        } else if (name == "Earth") {
-            colorData[0] = 0; colorData[1] = 100; colorData[2] = 255; // Blue
-        } else {
-            colorData[0] = 255; colorData[1] = 255; colorData[2] = 255; // White
-        }
-
-        GL_CHECK(texture->specifyTextureImage2D(colorData, GL_RGB, 1, 1, false));
+        GL_CHECK(texture->specifyTextureImage2D(data, GL_RGB, 1, 1, false));
         if (data) texture->freeImageData(data);
     }
 
