@@ -7,6 +7,7 @@
 #include "celestialbody.h"
 #include "debug_utils.h"
 #include "texture.h"
+#include "shader.h"
 
 using namespace std;
 

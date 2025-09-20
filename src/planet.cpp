@@ -2,7 +2,7 @@
 
 void Planet::create(const char* texturePath)
 {
-    cout << "Creating planet: " << name << endl;
+    cout << "Creating planet: " << bodyType << endl;
 
     meshData = engine->generateSphereMesh(1.0f, 36, 18);
     cout << "Generated mesh with " << meshData.vertices.size() << " vertices and "
@@ -28,7 +28,7 @@ void Planet::create(const char* texturePath)
     GL_CHECK(engine->defineVertexLayout(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0));
     GL_CHECK(engine->defineVertexLayout(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float))));
 
-    cout << "OpenGL buffers created successfully for planet " << name << endl;
+    cout << "OpenGL buffers created successfully for planet " << bodyType << endl;
 
     checkVAOBinding();
     checkBufferBinding(GL_ARRAY_BUFFER, "VBO");
@@ -65,14 +65,14 @@ void Planet::create(const char* texturePath)
         shader = make_unique<Shader>("../shaders/object.vert", "../shaders/object.frag");
         GL_CHECK(shader->use());
         GL_CHECK(shader->setInt("texture", 0));
-        cout << "Shader compiled successfully for planet " << name << endl;
+        cout << "Shader compiled successfully for planet " << bodyType << endl;
     } catch (const std::exception& e) {
-        cout << "ERROR: Failed to create shader for planet " << name << ": " << e.what() << endl;
+        cout << "ERROR: Failed to create shader for planet " << bodyType << ": " << e.what() << endl;
         return;
     }
 
     this->created = true;
-    cout << "Planet " << name << " created successfully!" << endl;
+    cout << "Planet " << bodyType << " created successfully!" << endl;
 
     GL_CHECK(glBindVertexArray(0));
     GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, 0));
