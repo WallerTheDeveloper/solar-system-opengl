@@ -1,13 +1,11 @@
 #ifndef PLANET_H
 #define PLANET_H
 
-#include <iostream>
 #include <memory>
 
 #include "celestialbody.h"
-#include "debug_utils.h"
-#include "texture.h"
 #include "shader.h"
+#include "texture.h"
 
 using namespace std;
 

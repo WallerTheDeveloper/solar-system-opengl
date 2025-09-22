@@ -20,12 +20,14 @@ std::unique_ptr<Skybox> skybox;
 std::vector<Planet> celestialBodies;
 
 void onRender(Engine* engine);
-float GetPlanetsRotationSpeed(CelestialBody::BodyType body);
-glm::vec3 GetPlanetScale(CelestialBody::BodyType body);
+float getPlanetsRotationSpeed(CelestialBody::BodyType body);
+glm::vec3 getPlanetScale(CelestialBody::BodyType body);
 
 int main() {
   try {
     Engine engine(WINDOW_NAME, SCR_WIDTH, SCR_HEIGHT, ENABLE_GL_DEPTH_TEST);
+
+    skybox = make_unique<Skybox>(&engine, "../textures/skybox.jpg");
 
     celestialBodies.emplace_back(
         &engine, CelestialBody::Sun, 1.989e30f, 696340000.0f, 0.0f, 0.0f, 0.0f,
@@ -121,6 +123,9 @@ int main() {
                                  glm::vec3(0.0f, 0.0f, 0.0f));
     celestialBodies[8].create("../textures/neptune.jpg");
 
+
+    skybox->create();
+
     engine.render(onRender, &engine);
   } catch (const std::exception& e) {
     std::cerr << "Application error: " << e.what() << std::endl;
@@ -147,12 +152,14 @@ void onRender(Engine* engine) {
       static_cast<float>(SCR_WIDTH) / static_cast<float>(SCR_HEIGHT), 0.1f,
       10000.0f);
 
+  skybox->render(view, projection);
+
   for (size_t i = 0; i < celestialBodies.size(); i++) {
     glm::mat4 model = glm::mat4(1.0f);
 
     model = glm::translate(model, celestialBodies[i].position);
 
-    float rotationSpeed = GetPlanetsRotationSpeed(celestialBodies[i].bodyType);
+    float rotationSpeed = getPlanetsRotationSpeed(celestialBodies[i].bodyType);
 
     glm::vec3 rotationAxis = glm::vec3(0.0f, 1.0f, 0.1f);
     if (celestialBodies[i].bodyType == CelestialBody::Uranus) {
@@ -161,7 +168,7 @@ void onRender(Engine* engine) {
     model = glm::rotate(model, currentTime * glm::radians(rotationSpeed),
                         rotationAxis);
 
-    glm::vec3 scale = GetPlanetScale(celestialBodies[i].bodyType);
+    glm::vec3 scale = getPlanetScale(celestialBodies[i].bodyType);
 
     model = glm::scale(model, scale);
 
@@ -169,7 +176,7 @@ void onRender(Engine* engine) {
   }
 }
 
-float GetPlanetsRotationSpeed(CelestialBody::BodyType body) {
+float getPlanetsRotationSpeed(CelestialBody::BodyType body) {
   switch (body) {
     case CelestialBody::Sun: {
       return 5.0f;
@@ -204,7 +211,7 @@ float GetPlanetsRotationSpeed(CelestialBody::BodyType body) {
     }
   }
 }
-glm::vec3 GetPlanetScale(CelestialBody::BodyType body) {
+glm::vec3 getPlanetScale(CelestialBody::BodyType body) {
   switch (body) {
     case CelestialBody::Sun: {
       return glm::vec3(3.0f, 3.0f, 3.0f);

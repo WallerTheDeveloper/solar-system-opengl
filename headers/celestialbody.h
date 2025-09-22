@@ -1,9 +1,9 @@
 #ifndef CELESTIALBODY_H
 #define CELESTIALBODY_H
 
-#include <glm/glm.hpp>
-
 #include "engine.h"
+
+#include <glm/glm.hpp>
 
 #ifndef SUN_MASS
 #define SUN_MASS 1.989e30f
