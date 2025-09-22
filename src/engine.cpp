@@ -130,24 +130,23 @@ void Engine::defineVertexLayout(unsigned int shaderLayoutIndex, int size, GLenum
 
 SphereMeshData Engine::generateSphereMesh(float radius, unsigned int sectorCount, unsigned int stackCount) {
     SphereMeshData data;
-    
+
     float x, y, z, xy;
     float sectorStep = 2 * M_PI / sectorCount;
     float stackStep = M_PI / stackCount;
     float sectorAngle, stackAngle;
 
-    // Generate vertices
-    for (unsigned int i = 0; i <= stackCount; ++i) 
+    for (unsigned int i = 0; i <= stackCount; ++i)
     {
         stackAngle = M_PI / 2 - i * stackStep;
         xy = radius * cosf(stackAngle);
-        z = radius * sinf(stackAngle);
+        y = radius * sinf(stackAngle);
 
         for (unsigned int j = 0; j <= sectorCount; ++j) {
             sectorAngle = j * sectorStep;
 
             x = xy * cosf(sectorAngle);
-            y = xy * sinf(sectorAngle);
+            z = xy * sinf(sectorAngle);
 
             // Position
             data.vertices.push_back(x);
@@ -167,16 +166,16 @@ SphereMeshData Engine::generateSphereMesh(float radius, unsigned int sectorCount
         k1 = i * (sectorCount + 1);
         k2 = k1 + sectorCount + 1;
 
-        for (unsigned int j = 0; j < sectorCount; ++j, ++k1, ++k2) 
+        for (unsigned int j = 0; j < sectorCount; ++j, ++k1, ++k2)
         {
-            if (i != 0) 
+            if (i != 0)
             {
                 data.indices.push_back(k1);
                 data.indices.push_back(k2);
                 data.indices.push_back(k1 + 1);
             }
 
-            if (i != (stackCount - 1)) 
+            if (i != (stackCount - 1))
             {
                 data.indices.push_back(k1 + 1);
                 data.indices.push_back(k2);
