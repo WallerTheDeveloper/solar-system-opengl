@@ -5,7 +5,7 @@
 Skybox::Skybox(Engine* engine, const string& texturePath)
     : engine(engine),
       m_texturePath(texturePath),
-      m_sphereMeshData(nullptr),
+      m_boxMeshData(nullptr),
       m_VAO(0),
       m_VBO(0),
       m_EBO(0),
@@ -32,9 +32,9 @@ bool Skybox::create() {
     m_shader = std::make_unique<Shader>("../shaders/skybox.vert",
                                         "../shaders/skybox.frag");
 
-    this->m_sphereMeshData =
-        make_unique<SphereMeshData>(engine->generateSphereMesh(
-            SKYBOX_RADIUS, SKYBOX_SECTORS, SKYBOX_STACKS));
+    this->m_boxMeshData =
+        make_unique<BoxMeshData>(engine->generateBoxMesh(
+            SKYBOX_WIDTH, SKYBOX_HEIGHT, SKYBOX_DEPTH));
 
     engine->generateVAO(&m_VAO);
     engine->bindVAO(m_VAO);
@@ -44,14 +44,14 @@ bool Skybox::create() {
 
     engine->bindBuffer(GL_ARRAY_BUFFER, m_VBO);
     engine->setBufferData(GL_ARRAY_BUFFER,
-                          m_sphereMeshData->vertices.size() * sizeof(float),
-                          m_sphereMeshData->vertices.data(), GL_STATIC_DRAW);
+                          m_boxMeshData->vertices.size() * sizeof(float),
+                          m_boxMeshData->vertices.data(), GL_STATIC_DRAW);
 
     engine->bindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
     engine->setBufferData(
         GL_ELEMENT_ARRAY_BUFFER,
-        m_sphereMeshData->indices.size() * sizeof(unsigned int),
-        m_sphereMeshData->indices.data(), GL_STATIC_DRAW);
+        m_boxMeshData->indices.size() * sizeof(unsigned int),
+        m_boxMeshData->indices.data(), GL_STATIC_DRAW);
 
     engine->defineVertexLayout(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float),
                                (void*)0);
@@ -78,34 +78,6 @@ bool Skybox::create() {
     return false;
   }
 }
-
-// bool Skybox::loadTexture() {
-//   m_textureLoader->generateTexture(1, m_textureID);
-//
-//   int width, height, numberOfChannels;
-//   unsigned char* data = m_textureLoader->loadTextureImage(
-//       m_textureFilename.c_str(), width, height, numberOfChannels);
-//
-//   if (!data) {
-//     std::cerr << "Failed to load skybox texture image: " << m_textureFilename
-//               << std::endl;
-//     return false;
-//   }
-//
-//   m_textureLoader->setTextureWrappingParamsInt(GL_CLAMP_TO_EDGE);
-//   m_textureLoader->setTextureFilteringParamsInt(GL_LINEAR);
-//
-//   GLenum format = (numberOfChannels == 4) ? GL_RGBA : GL_RGB;
-//
-//   m_textureLoader->specifyTextureImage2D(data, format, width, height, true);
-//
-//   m_textureLoader->freeImageData(data);
-//
-//   std::cout << "Skybox texture loaded: " << width << "x" << height << " ("
-//             << numberOfChannels << " channels)" << std::endl;
-//
-//   return true;
-// }
 
 void Skybox::render(const glm::mat4& view, const glm::mat4& projection) {
   if (!m_initialized || !m_enabled) {
@@ -136,7 +108,7 @@ void Skybox::render(const glm::mat4& view, const glm::mat4& projection) {
   engine->renderTexture2D(GL_TEXTURE0, this->m_textureID);
 
   // Render skybox
-  engine->renderIndices(m_VAO, m_sphereMeshData->indicesCount, true);
+  engine->renderIndices(m_VAO, m_boxMeshData->indicesCount, true);
   // Restore face culling
   glEnable(GL_CULL_FACE);
 

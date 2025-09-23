@@ -24,16 +24,16 @@ class Skybox {
   unsigned int m_textureID;
 
   unique_ptr<Shader> m_shader;
-  unique_ptr<SphereMeshData> m_sphereMeshData;
+  unique_ptr<BoxMeshData> m_boxMeshData;
 
   unsigned int m_indexCount;
 
   bool m_initialized;
   bool m_enabled;
 
-  static constexpr float SKYBOX_RADIUS = 1000.0f;
-  static constexpr unsigned int SKYBOX_SECTORS = 36;
-  static constexpr unsigned int SKYBOX_STACKS = 18;
+  static constexpr float SKYBOX_WIDTH = 2000.0f;
+  static constexpr float SKYBOX_HEIGHT = 2000.0f;
+  static constexpr float SKYBOX_DEPTH = 2000.0f;
 };
 
 #endif

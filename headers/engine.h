@@ -69,6 +69,8 @@ class Engine {
   SphereMeshData generateSphereMesh(float radius, unsigned int sectorCount,
                                     unsigned int stackCount);
 
+  BoxMeshData generateBoxMesh(float width = 2.0f, float height = 2.0f, float depth = 2.0f);
+
   // Textures
   unsigned int addTextureToObject(string path, GLint wrapping, GLint filtering);
   void renderTexture2D(GLenum textureUnit, unsigned int textureID);

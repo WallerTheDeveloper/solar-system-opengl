@@ -192,6 +192,73 @@ SphereMeshData Engine::generateSphereMesh(float radius,
 
   return data;
 }
+
+BoxMeshData Engine::generateBoxMesh(float width, float height, float depth) {
+  BoxMeshData data;
+
+  float halfWidth = width * 0.5f;
+  float halfHeight = height * 0.5f;
+  float halfDepth = depth * 0.5f;
+
+  // (x, y, z, u, v)
+  std::vector<float> vertices = {
+      // Front face
+      -halfWidth, -halfHeight, halfDepth, 0.0f, 0.0f,  // Bottom left
+      halfWidth, -halfHeight, halfDepth, 1.0f, 0.0f,   // Bottom right
+      halfWidth, halfHeight, halfDepth, 1.0f, 1.0f,    // Top right
+      -halfWidth, halfHeight, halfDepth, 0.0f, 1.0f,   // Top left
+
+      // Back face
+      -halfWidth, -halfHeight, -halfDepth, 1.0f, 0.0f,  // Bottom left
+      halfWidth, -halfHeight, -halfDepth, 0.0f, 0.0f,   // Bottom right
+      halfWidth, halfHeight, -halfDepth, 0.0f, 1.0f,    // Top right
+      -halfWidth, halfHeight, -halfDepth, 1.0f, 1.0f,   // Top left
+
+      // Left face
+      -halfWidth, -halfHeight, -halfDepth, 0.0f, 0.0f,  // Bottom left
+      -halfWidth, -halfHeight, halfDepth, 1.0f, 0.0f,   // Bottom right
+      -halfWidth, halfHeight, halfDepth, 1.0f, 1.0f,    // Top right
+      -halfWidth, halfHeight, -halfDepth, 0.0f, 1.0f,   // Top left
+
+      // Right face
+      halfWidth, -halfHeight, -halfDepth, 1.0f, 0.0f,  // Bottom left
+      halfWidth, -halfHeight, halfDepth, 0.0f, 0.0f,   // Bottom right
+      halfWidth, halfHeight, halfDepth, 0.0f, 1.0f,    // Top right
+      halfWidth, halfHeight, -halfDepth, 1.0f, 1.0f,   // Top left
+
+      // Top face
+      -halfWidth, halfHeight, -halfDepth, 0.0f, 1.0f,  // Bottom left
+      halfWidth, halfHeight, -halfDepth, 1.0f, 1.0f,   // Bottom right
+      halfWidth, halfHeight, halfDepth, 1.0f, 0.0f,    // Top right
+      -halfWidth, halfHeight, halfDepth, 0.0f, 0.0f,   // Top left
+
+      // Bottom face
+      -halfWidth, -halfHeight, -halfDepth, 0.0f, 0.0f,  // Bottom left
+      halfWidth, -halfHeight, -halfDepth, 1.0f, 0.0f,   // Bottom right
+      halfWidth, -halfHeight, halfDepth, 1.0f, 1.0f,    // Top right
+      -halfWidth, -halfHeight, halfDepth, 0.0f, 1.0f    // Top left
+  };
+
+  std::vector<unsigned int> indices = {// Front face
+                                       0, 1, 2, 2, 3, 0,
+                                       // Back face
+                                       4, 5, 6, 6, 7, 4,
+                                       // Left face
+                                       8, 9, 10, 10, 11, 8,
+                                       // Right face
+                                       12, 13, 14, 14, 15, 12,
+                                       // Top face
+                                       16, 17, 18, 18, 19, 16,
+                                       // Bottom face
+                                       20, 21, 22, 22, 23, 20};
+
+  data.vertices = vertices;
+  data.indices = indices;
+  data.indicesCount = indices.size();
+
+  return data;
+}
+
 unsigned int Engine::addTextureToObject(string path, GLint wrapping,
                                         GLint filtering) {
   texture = make_unique<Texture>();
