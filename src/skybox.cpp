@@ -32,7 +32,7 @@ bool Skybox::create() {
     m_shader = std::make_unique<Shader>("../shaders/skybox.vert",
                                         "../shaders/skybox.frag");
     this->m_textureID = engine->createCubemap();
-
+    return true;
     // this->m_boxMeshData =
     //     make_unique<BoxMeshData>(engine->generateBoxMesh(
     //         SKYBOX_WIDTH, SKYBOX_HEIGHT, SKYBOX_DEPTH));
@@ -62,8 +62,10 @@ bool Skybox::create() {
     // engine->unbindVAO();
     // engine->unbindVBO();
     //
-    // this->m_textureID = engine->addTextureToObject(m_texturePath.c_str(), GL_TEXTURE_2D,
-    //                                                GL_CLAMP_TO_EDGE, GL_LINEAR);
+    // this->m_textureID = engine->addTextureToObject(m_texturePath.c_str(),
+    // GL_TEXTURE_2D,
+    //                                                GL_CLAMP_TO_EDGE,
+    //                                                GL_LINEAR);
 
     // Set texture uniform
     // m_shader->use();
@@ -74,7 +76,6 @@ bool Skybox::create() {
     //           << " indices" << std::endl;
     //
     // return true;
-
 
   } catch (const std::exception& e) {
     std::cerr << "Failed to initialize skybox: " << e.what() << std::endl;

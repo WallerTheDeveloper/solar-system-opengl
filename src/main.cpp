@@ -78,8 +78,11 @@ int main() {
                                  glm::vec3(0.0f, 0.0f, 0.0f));
     celestialBodies[8].create("../textures/neptune.jpg");
 
-    skybox->create();
-
+    if (!skybox->create()) {
+      std::cerr << "Failed to create skybox!" << std::endl;
+      return -1;
+    }
+    glGetError();
     engine.render(onRender, &engine);
   } catch (const std::exception& e) {
     std::cerr << "Application error: " << e.what() << std::endl;
@@ -106,8 +109,6 @@ void onRender(Engine* engine) {
       static_cast<float>(SCR_WIDTH) / static_cast<float>(SCR_HEIGHT), 0.1f,
       10000.0f);
 
-  skybox->render(view, projection);
-
   for (size_t i = 0; i < celestialBodies.size(); i++) {
     glm::mat4 model = glm::mat4(1.0f);
 
@@ -128,6 +129,9 @@ void onRender(Engine* engine) {
 
     celestialBodies[i].render(model, view, projection);
   }
+
+  // Render skybox last so that it appears behind everything
+  skybox->render(view, projection);
 }
 
 float getPlanetsRotationSpeed(CelestialBody::BodyType body) {
