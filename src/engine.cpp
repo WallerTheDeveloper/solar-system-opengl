@@ -259,10 +259,10 @@ BoxMeshData Engine::generateBoxMesh(float width, float height, float depth) {
   return data;
 }
 
-unsigned int Engine::addTextureToObject(string path, GLint wrapping,
-                                        GLint filtering) {
+unsigned int Engine::addTextureToObject(string path, GLenum target,
+                                        GLint wrapping, GLint filtering) {
   texture = make_unique<Texture>();
-  const unsigned int textureID = texture->generateTexture(1);
+  const unsigned int textureID = texture->generateTexture(1, target);
 
   // examples: GL_REPEAT - wrapping, GL_LINEAR - filtering
   GL_CHECK(texture->setTextureWrappingParamsInt(wrapping));
@@ -302,6 +302,19 @@ unsigned int Engine::addTextureToObject(string path, GLint wrapping,
 void Engine::renderTexture2D(GLenum textureUnit, unsigned int textureID) {
   // example textureUnit - GL_TEXTURE0, GL_TEXTURE1, GL_TEXTURE2 and so on
   texture->setTextureActive2D(textureUnit, textureID);
+}
+unsigned int Engine::createCubemap() {
+  vector<std::string> faces
+  {
+    "../textures/skybox (1).png",
+    "../textures/skybox (2).png",
+    "../textures/skybox (3).png",
+    "../textures/skybox (4).png",
+    "../textures/skybox (5).png",
+    "../textures/skybox (6).png"
+  };
+  unsigned int cubemapTexture = this->texture->loadCubemap(faces);
+  return cubemapTexture;
 }
 
 void Engine::initGLFW() {

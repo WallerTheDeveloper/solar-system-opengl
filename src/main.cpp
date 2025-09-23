@@ -35,94 +35,48 @@ int main() {
     celestialBodies[0].create("../textures/sun.jpg");
 
     celestialBodies.emplace_back(
-        &engine, CelestialBody::Mercury,
-        3.301e23f,
-        2439700.0f,
-        4.0f,
-        0.205f,
-        20.0f,
-        0.0f,
-        glm::vec3(4.0f, 0.0f, 0.0f),
-        glm::vec3(0.0f, 0.0f, 0.0f));
+        &engine, CelestialBody::Mercury, 3.301e23f, 2439700.0f, 4.0f, 0.205f,
+        20.0f, 0.0f, glm::vec3(4.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
     celestialBodies[1].create("../textures/mercury.jpg");
 
-    celestialBodies.emplace_back(&engine, CelestialBody::Venus,
-                                 4.867e24f,
-                                 6051800.0f,
-                                 6.0f,
-                                 0.007f,
-                                 35.0f,
-                                 0.0f,
-                                 glm::vec3(6.0f, 0.0f, 0.0f),
-                                 glm::vec3(0.0f, 0.0f, 0.0f));
+    celestialBodies.emplace_back(
+        &engine, CelestialBody::Venus, 4.867e24f, 6051800.0f, 6.0f, 0.007f,
+        35.0f, 0.0f, glm::vec3(6.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
     celestialBodies[2].create("../textures/venus.jpg");
 
     celestialBodies.emplace_back(
-        &engine, CelestialBody::Earth,
-        5.972e24f,
-        6371000.0f,
-        8.0f,
-        0.017f,
-        50.0f,
-        0.0f,
-        glm::vec3(8.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+        &engine, CelestialBody::Earth, 5.972e24f, 6371000.0f, 8.0f, 0.017f,
+        50.0f, 0.0f, glm::vec3(8.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
     celestialBodies[3].create("../textures/earth.jpg");
 
     celestialBodies.emplace_back(
-        &engine, CelestialBody::Mars,
-        6.417e23f,
-        3389500.0f,
-        10.5f,
-        0.094f,
-        75.0f,
-        0.0f,
-        glm::vec3(10.5f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+        &engine, CelestialBody::Mars, 6.417e23f, 3389500.0f, 10.5f, 0.094f,
+        75.0f, 0.0f, glm::vec3(10.5f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
     celestialBodies[4].create("../textures/mars.jpg");
 
-    celestialBodies.emplace_back(&engine, CelestialBody::Jupiter,
-                                 1.898e27f,
-                                 69911000.0f,
-                                 16.0f,
-                                 0.049f,
-                                 120.0f,
-                                 0.0f,
+    celestialBodies.emplace_back(&engine, CelestialBody::Jupiter, 1.898e27f,
+                                 69911000.0f, 16.0f, 0.049f, 120.0f, 0.0f,
                                  glm::vec3(16.0f, 0.0f, 0.0f),
                                  glm::vec3(0.0f, 0.0f, 0.0f));
     celestialBodies[5].create("../textures/jupiter.jpg");
 
-    celestialBodies.emplace_back(&engine, CelestialBody::Saturn,
-                                 5.683e26f,
-                                 58232000.0f,
-                                 20.0f,
-                                 0.057f,
-                                 180.0f,
-                                 0.0f,
+    celestialBodies.emplace_back(&engine, CelestialBody::Saturn, 5.683e26f,
+                                 58232000.0f, 20.0f, 0.057f, 180.0f, 0.0f,
                                  glm::vec3(20.0f, 0.0f, 0.0f),
                                  glm::vec3(0.0f, 0.0f, 0.0f));
     celestialBodies[6].create("../textures/saturn.jpg");
 
-    celestialBodies.emplace_back(&engine, CelestialBody::Uranus,
-                                 8.681e25f,
-                                 25362000.0f,
-                                 25.0f,
-                                 0.046f,
-                                 250.0f,
-                                 0.0f,
+    celestialBodies.emplace_back(&engine, CelestialBody::Uranus, 8.681e25f,
+                                 25362000.0f, 25.0f, 0.046f, 250.0f, 0.0f,
                                  glm::vec3(25.0f, 0.0f, 0.0f),
                                  glm::vec3(0.0f, 0.0f, 0.0f));
     celestialBodies[7].create("../textures/uranus.jpg");
 
-    celestialBodies.emplace_back(&engine, CelestialBody::Neptune,
-                                 1.024e26f,
-                                 24622000.0f,
-                                 30.0f,
-                                 0.009f,
-                                 350.0f,
-                                 0.0f,
+    celestialBodies.emplace_back(&engine, CelestialBody::Neptune, 1.024e26f,
+                                 24622000.0f, 30.0f, 0.009f, 350.0f, 0.0f,
                                  glm::vec3(30.0f, 0.0f, 0.0f),
                                  glm::vec3(0.0f, 0.0f, 0.0f));
     celestialBodies[8].create("../textures/neptune.jpg");
-
 
     skybox->create();
 

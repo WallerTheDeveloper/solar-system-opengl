@@ -72,8 +72,9 @@ class Engine {
   BoxMeshData generateBoxMesh(float width = 2.0f, float height = 2.0f, float depth = 2.0f);
 
   // Textures
-  unsigned int addTextureToObject(string path, GLint wrapping, GLint filtering);
+  unsigned int addTextureToObject(string path, GLenum target, GLint wrapping, GLint filtering);
   void renderTexture2D(GLenum textureUnit, unsigned int textureID);
+  unsigned int createCubemap();
  private:
   static Engine* instance;
   GLFWwindow* window;

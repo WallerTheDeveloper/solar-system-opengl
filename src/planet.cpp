@@ -33,7 +33,7 @@ void Planet::create(const char* texturePath) {
 
   cout << "OpenGL buffers created successfully for planet " << bodyType << endl;
 
-  this->textureID = engine->addTextureToObject(texturePath, GL_REPEAT, GL_LINEAR);
+  this->textureID = engine->addTextureToObject(texturePath, GL_TEXTURE_2D, GL_REPEAT, GL_LINEAR);
 
   try {
     shader =
