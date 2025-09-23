@@ -82,7 +82,7 @@ int main() {
       std::cerr << "Failed to create skybox!" << std::endl;
       return -1;
     }
-    glGetError();
+
     engine.render(onRender, &engine);
   } catch (const std::exception& e) {
     std::cerr << "Application error: " << e.what() << std::endl;
