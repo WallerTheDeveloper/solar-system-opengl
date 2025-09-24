@@ -8,7 +8,7 @@
 
 class Skybox {
  public:
-  Skybox(Engine* engine, const string& texturePath);
+  Skybox(Engine* engine, vector<std::string> facesTextures);
   ~Skybox();
 
   bool create();
@@ -18,7 +18,7 @@ class Skybox {
  private:
   Engine* engine;
 
-  const string m_texturePath;
+  std::vector<std::string> m_faces;
 
   unsigned int m_VAO, m_VBO, m_EBO;
   unsigned int m_textureID;

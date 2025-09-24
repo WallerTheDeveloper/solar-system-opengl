@@ -9,7 +9,6 @@
 #include "../headers/shader.h"
 #include "../headers/skybox.h"
 #include "celestialbody.h"
-#include "glm/gtx/quaternion.inl"
 
 // settings
 const unsigned int SCR_WIDTH = 1980;
@@ -28,7 +27,17 @@ int main() {
   try {
     Engine engine(WINDOW_NAME, SCR_WIDTH, SCR_HEIGHT, ENABLE_GL_DEPTH_TEST);
 
-    skybox = make_unique<Skybox>(&engine, "../textures/skybox.jpg");
+    vector<std::string> faces
+    {
+      "../textures/skybox1.png",
+      "../textures/skybox2.png",
+      "../textures/skybox3.png",
+      "../textures/skybox4.png",
+      "../textures/skybox5.png",
+      "../textures/skybox6.png"
+    };
+
+    skybox = make_unique<Skybox>(&engine, faces);
 
     celestialBodies.emplace_back(
         &engine, CelestialBody::Sun, 1.989e30f, 696340000.0f, 0.0f, 0.0f, 0.0f,
@@ -97,24 +106,12 @@ void onRender(Engine* engine) {
   static int frameCount = 0;
   frameCount++;
 
-  // Debug output every 60 frames (about once per second)
-  static bool debugOutput = false;
-  if (frameCount % 60 == 0) {
-    debugOutput = true;
-  } else {
-    debugOutput = false;
-  }
-
   float currentTime = static_cast<float>(glfwGetTime());
   float deltaTime = currentTime - lastTime;
   lastTime = currentTime;
 
   const float TIME_SCALE = 5.0f;
 
-  // IMPORTANT: Clear with a different color to see if skybox works
-  glClearColor(0.1f, 0.1f, 0.2f, 1.0f); // Dark blue instead of black
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  
   for (auto& body : celestialBodies) {
     body.updateOrbitalPositions(deltaTime * TIME_SCALE);
   }
@@ -125,26 +122,7 @@ void onRender(Engine* engine) {
       static_cast<float>(SCR_WIDTH) / static_cast<float>(SCR_HEIGHT),
       0.1f, 10000.0f);
 
-  if (debugOutput) {
-    std::cout << "=== RENDER DEBUG (Frame " << frameCount << ") ===" << std::endl;
-    std::cout << "Camera position: (" << engine->camera.Position.x << ", "
-              << engine->camera.Position.y << ", " << engine->camera.Position.z << ")" << std::endl;
-    std::cout << "Rendering " << celestialBodies.size() << " planets..." << std::endl;
-  }
-
-  // RENDER SKYBOX FIRST (experiment with rendering order)
-  if (debugOutput) {
-    std::cout << "Rendering skybox first..." << std::endl;
-  }
-  skybox->render(view, projection);
-
-  // Check for OpenGL errors before rendering planets
-  GLenum error = glGetError();
-  if (error != GL_NO_ERROR && debugOutput) {
-    std::cout << "OpenGL error before planet rendering: " << error << std::endl;
-  }
-
-  // Render planets AFTER skybox
+  // Render planets BEFORE skybox
   for (size_t i = 0; i < celestialBodies.size(); i++) {
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, celestialBodies[i].position);
@@ -164,20 +142,8 @@ void onRender(Engine* engine) {
     celestialBodies[i].render(model, view, projection);
   }
 
-  if (debugOutput) {
-    std::cout << "Planets rendered" << std::endl;
-  }
-
-  // Check for errors after rendering
-  error = glGetError();
-  if (error != GL_NO_ERROR && debugOutput) {
-    std::cout << "OpenGL error after rendering: " << error << std::endl;
-  }
-
-  if (debugOutput) {
-    std::cout << "Frame complete" << std::endl;
-    std::cout << "=================================" << std::endl;
-  }
+  // Render planets AFTER skybox
+  skybox->render(view, projection);
 }
 
 float getPlanetsRotationSpeed(CelestialBody::BodyType body) {

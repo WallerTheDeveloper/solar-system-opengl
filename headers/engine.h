@@ -74,7 +74,7 @@ class Engine {
   // Textures
   unsigned int addTextureToObject(string path, GLenum target, GLint wrapping, GLint filtering);
   void renderTexture2D(GLenum textureUnit, unsigned int textureID);
-  unsigned int createCubemap();
+  unsigned int createCubemap(std::vector<std::string> faces);
  private:
   static Engine* instance;
   GLFWwindow* window;

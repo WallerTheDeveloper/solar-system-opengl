@@ -9,7 +9,8 @@ Engine::Engine(std::string windowName, int windowWidth, int windowHeight,
       windowHeight(windowHeight),
       window(nullptr),
       isInitialized(false),
-     camera(glm::vec3(0.0f, 5.0f, 20.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, -15.0f) {
+      camera(glm::vec3(0.0f, 5.0f, 20.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f,
+             -15.0f) {
   instance = this;
   try {
     initGLFW();
@@ -302,17 +303,7 @@ void Engine::renderTexture2D(GLenum textureUnit, unsigned int textureID) {
   texture->setTextureActive2D(textureUnit, textureID);
 }
 
-unsigned int Engine::createCubemap() {
-  vector<std::string> faces
-  {
-    "../textures/skybox1.png",  // Right (+X)
-    "../textures/skybox2.png",  // Left (-X)
-    "../textures/skybox3.png",  // Top (+Y)
-    "../textures/skybox4.png",  // Bottom (-Y)
-    "../textures/skybox5.png",  // Front (+Z)
-    "../textures/skybox6.png"   // Back (-Z)
-  };
-
+unsigned int Engine::createCubemap(std::vector<std::string> faces) {
   std::cout << "Creating cubemap with files:" << std::endl;
   for (const auto& face : faces) {
     std::cout << "  " << face << std::endl;

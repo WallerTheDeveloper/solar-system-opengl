@@ -50,11 +50,11 @@ unsigned int Texture::loadCubemap(std::vector<std::string> faces) {
   glGenTextures(1, &textureID);
   glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 
-  int width, height, nrChannels;
 
   // Don't flip cubemap textures - they need to be oriented correctly
   stbi_set_flip_vertically_on_load(false);
 
+  int width, height, nrChannels;
   for (unsigned int i = 0; i < faces.size(); i++) {
     unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
 
@@ -78,25 +78,14 @@ unsigned int Texture::loadCubemap(std::vector<std::string> faces) {
                    0, format, GL_UNSIGNED_BYTE, data);
       stbi_image_free(data);
     } else {
-      std::cout << "ERROR: Cubemap texture failed to load at path: " << faces[i] << std::endl;
-
-      // Create a fallback colored face so you can see if it's working
-      unsigned char fallbackData[3] = {
-        static_cast<unsigned char>(255 * i / 6),  // Different red value for each face
-        static_cast<unsigned char>(128),           // Green
-        static_cast<unsigned char>(255 - 255 * i / 6)  // Blue (inverse of red)
-      };
-
-      glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, 1, 1,
-                   0, GL_RGB, GL_UNSIGNED_BYTE, fallbackData);
-
-      if (data) stbi_image_free(data);
+      std::cerr << "ERROR: Cubemap texture failed to load at path: " << faces[i] << std::endl;
+      stbi_image_free(data);
     }
   }
 
   // Set texture parameters
-  glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
