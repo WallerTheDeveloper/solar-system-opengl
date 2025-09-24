@@ -128,10 +128,15 @@ void onRender(Engine* engine) {
     std::cout << "Rendering " << celestialBodies.size() << " planets..." << std::endl;
   }
 
+  // Check for OpenGL errors before rendering
+  GLenum error = glGetError();
+  if (error != GL_NO_ERROR && debugOutput) {
+    std::cout << "OpenGL error before planet rendering: " << error << std::endl;
+  }
+
   // Render planets FIRST (before skybox)
   for (size_t i = 0; i < celestialBodies.size(); i++) {
     glm::mat4 model = glm::mat4(1.0f);
-
     model = glm::translate(model, celestialBodies[i].position);
 
     float rotationSpeed = getPlanetsRotationSpeed(celestialBodies[i].bodyType);
@@ -146,24 +151,6 @@ void onRender(Engine* engine) {
     glm::vec3 scale = getPlanetScale(celestialBodies[i].bodyType);
     model = glm::scale(model, scale);
 
-    if (debugOutput && i == 0) { // Debug info for Sun only
-      std::cout << "Sun position: (" << celestialBodies[i].position.x << ", "
-                << celestialBodies[i].position.y << ", " << celestialBodies[i].position.z << ")" << std::endl;
-      std::cout << "Sun scale: (" << scale.x << ", " << scale.y << ", " << scale.z << ")" << std::endl;
-    }
-
-    // Before rendering planets, check OpenGL state
-    GLenum error = glGetError();
-    if (error != GL_NO_ERROR) {
-      std::cout << "OpenGL error before planet rendering: " << error << std::endl;
-    }
-
-    // Check if depth testing is working
-    GLboolean depthTest;
-    glGetBooleanv(GL_DEPTH_TEST, &depthTest);
-    std::cout << "Depth test enabled: " << (depthTest ? "YES" : "NO") << std::endl;
-
-    // IMPORTANT: Use the planet's shader before rendering
     celestialBodies[i].render(model, view, projection);
   }
 
@@ -173,6 +160,12 @@ void onRender(Engine* engine) {
 
   // Render skybox LAST so it appears behind everything
   skybox->render(view, projection);
+
+  // Check for errors after rendering
+  error = glGetError();
+  if (error != GL_NO_ERROR && debugOutput) {
+    std::cout << "OpenGL error after rendering: " << error << std::endl;
+  }
 
   if (debugOutput) {
     std::cout << "Frame complete" << std::endl;
@@ -272,5 +265,5 @@ glm::vec3 getPlanetScale(CelestialBody::BodyType body) {
       break;
     }
   }
-  return scale * 2.0f;
+  return scale;
 }

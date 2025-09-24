@@ -54,6 +54,7 @@ void Planet::create(const char* texturePath) {
   GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, 0));
   GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 }
+
 void Planet::render(glm::mat4 model, glm::mat4 view, glm::mat4 projection) {
   if (!created) {
     cout << "Planet was not created. Nothing to render! Did you call "
@@ -62,12 +63,18 @@ void Planet::render(glm::mat4 model, glm::mat4 view, glm::mat4 projection) {
     return;
   }
 
-  engine->renderTexture2D(GL_TEXTURE0, textureID);
+  shader->use();
 
   shader->setMat4("model", model);
   shader->setMat4("view", view);
   shader->setMat4("projection", projection);
 
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, textureID);
+  shader->setInt("texture", 0);
+
   glBindVertexArray(VAO);
   glDrawElements(GL_TRIANGLES, meshData.indicesCount, GL_UNSIGNED_INT, 0);
+
+  glBindVertexArray(0);
 }
