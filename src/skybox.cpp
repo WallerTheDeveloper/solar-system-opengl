@@ -119,27 +119,26 @@ bool Skybox::create() {
 
 void Skybox::render(const glm::mat4& view, const glm::mat4& projection) {
   if (!m_initialized || !m_enabled) {
-    std::cout << "Skybox not initialized or enabled" << std::endl;
     return;
   }
 
-  static int renderCount = 0;
-  renderCount++;
-
   glDepthMask(GL_FALSE);
+  glDepthFunc(GL_LEQUAL);  // Change depth function
 
   m_shader->use();
-
   glBindVertexArray(m_VAO);
 
-  m_shader->setMat4("view", view);
+  // Remove translation from view matrix - this is the key!
+  glm::mat4 skyboxView = glm::mat4(glm::mat3(view)); // Convert to mat3 then back to mat4
+
+  m_shader->setMat4("view", skyboxView);
   m_shader->setMat4("projection", projection);
   m_shader->setInt("skybox", 0);
 
   glBindTexture(GL_TEXTURE_CUBE_MAP, m_textureID);
-
   glDrawArrays(GL_TRIANGLES, 0, 36);
 
+  glDepthFunc(GL_LESS);  // Reset depth function
   glDepthMask(GL_TRUE);
 
   glBindVertexArray(0);

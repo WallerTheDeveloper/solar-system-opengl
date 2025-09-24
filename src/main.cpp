@@ -122,6 +122,8 @@ void onRender(Engine* engine) {
       static_cast<float>(SCR_WIDTH) / static_cast<float>(SCR_HEIGHT),
       0.1f, 10000.0f);
 
+  skybox->render(view, projection);
+
   // Render planets BEFORE skybox
   for (size_t i = 0; i < celestialBodies.size(); i++) {
     glm::mat4 model = glm::mat4(1.0f);
@@ -143,7 +145,6 @@ void onRender(Engine* engine) {
   }
 
   // Render planets AFTER skybox
-  skybox->render(view, projection);
 }
 
 float getPlanetsRotationSpeed(CelestialBody::BodyType body) {
