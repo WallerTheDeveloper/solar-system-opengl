@@ -9,6 +9,7 @@
 #include "../headers/shader.h"
 #include "../headers/skybox.h"
 #include "celestialbody.h"
+#include "glm/gtx/quaternion.inl"
 
 // settings
 const unsigned int SCR_WIDTH = 1980;
@@ -93,6 +94,17 @@ int main() {
 
 void onRender(Engine* engine) {
   static float lastTime = 0.0f;
+  static int frameCount = 0;
+  frameCount++;
+
+  // Debug output every 60 frames (about once per second)
+  static bool debugOutput = false;
+  if (frameCount % 60 == 0) {
+    debugOutput = true;
+  } else {
+    debugOutput = false;
+  }
+
   float currentTime = static_cast<float>(glfwGetTime());
   float deltaTime = currentTime - lastTime;
   lastTime = currentTime;
@@ -106,9 +118,17 @@ void onRender(Engine* engine) {
   glm::mat4 view = engine->camera.getViewMatrix();
   glm::mat4 projection = glm::perspective(
       glm::radians(engine->camera.Zoom),
-      static_cast<float>(SCR_WIDTH) / static_cast<float>(SCR_HEIGHT), 0.1f,
-      10000.0f);
+      static_cast<float>(SCR_WIDTH) / static_cast<float>(SCR_HEIGHT),
+      0.1f, 10000.0f);
 
+  if (debugOutput) {
+    std::cout << "=== RENDER DEBUG (Frame " << frameCount << ") ===" << std::endl;
+    std::cout << "Camera position: (" << engine->camera.Position.x << ", "
+              << engine->camera.Position.y << ", " << engine->camera.Position.z << ")" << std::endl;
+    std::cout << "Rendering " << celestialBodies.size() << " planets..." << std::endl;
+  }
+
+  // Render planets FIRST (before skybox)
   for (size_t i = 0; i < celestialBodies.size(); i++) {
     glm::mat4 model = glm::mat4(1.0f);
 
@@ -118,89 +138,139 @@ void onRender(Engine* engine) {
 
     glm::vec3 rotationAxis = glm::vec3(0.0f, 1.0f, 0.1f);
     if (celestialBodies[i].bodyType == CelestialBody::Uranus) {
-      rotationAxis = glm::vec3(0.8f, 0.2f, 0.1f);  // Uranus rotates on its side
+      rotationAxis = glm::vec3(0.8f, 0.2f, 0.1f);
     }
     model = glm::rotate(model, currentTime * glm::radians(rotationSpeed),
                         rotationAxis);
 
     glm::vec3 scale = getPlanetScale(celestialBodies[i].bodyType);
-
     model = glm::scale(model, scale);
 
+    if (debugOutput && i == 0) { // Debug info for Sun only
+      std::cout << "Sun position: (" << celestialBodies[i].position.x << ", "
+                << celestialBodies[i].position.y << ", " << celestialBodies[i].position.z << ")" << std::endl;
+      std::cout << "Sun scale: (" << scale.x << ", " << scale.y << ", " << scale.z << ")" << std::endl;
+    }
+
+    // Before rendering planets, check OpenGL state
+    GLenum error = glGetError();
+    if (error != GL_NO_ERROR) {
+      std::cout << "OpenGL error before planet rendering: " << error << std::endl;
+    }
+
+    // Check if depth testing is working
+    GLboolean depthTest;
+    glGetBooleanv(GL_DEPTH_TEST, &depthTest);
+    std::cout << "Depth test enabled: " << (depthTest ? "YES" : "NO") << std::endl;
+
+    // IMPORTANT: Use the planet's shader before rendering
     celestialBodies[i].render(model, view, projection);
   }
 
-  // Render skybox last so that it appears behind everything
+  if (debugOutput) {
+    std::cout << "Planets rendered, now rendering skybox..." << std::endl;
+  }
+
+  // Render skybox LAST so it appears behind everything
   skybox->render(view, projection);
+
+  if (debugOutput) {
+    std::cout << "Frame complete" << std::endl;
+    std::cout << "=================================" << std::endl;
+  }
 }
 
 float getPlanetsRotationSpeed(CelestialBody::BodyType body) {
+  float rotationSpeed;
   switch (body) {
     case CelestialBody::Sun: {
-      return 5.0f;
+      rotationSpeed = 5.0f;
+      break;
     }
     case CelestialBody::Mercury: {
-      return 15.0f;
+      rotationSpeed = 15.0f;
+      break;
     }
     case CelestialBody::Venus: {
-      return -8.0f;
+      rotationSpeed = -8.0f;
+      break;
     }
     case CelestialBody::Earth: {
-      return 50.0f;
+      rotationSpeed = 50.0f;
+      break;
     }
     case CelestialBody::Mars: {
-      return 48.0f;
+      rotationSpeed = 48.0f;
+      break;
     }
     case CelestialBody::Jupiter: {
-      return 120.0f;
+      rotationSpeed = 120.0f;
+      break;
     }
     case CelestialBody::Saturn: {
-      return 110.0f;
+      rotationSpeed = 110.0f;
+      break;
     }
     case CelestialBody::Uranus: {
-      return 70.0f;
+      rotationSpeed = 70.0f;
+      break;
     }
     case CelestialBody::Neptune: {
-      return 65.0f;
+      rotationSpeed = 65.0f;
+      break;
     }
     default: {
-      cout << "ERROR: CelestialBody::BodyType provided is unknown" << endl;
-      return 0.0f;
+      cout << "ERROR: CelestialBody::BodyType provided is unknown: returning default rotation speed" << endl;
+      rotationSpeed = 0.0f;
+      break;
     }
   }
+  return rotationSpeed;
 }
 glm::vec3 getPlanetScale(CelestialBody::BodyType body) {
+  glm::vec3 scale;
   switch (body) {
     case CelestialBody::Sun: {
-      return glm::vec3(3.0f, 3.0f, 3.0f);
+      scale = glm::vec3(3.0f, 3.0f, 3.0f);
+      break;
     }
     case CelestialBody::Mercury: {
-      return glm::vec3(0.3f, 0.3f, 0.3f);
+      scale = glm::vec3(0.3f, 0.3f, 0.3f);
+      break;
     }
     case CelestialBody::Venus: {
-      return glm::vec3(0.8f, 0.8f, 0.8f);
+      scale = glm::vec3(0.8f, 0.8f, 0.8f);
+      break;
     }
     case CelestialBody::Earth: {
-      return glm::vec3(0.8f, 0.8f, 0.8f);
+      scale = glm::vec3(0.8f, 0.8f, 0.8f);
+      break;
     }
     case CelestialBody::Mars: {
-      return glm::vec3(0.5f, 0.5f, 0.5f);
+      scale = glm::vec3(0.5f, 0.5f, 0.5f);
+      break;
     }
     case CelestialBody::Jupiter: {
-      return glm::vec3(2.2f, 2.2f, 2.2f);
+      scale = glm::vec3(2.2f, 2.2f, 2.2f);
+      break;
     }
     case CelestialBody::Saturn: {
-      return glm::vec3(1.8f, 1.8f, 1.8f);
+      scale = glm::vec3(1.8f, 1.8f, 1.8f);
+      break;
     }
     case CelestialBody::Uranus: {
-      return glm::vec3(1.0f, 1.0f, 1.0f);
+      scale = glm::vec3(1.0f, 1.0f, 1.0f);
+      break;
     }
     case CelestialBody::Neptune: {
-      return glm::vec3(1.0f, 1.0f, 1.0f);
+      scale = glm::vec3(1.0f, 1.0f, 1.0f);
+      break;
     }
     default: {
-      cout << "ERROR: CelestialBody::BodyType provided is unknown" << endl;
-      return glm::vec3(0.0f, 0.0f, 0.0f);
+      cout << "ERROR: CelestialBody::BodyType provided is unknown: returning default scale" << endl;
+      scale = glm::vec3(1.0f, 1.0f, 1.0f);
+      break;
     }
   }
+  return scale * 2.0f;
 }

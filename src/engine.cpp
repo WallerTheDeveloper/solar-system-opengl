@@ -9,8 +9,7 @@ Engine::Engine(std::string windowName, int windowWidth, int windowHeight,
       windowHeight(windowHeight),
       window(nullptr),
       isInitialized(false),
-      camera(glm::vec3(0.0f, 15.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 0.0f,
-             -90.0f) {
+     camera(glm::vec3(0.0f, 5.0f, 20.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, -15.0f) {
   instance = this;
   try {
     initGLFW();
@@ -302,17 +301,26 @@ void Engine::renderTexture2D(GLenum textureUnit, unsigned int textureID) {
   // example textureUnit - GL_TEXTURE0, GL_TEXTURE1, GL_TEXTURE2 and so on
   texture->setTextureActive2D(textureUnit, textureID);
 }
+
 unsigned int Engine::createCubemap() {
   vector<std::string> faces
   {
-    "../textures/skybox (1).png",
-    "../textures/skybox (2).png",
-    "../textures/skybox (3).png",
-    "../textures/skybox (4).png",
-    "../textures/skybox (5).png",
-    "../textures/skybox (6).png"
+    "../textures/skybox1.png",  // Right (+X)
+    "../textures/skybox2.png",  // Left (-X)
+    "../textures/skybox3.png",  // Top (+Y)
+    "../textures/skybox4.png",  // Bottom (-Y)
+    "../textures/skybox5.png",  // Front (+Z)
+    "../textures/skybox6.png"   // Back (-Z)
   };
+
+  std::cout << "Creating cubemap with files:" << std::endl;
+  for (const auto& face : faces) {
+    std::cout << "  " << face << std::endl;
+  }
+
   unsigned int cubemapTexture = this->texture->loadCubemap(faces);
+  std::cout << "Cubemap created with ID: " << cubemapTexture << std::endl;
+
   return cubemapTexture;
 }
 
