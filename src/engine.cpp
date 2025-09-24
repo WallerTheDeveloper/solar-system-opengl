@@ -24,9 +24,10 @@ Engine::Engine(std::string windowName, int windowWidth, int windowHeight,
       std::cout << "Depth testing enabled" << std::endl;
     }
 
-    GL_CHECK(glEnable(GL_CULL_FACE));
-    GL_CHECK(glCullFace(GL_BACK));
-    GL_CHECK(glFrontFace(GL_CCW));
+    // Use culling later
+    // GL_CHECK(glEnable(GL_CULL_FACE));
+    // GL_CHECK(glCullFace(GL_BACK));
+    // GL_CHECK(glFrontFace(GL_CCW));
 
     std::cout << "OpenGL state configured successfully" << std::endl;
 
