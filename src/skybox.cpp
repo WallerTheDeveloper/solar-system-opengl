@@ -123,36 +123,83 @@ bool Skybox::create() {
 
 void Skybox::render(const glm::mat4& view, const glm::mat4& projection) {
   if (!m_initialized || !m_enabled) {
+    std::cout << "Skybox not initialized or enabled" << std::endl;
     return;
   }
 
-  // Clear any existing OpenGL errors first
-  while (glGetError() != GL_NO_ERROR) { /* clear error queue */ }
+  static int renderCount = 0;
+  renderCount++;
 
-  // Change depth function to less equal for skybox (render behind everything)
-  glDepthFunc(GL_LEQUAL);
+  // Debug every 60 calls (about once per second)
+  bool debugThisFrame = (renderCount % 60 == 0);
+
+  if (debugThisFrame) {
+    std::cout << "=== SKYBOX RENDER DEBUG ===" << std::endl;
+    std::cout << "Texture ID: " << m_textureID << std::endl;
+    std::cout << "VAO ID: " << m_VAO << std::endl;
+  }
+
+  // Save current depth settings
+  GLboolean depthTestEnabled;
+  GLboolean depthWriteEnabled;
+  GLint depthFunc;
+  glGetBooleanv(GL_DEPTH_TEST, &depthTestEnabled);
+  glGetBooleanv(GL_DEPTH_WRITEMASK, &depthWriteEnabled);
+  glGetIntegerv(GL_DEPTH_FUNC, &depthFunc);
+
+  // Configure for skybox rendering
+  glDepthMask(GL_FALSE);  // Disable depth writing
 
   // Use skybox shader
   m_shader->use();
-  m_shader->setInt("skybox", 0);  // Set the uniform
 
-  // Remove translation from view matrix for skybox
-  glm::mat4 skyboxView = glm::mat4(glm::mat3(view));
+  if (debugThisFrame) {
+    GLint currentProgram;
+    glGetIntegerv(GL_CURRENT_PROGRAM, &currentProgram);
+    std::cout << "Current shader program: " << currentProgram << std::endl;
+  }
 
   // Set uniforms
+  glm::mat4 skyboxView = glm::mat4(glm::mat3(view)); // Remove translation
   m_shader->setMat4("view", skyboxView);
   m_shader->setMat4("projection", projection);
+  m_shader->setInt("skybox", 0);
 
-  // Bind skybox VAO
-  engine->bindVAO(m_VAO);
+  // Bind VAO
+  glBindVertexArray(m_VAO);
 
   // Bind cubemap texture
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_CUBE_MAP, m_textureID);
 
-  // Render skybox
+  if (debugThisFrame) {
+    GLint boundTexture;
+    glGetIntegerv(GL_TEXTURE_BINDING_CUBE_MAP, &boundTexture);
+    std::cout << "Bound cubemap texture: " << boundTexture << std::endl;
+
+    // Check for OpenGL errors
+    GLenum error = glGetError();
+    if (error != GL_NO_ERROR) {
+      std::cout << "OpenGL error before draw: " << error << std::endl;
+    }
+  }
+
+  // Render the skybox
   glDrawArrays(GL_TRIANGLES, 0, 36);
 
-  // Restore depth function
-  glDepthFunc(GL_LESS);
+  if (debugThisFrame) {
+    GLenum error = glGetError();
+    if (error != GL_NO_ERROR) {
+      std::cout << "OpenGL error after draw: " << error << std::endl;
+    }
+    std::cout << "Skybox rendered successfully" << std::endl;
+    std::cout << "===========================" << std::endl;
+  }
+
+  // Restore depth settings
+  glDepthMask(depthWriteEnabled);
+
+  // Clean up
+  glBindVertexArray(0);
+  glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }
