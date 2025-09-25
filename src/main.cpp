@@ -9,6 +9,7 @@
 #include "../headers/shader.h"
 #include "../headers/skybox.h"
 #include "celestialbody.h"
+#include "ring.h"
 
 // settings
 const unsigned int SCR_WIDTH = 1980;
@@ -17,6 +18,8 @@ const std::string WINDOW_NAME = "Solar System Simulation";
 const bool ENABLE_GL_DEPTH_TEST = true;
 
 std::unique_ptr<Skybox> skybox;
+std::unique_ptr<Ring> saturnRing;
+
 std::vector<Planet> celestialBodies;
 
 void onRender(Engine* engine);
@@ -38,6 +41,8 @@ int main() {
     };
 
     skybox = make_unique<Skybox>(&engine, faces);
+    saturnRing = make_unique<Ring>();
+    saturnRing->create(&engine, "../textures/saturn_ring.png");
 
     celestialBodies.emplace_back(
         &engine, CelestialBody::Sun, 1.989e30f, 696340000.0f, 0.0f, 0.0f, 0.0f,
@@ -132,9 +137,11 @@ void onRender(Engine* engine) {
     float rotationSpeed = getPlanetsRotationSpeed(celestialBodies[i].bodyType);
 
     glm::vec3 rotationAxis = glm::vec3(0.0f, 1.0f, 0.1f);
+
     if (celestialBodies[i].bodyType == CelestialBody::Uranus) {
       rotationAxis = glm::vec3(0.8f, 0.2f, 0.1f);
     }
+
     model = glm::rotate(model, currentTime * glm::radians(rotationSpeed),
                         rotationAxis);
 
@@ -142,6 +149,10 @@ void onRender(Engine* engine) {
     model = glm::scale(model, scale);
 
     celestialBodies[i].render(model, view, projection);
+
+    if (celestialBodies[i].bodyType == CelestialBody::Saturn) {
+      saturnRing->render(model, view, projection);
+    }
   }
 
   // Render planets AFTER skybox
