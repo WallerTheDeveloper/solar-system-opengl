@@ -129,7 +129,6 @@ void onRender(Engine* engine) {
 
   skybox->render(view, projection);
 
-  // Render planets BEFORE skybox
   for (size_t i = 0; i < celestialBodies.size(); i++) {
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, celestialBodies[i].position);
@@ -154,8 +153,6 @@ void onRender(Engine* engine) {
       saturnRing->render(model, view, projection);
     }
   }
-
-  // Render planets AFTER skybox
 }
 
 float getPlanetsRotationSpeed(CelestialBody::BodyType body) {

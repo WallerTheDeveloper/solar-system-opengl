@@ -40,13 +40,13 @@ void Ring::create(Engine* engine, const char* ringTexturePath) {
   ("../shaders/ring.vert", "../shaders/ring.frag");
 }
 
-void Ring::render(glm::mat4 saturnModel, glm::mat4 view, glm::mat4 projection) {
+void Ring::render(glm::mat4 model, glm::mat4 view, glm::mat4 projection) {
   glDisable(GL_CULL_FACE);
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   shader->use();
-  shader->setMat4("model", saturnModel);
+  shader->setMat4("model", model);
   shader->setMat4("view", view);
   shader->setMat4("projection", projection);
 
