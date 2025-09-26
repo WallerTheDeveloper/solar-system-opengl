@@ -8,8 +8,8 @@ TextRenderer::~TextRenderer() {
 
 bool TextRenderer::initialize() {
   try {
-    textShader = std::make_unique<Shader>("../shaders/text.vert",
-                                          "../shaders/text.frag");
+    textShader = std::make_unique<Shader>("../shaders/uiText.vert",
+                                          "../shaders/uiText.frag");
   } catch (const std::exception& e) {
     std::cerr << "ERROR: Failed to load text shader: " << e.what() << std::endl;
     return false;
@@ -21,16 +21,19 @@ bool TextRenderer::initialize() {
   textShader->use();
   textShader->setMat4("projection", projection);
 
-  glGenVertexArrays(1, &VAO);
-  glGenBuffers(1, &VBO);
-  glBindVertexArray(VAO);
-  glBindBuffer(GL_ARRAY_BUFFER, VBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
-  glEnableVertexAttribArray(0);
-  glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-  glBindVertexArray(0);
+  engine->generateVAO(&VAO);
+  engine->generateBuffer(&VBO);
+  engine->bindVAO(VAO);
 
+  engine->bindBuffer(GL_ARRAY_BUFFER, VBO);
+  engine->setBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+
+  engine->defineVertexLayout(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+
+  engine->unbindVBO();
+  engine->unbindVAO();
+
+  loadFont();
   std::cout << "Text renderer initialized successfully" << std::endl;
   return true;
 }
