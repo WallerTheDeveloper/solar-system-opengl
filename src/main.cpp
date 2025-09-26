@@ -169,7 +169,6 @@ void onRender(Engine* engine) {
 void renderUI(Engine* engine) {
   if (!textRenderer) return;
 
-  // Top-left corner
   textRenderer->renderText("CONTROLS:", 20.0f, 20.0f, 3.0f,
                            glm::vec3(1.0f, 1.0f, 0.0f));
   textRenderer->renderText("WASD    -   MOVE", 20.0f, 50.0f, 2.8f,
