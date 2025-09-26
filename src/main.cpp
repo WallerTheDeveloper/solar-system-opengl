@@ -10,25 +10,26 @@
 #include "../headers/skybox.h"
 #include "celestialbody.h"
 #include "ring.h"
+#include "textrenderer.h"
 
-// settings
-const unsigned int SCR_WIDTH = 1980;
-const unsigned int SCR_HEIGHT = 1080;
 const std::string WINDOW_NAME = "Solar System Simulation";
 const bool ENABLE_GL_DEPTH_TEST = true;
 
 std::unique_ptr<Skybox> skybox;
 std::unique_ptr<Ring> saturnRing;
+std::unique_ptr<TextRenderer> textRenderer;
 
 std::vector<Planet> celestialBodies;
 
 void onRender(Engine* engine);
+void renderUI(Engine* engine);
+
 float getPlanetsRotationSpeed(CelestialBody::BodyType body);
 glm::vec3 getPlanetScale(CelestialBody::BodyType body);
 
 int main() {
   try {
-    Engine engine(WINDOW_NAME, SCR_WIDTH, SCR_HEIGHT, ENABLE_GL_DEPTH_TEST);
+    Engine engine(WINDOW_NAME, ENABLE_GL_DEPTH_TEST);
 
     vector<std::string> faces
     {
@@ -40,9 +41,16 @@ int main() {
       "../textures/skybox6.png"
     };
 
+
     skybox = make_unique<Skybox>(&engine, faces);
     saturnRing = make_unique<Ring>();
     saturnRing->create(&engine, "../textures/saturn_ring.png");
+
+    textRenderer = std::make_unique<TextRenderer>(&engine);
+    if (!textRenderer->initialize()) {
+      std::cerr << "Failed to initialize text renderer!" << std::endl;
+      return -1;
+    }
 
     celestialBodies.emplace_back(
         &engine, CelestialBody::Sun, 1.989e30f, 696340000.0f, 0.0f, 0.0f, 0.0f,
@@ -122,10 +130,11 @@ void onRender(Engine* engine) {
   }
 
   glm::mat4 view = engine->camera.getViewMatrix();
-  glm::mat4 projection = glm::perspective(
-      glm::radians(engine->camera.Zoom),
-      static_cast<float>(SCR_WIDTH) / static_cast<float>(SCR_HEIGHT),
-      0.1f, 10000.0f);
+  glm::mat4 projection =
+      glm::perspective(glm::radians(engine->camera.Zoom),
+                       static_cast<float>(engine->SCR_WIDTH) /
+                           static_cast<float>(engine->SCR_HEIGHT),
+                       0.1f, 10000.0f);
 
   skybox->render(view, projection);
 
@@ -153,6 +162,39 @@ void onRender(Engine* engine) {
       saturnRing->render(model, view, projection);
     }
   }
+
+  renderUI(engine);
+}
+
+void renderUI(Engine* engine) {
+  if (!textRenderer) return;
+
+  // Top-left corner
+  textRenderer->renderText("CONTROLS:", 20.0f, 20.0f, 3.0f,
+                           glm::vec3(1.0f, 1.0f, 0.0f));
+  textRenderer->renderText("WASD    -   MOVE", 20.0f, 50.0f, 2.8f,
+                           glm::vec3(1.0f, 1.0f, 1.0f));
+  textRenderer->renderText("SHIFT   -   SPRINT", 20.0f, 80.0f, 2.8f,
+                           glm::vec3(1.0f, 1.0f, 1.0f));
+  textRenderer->renderText("MOUSE   -   LOOK AROUND", 20.0f, 110.0f, 2.8f,
+                           glm::vec3(1.0f, 1.0f, 1.0f));
+  textRenderer->renderText("SCROLL  -   ZOOM", 20.0f, 140.0f, 2.8f,
+                           glm::vec3(1.0f, 1.0f, 1.0f));
+  textRenderer->renderText("ESC     -   EXIT", 20.0f, 170.0f, 2.8f,
+                           glm::vec3(1.0f, 0.5f, 0.5f));
+
+
+  textRenderer->renderText("SOLAR SYSTEM SIMULATION", (engine->SCR_WIDTH/2.0f) - 300.0f,
+                           (engine->SCR_HEIGHT / 2.0f) - 400.0f, 3.0f,
+                           glm::vec3(0.0f, 0.8f, 1.0f));
+
+  glm::vec3 camPos = engine->camera.Position;
+  std::string posText = "POSITION:(X:" + std::to_string(static_cast<int>(camPos.x)) + "." +
+                        std::to_string(static_cast<int>(camPos.y)) + ", Y:" +
+                        std::to_string(static_cast<int>(camPos.z)) + ")";
+  textRenderer->renderText(posText, (engine->SCR_WIDTH/2.0f) - 300.0f,
+                           (engine->SCR_HEIGHT / 2.0f) - 350.0f, 3.0f,
+                           glm::vec3(0.0f, 0.8f, 1.0f));
 }
 
 float getPlanetsRotationSpeed(CelestialBody::BodyType body) {
@@ -195,7 +237,9 @@ float getPlanetsRotationSpeed(CelestialBody::BodyType body) {
       break;
     }
     default: {
-      cout << "ERROR: CelestialBody::BodyType provided is unknown: returning default rotation speed" << endl;
+      cout << "ERROR: CelestialBody::BodyType provided is unknown: returning "
+              "default rotation speed"
+           << endl;
       rotationSpeed = 0.0f;
       break;
     }
@@ -242,7 +286,9 @@ glm::vec3 getPlanetScale(CelestialBody::BodyType body) {
       break;
     }
     default: {
-      cout << "ERROR: CelestialBody::BodyType provided is unknown: returning default scale" << endl;
+      cout << "ERROR: CelestialBody::BodyType provided is unknown: returning "
+              "default scale"
+           << endl;
       scale = glm::vec3(1.0f, 1.0f, 1.0f);
       break;
     }

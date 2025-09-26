@@ -2,11 +2,8 @@
 
 Engine* Engine::instance = nullptr;
 
-Engine::Engine(std::string windowName, int windowWidth, int windowHeight,
-               bool enable_gl_depth_test)
+Engine::Engine(std::string windowName, bool enable_gl_depth_test)
     : windowName(windowName),
-      windowWidth(windowWidth),
-      windowHeight(windowHeight),
       window(nullptr),
       isInitialized(false),
       camera(glm::vec3(0.0f, 5.0f, 20.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f,
@@ -14,7 +11,7 @@ Engine::Engine(std::string windowName, int windowWidth, int windowHeight,
   instance = this;
   try {
     initGLFW();
-    window = createWindow(windowName, windowWidth, windowHeight);
+    window = createWindow(windowName, SCR_WIDTH, SCR_HEIGHT);
     initGLAD();
 
     initializeBasicDebugging();

@@ -41,7 +41,11 @@ void Ring::create(Engine* engine, const char* ringTexturePath) {
 }
 
 void Ring::render(glm::mat4 model, glm::mat4 view, glm::mat4 projection) {
-  glDisable(GL_CULL_FACE);
+  bool cullFaceWasEnabled = glIsEnabled(GL_CULL_FACE);
+  if (cullFaceWasEnabled) {
+    glDisable(GL_CULL_FACE);
+  }
+
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -57,6 +61,8 @@ void Ring::render(glm::mat4 model, glm::mat4 view, glm::mat4 projection) {
   glBindVertexArray(VAO);
   glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-  glEnable(GL_CULL_FACE);
+  if (cullFaceWasEnabled) {
+    glEnable(GL_CULL_FACE);
+  }
   glDisable(GL_BLEND);
 }

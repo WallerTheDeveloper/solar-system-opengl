@@ -31,6 +31,8 @@ struct BoxMeshData : ObjectMeshData {};
 
 class Engine {
  public:
+  const unsigned int SCR_WIDTH = 1980;
+  const unsigned int SCR_HEIGHT = 1080;
   Camera camera;
   float deltaTime = 0.0f;  // time between current frame and last frame
   float lastFrame = 0.0f;
@@ -38,15 +40,15 @@ class Engine {
   static Engine& getInstance();
   static bool isEngineInitialized();
 
-  Engine(std::string windowName, int windowWidth, int windowHeight,
-         bool enable_gl_depth_test);
+  Engine(std::string windowName, bool enable_gl_depth_test);
   ~Engine();
 
   // Rendering
   void render(std::function<void(Engine*)> renderCallback = nullptr,
               Engine* engine = nullptr);
-  void renderIndices(unsigned int VAO, unsigned int indicesCount, bool unbind = false);
-
+  void renderIndices(unsigned int VAO, unsigned int indicesCount,
+                     bool unbind = false);
+  void enableCullFace();
   // Buffers
   void generateVAO(unsigned int* VAO);
   void generateBuffer(unsigned int* buffer);
@@ -68,25 +70,27 @@ class Engine {
   // Primitives mesh generation
   SphereMeshData generateSphereMesh(float radius, unsigned int sectorCount,
                                     unsigned int stackCount);
-
-  BoxMeshData generateBoxMesh(float width = 2.0f, float height = 2.0f, float depth = 2.0f);
+  BoxMeshData generateBoxMesh(float width = 2.0f, float height = 2.0f,
+                              float depth = 2.0f);
 
   // Textures
-  unsigned int addTextureToObject(string path, GLenum target, GLint wrapping, GLint filtering);
+  unsigned int addTextureToObject(string path, GLenum target, GLint wrapping,
+                                  GLint filtering);
   void renderTexture2D(GLenum textureUnit, unsigned int textureID);
   unsigned int createCubemap(std::vector<std::string> faces);
+
  private:
   static Engine* instance;
   GLFWwindow* window;
   std::string windowName;
   std::unique_ptr<Texture> texture;
 
-  int windowWidth;
-  int windowHeight;
   bool isInitialized;
-  float lastMouseX = (float)windowWidth / 2.0f;
-  float lastMouseY = (float)windowHeight / 2.0f;
+  float lastMouseX = (float)SCR_WIDTH / 2.0f;
+  float lastMouseY = (float)SCR_HEIGHT / 2.0f;
   bool firstMouse = true;
+
+  bool enableCullFaceState = false;
 
   void initGLFW();
   void initGLAD();
