@@ -14,10 +14,14 @@
 
 #include <memory>
 
+// ------------- SIMULATION SETTINGS -------------
 const std::string WINDOW_NAME = "Solar System Simulation";
 const bool ENABLE_GL_DEPTH_TEST = true;
 const float TIME_SCALE = 1.5f;
 
+static float lastFPSTime = 0.0f;
+static int frameCount = 0;
+static float currentFPS = 0.0f;
 
 std::unique_ptr<Engine> engine;
 std::unique_ptr<Skybox> skybox;
@@ -47,15 +51,19 @@ glm::vec3 getPlanetScale(CelestialBody::BodyType body);
 std::unique_ptr<PlanetInfoPanel> planetInfoPanel;
 int selectedPlanetIndex = -1;
 
+void createCoreSystems() {
+  engine = std::make_unique<Engine>(WINDOW_NAME, ENABLE_GL_DEPTH_TEST);
+  skybox = std::make_unique<Skybox>(engine.get(), faces);
+  saturnRing = std::make_unique<Ring>();
+  textRenderer = std::make_unique<TextRenderer>(engine.get());
+  planetInfoPanel = std::make_unique<PlanetInfoPanel>(textRenderer.get());
+}
+
 int main() {
   try {
-    engine = std::make_unique<Engine>(WINDOW_NAME, ENABLE_GL_DEPTH_TEST);
-    skybox = std::make_unique<Skybox>(engine.get(), faces);
-    saturnRing = std::make_unique<Ring>();
-    textRenderer = std::make_unique<TextRenderer>(engine.get());
-    planetInfoPanel = std::make_unique<PlanetInfoPanel>(textRenderer.get());
+    createCoreSystems();
 
-    if (!skybox->create()) {
+    if (!skybox->initialize()) {
       std::cerr << "Failed to create skybox!" << std::endl;
       return -1;
     }
@@ -148,9 +156,18 @@ int main() {
 
 void onRender() {
   static float lastTime = 0.0f;
+  frameCount++;
 
   float currentTime = static_cast<float>(glfwGetTime());
   float deltaTime = currentTime - lastTime;
+
+  // Calculate FPS every 0.5 seconds for smooth display
+  if (currentTime - lastFPSTime >= 0.5f) {
+    currentFPS = frameCount / (currentTime - lastFPSTime);
+    frameCount = 0;
+    lastFPSTime = currentTime;
+  }
+
   lastTime = currentTime;
 
   for (auto& body : celestialBodies) {
@@ -196,6 +213,21 @@ void onRender() {
 
 void renderUI() {
   if (!textRenderer) return;
+
+  // Display FPS in top right corner
+  std::string fpsText = "FPS: " + std::to_string(static_cast<int>(currentFPS));
+  float fpsX = engine->SCR_WIDTH - 500.0f;
+  float fpsY = 20.0f;
+  textRenderer->renderText(fpsText, fpsX, fpsY, 3.0f,
+                           glm::vec3(0.0f, 1.0f, 0.0f));
+
+  // Display frame time (milliseconds per frame)
+  if (currentFPS > 0.0f) {
+    float frameTime = 1000.0f / currentFPS;
+    std::string frameTimeText = std::to_string(static_cast<int>(frameTime)) + " ms";
+    textRenderer->renderText(frameTimeText, fpsX, fpsY + 30.0f, 2.5f,
+                             glm::vec3(0.8f, 0.8f, 0.8f));  // Light gray
+  }
 
   textRenderer->renderText("CONTROLS:", 20.0f, 20.0f, 3.0f,
                            glm::vec3(1.0f, 1.0f, 0.0f));

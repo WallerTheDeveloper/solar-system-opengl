@@ -25,7 +25,7 @@ Skybox::~Skybox() {
   }
 }
 
-bool Skybox::create() {
+bool Skybox::initialize() {
   if (m_initialized) {
     return true;
   }

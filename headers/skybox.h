@@ -11,7 +11,7 @@ class Skybox {
   Skybox(Engine* engine, std::vector<std::string> facesTextures);
   ~Skybox();
 
-  bool create();
+  bool initialize();
 
   void render(const glm::mat4& view, const glm::mat4& projection);
 
@@ -30,10 +30,6 @@ class Skybox {
 
   bool m_initialized;
   bool m_enabled;
-
-  static constexpr float SKYBOX_WIDTH = 2000.0f;
-  static constexpr float SKYBOX_HEIGHT = 2000.0f;
-  static constexpr float SKYBOX_DEPTH = 2000.0f;
 };
 
 #endif
