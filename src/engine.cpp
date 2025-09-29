@@ -1,6 +1,7 @@
 #include "engine.h"
 
 Engine* Engine::instance = nullptr;
+std::function<void()> Engine::onLeftClickCallback = nullptr;
 
 Engine::Engine(std::string windowName, bool enable_gl_depth_test)
     : windowName(windowName),
@@ -406,6 +407,14 @@ void Engine::scroll_callback(GLFWwindow* window, double xoffset,
 
   instance->camera.processMouseScroll(static_cast<float>(yoffset));
 }
+void Engine::mouse_button_callback(GLFWwindow* window, int button, int action,
+                                   int mods) {
+  if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+    if (onLeftClickCallback) {
+      onLeftClickCallback();
+    }
+  }
+}
 
 GLFWwindow* Engine::createWindow(std::string name, int width, int height) {
   GLFWwindow* newWindow =
@@ -422,6 +431,8 @@ GLFWwindow* Engine::createWindow(std::string name, int width, int height) {
   glfwSetFramebufferSizeCallback(newWindow, framebuffer_size_callback);
   glfwSetCursorPosCallback(newWindow, mouse_callback);
   glfwSetScrollCallback(newWindow, scroll_callback);
+  glfwSetMouseButtonCallback(newWindow, mouse_button_callback);
+
 
   glfwSetInputMode(newWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 

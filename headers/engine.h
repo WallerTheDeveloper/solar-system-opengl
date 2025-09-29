@@ -48,7 +48,6 @@ class Engine {
               Engine* engine = nullptr);
   void renderIndices(unsigned int VAO, unsigned int indicesCount,
                      bool unbind = false);
-  void enableCullFace();
   // Buffers
   void generateVAO(unsigned int* VAO);
   void generateBuffer(unsigned int* buffer);
@@ -78,6 +77,7 @@ class Engine {
                                   GLint filtering);
   void renderTexture2D(GLenum textureUnit, unsigned int textureID);
   unsigned int createCubemap(std::vector<std::string> faces);
+  static std::function<void()> onLeftClickCallback;
 
  private:
   static Engine* instance;
@@ -92,14 +92,20 @@ class Engine {
 
   bool enableCullFaceState = false;
 
+  // Core systems
   void initGLFW();
   void initGLAD();
   void processInput(GLFWwindow* window);
+
+  // Input callbacks
   static void framebuffer_size_callback(GLFWwindow* window, int width,
                                         int height);
   static void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
   static void scroll_callback(GLFWwindow* window, double xoffset,
                               double yoffset);
+  static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
+
+  // Window
   GLFWwindow* createWindow(std::string name, int width, int height);
 };
 

@@ -43,10 +43,11 @@ public:
     glm::mat4 getViewMatrix();
     glm::mat4 lookAt(glm::vec3 from, glm::vec3 to, glm::vec3 up);
 
+    glm::vec3 getRayDirection() const;
+
+    // Input callbacks
     void processKeyboard(Camera_Movement direction, float deltaTime, float speedMultiplier = 1.0f);
-
     void processMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true);
-
     void processMouseScroll(float yoffset);
 
 private:

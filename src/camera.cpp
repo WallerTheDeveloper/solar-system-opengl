@@ -71,6 +71,10 @@ glm::mat4 Camera::lookAt(glm::vec3 from, glm::vec3 to, glm::vec3 up)
     );
 }
 
+glm::vec3 Camera::getRayDirection() const {
+  return glm::normalize(Front);
+}
+
 void Camera::processKeyboard(Camera_Movement direction, float deltaTime, float speedMultiplier) 
 {
     float velocity = MovementSpeed * deltaTime * speedMultiplier;
