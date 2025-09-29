@@ -90,6 +90,12 @@ void Camera::processKeyboard(Camera_Movement direction, float deltaTime, float s
     {
         Position += Right * velocity;
     }
+    if (direction == UP) {
+        Position += WorldUp * velocity;
+    }
+    if (direction == DOWN) {
+      Position -= WorldUp * velocity;
+    }
 }
 
 void Camera::processMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch)

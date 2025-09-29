@@ -359,6 +359,12 @@ void Engine::processInput(GLFWwindow* window) {
   if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
     camera.processKeyboard(RIGHT, deltaTime, speedMultiplier);
   }
+  if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
+    camera.processKeyboard(UP, deltaTime, speedMultiplier);
+  }
+  if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
+    camera.processKeyboard(DOWN, deltaTime, speedMultiplier);
+  }
 }
 
 void Engine::framebuffer_size_callback(GLFWwindow* window, int width,

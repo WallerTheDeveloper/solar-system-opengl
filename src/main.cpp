@@ -173,13 +173,17 @@ void renderUI(Engine* engine) {
                            glm::vec3(1.0f, 1.0f, 0.0f));
   textRenderer->renderText("WASD    -   MOVE", 20.0f, 50.0f, 2.8f,
                            glm::vec3(1.0f, 1.0f, 1.0f));
-  textRenderer->renderText("SHIFT   -   SPRINT", 20.0f, 80.0f, 2.8f,
+  textRenderer->renderText("E       -   MOVE UP", 20.0f, 80.0f, 2.8f,
                            glm::vec3(1.0f, 1.0f, 1.0f));
-  textRenderer->renderText("MOUSE   -   LOOK AROUND", 20.0f, 110.0f, 2.8f,
+  textRenderer->renderText("Q       -   MOVE DOWN", 20.0f, 110.0f, 2.8f,
                            glm::vec3(1.0f, 1.0f, 1.0f));
-  textRenderer->renderText("SCROLL  -   ZOOM", 20.0f, 140.0f, 2.8f,
+  textRenderer->renderText("SHIFT   -   SPRINT", 20.0f, 140.0f, 2.8f,
                            glm::vec3(1.0f, 1.0f, 1.0f));
-  textRenderer->renderText("ESC     -   EXIT", 20.0f, 170.0f, 2.8f,
+  textRenderer->renderText("MOUSE   -   LOOK AROUND", 20.0f, 170.0f, 2.8f,
+                           glm::vec3(1.0f, 1.0f, 1.0f));
+  textRenderer->renderText("SCROLL  -   ZOOM", 20.0f, 200.0f, 2.8f,
+                           glm::vec3(1.0f, 1.0f, 1.0f));
+  textRenderer->renderText("ESC     -   EXIT", 20.0f, 230.0f, 2.8f,
                            glm::vec3(1.0f, 0.5f, 0.5f));
 
 
