@@ -15,7 +15,6 @@
 
 #include "engine.h"
 
-using namespace std;
 
 #include "shader.h"
 

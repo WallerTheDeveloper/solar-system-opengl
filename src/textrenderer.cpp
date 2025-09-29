@@ -127,7 +127,7 @@ bool TextRenderer::loadFont() {
     glBindTexture(GL_TEXTURE_2D, 0);
     return true;
   } catch (const std::exception& e) {
-    std::cerr << "ERROR: Failed to load font" << std::endl;
+    std::cerr << "ERROR: Failed to load font: " << e.what() << std::endl;
     return false;
   }
 }

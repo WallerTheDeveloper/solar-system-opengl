@@ -7,8 +7,6 @@
 #include "shader.h"
 #include "texture.h"
 
-using namespace std;
-
 class Planet : public CelestialBody {
  public:
   using CelestialBody::CelestialBody;

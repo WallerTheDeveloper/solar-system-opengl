@@ -13,8 +13,6 @@
 #define G_CONST 6.674e-11f
 #endif
 
-using namespace std;
-
 class CelestialBody {
  public:
   enum BodyType {

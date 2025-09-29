@@ -4,12 +4,10 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include <cmath>
 #include <functional>
 #include <iostream>
 #include <string>
 #include <vector>
-
 #include "camera.h"
 #include "debug_utils.h"
 #include "texture.h"
@@ -17,8 +15,6 @@
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
-
-using namespace std;
 
 struct ObjectMeshData {
   std::vector<float> vertices;
@@ -44,8 +40,7 @@ class Engine {
   ~Engine();
 
   // Rendering
-  void render(std::function<void(Engine*)> renderCallback = nullptr,
-              Engine* engine = nullptr);
+  void render(const std::function<void()>& renderCallback = nullptr);
   void renderIndices(unsigned int VAO, unsigned int indicesCount,
                      bool unbind = false);
   // Buffers
@@ -73,7 +68,7 @@ class Engine {
                               float depth = 2.0f);
 
   // Textures
-  unsigned int addTextureToObject(string path, GLenum target, GLint wrapping,
+  unsigned int addTextureToObject(std::string path, GLenum target, GLint wrapping,
                                   GLint filtering);
   void renderTexture2D(GLenum textureUnit, unsigned int textureID);
   unsigned int createCubemap(std::vector<std::string> faces);

@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-Skybox::Skybox(Engine* engine, vector<std::string> facesTextures)
+Skybox::Skybox(Engine* engine, std::vector<std::string> facesTextures)
     : engine(engine),
       m_faces(facesTextures),
       m_boxMeshData(nullptr),
@@ -37,7 +37,7 @@ bool Skybox::create() {
                                         "../shaders/skybox.frag");
 
     if (m_shader == nullptr) {
-      cerr << "SKYBOX CREATION ERROR: failed to create shader" << std::endl;
+      std::cerr << "SKYBOX CREATION ERROR: failed to create shader" << std::endl;
     }
 
     this->m_textureID = engine->createCubemap(this->m_faces);

@@ -8,7 +8,7 @@
 
 class Skybox {
  public:
-  Skybox(Engine* engine, vector<std::string> facesTextures);
+  Skybox(Engine* engine, std::vector<std::string> facesTextures);
   ~Skybox();
 
   bool create();
@@ -23,8 +23,8 @@ class Skybox {
   unsigned int m_VAO, m_VBO, m_EBO;
   unsigned int m_textureID;
 
-  unique_ptr<Shader> m_shader;
-  unique_ptr<BoxMeshData> m_boxMeshData;
+  std::unique_ptr<Shader> m_shader;
+  std::unique_ptr<BoxMeshData> m_boxMeshData;
 
   unsigned int m_indexCount;
 

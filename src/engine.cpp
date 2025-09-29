@@ -45,8 +45,7 @@ Engine::~Engine() {
   std::cout << "Engine destroyed" << std::endl;
 }
 
-void Engine::render(std::function<void(Engine*)> renderCallback,
-                    Engine* engine) {
+void Engine::render(const std::function<void()>& renderCallback) {
   if (!isInitialized || !window) {
     std::cerr << "Engine not properly initialized. Cannot start render loop."
               << std::endl;
@@ -64,8 +63,8 @@ void Engine::render(std::function<void(Engine*)> renderCallback,
 
     processInput(window);
 
-    if (renderCallback && engine) {
-      renderCallback(engine);
+    if (renderCallback) {
+      renderCallback();
     }
 
     glfwSwapBuffers(window);
@@ -257,9 +256,9 @@ BoxMeshData Engine::generateBoxMesh(float width, float height, float depth) {
   return data;
 }
 
-unsigned int Engine::addTextureToObject(string path, GLenum target,
+unsigned int Engine::addTextureToObject(std::string path, GLenum target,
                                         GLint wrapping, GLint filtering) {
-  texture = make_unique<Texture>();
+  texture = std::make_unique<Texture>();
   const unsigned int textureID = texture->generateTexture(1, target);
 
   // examples: GL_REPEAT - wrapping, GL_LINEAR - filtering
@@ -271,8 +270,8 @@ unsigned int Engine::addTextureToObject(string path, GLenum target,
       texture->loadTextureImage(path.c_str(), width, height, numberOfChannels);
 
   if (data && width > 0 && height > 0) {
-    cout << "Texture loaded: " << width << "x" << height << " ("
-         << numberOfChannels << " channels)" << endl;
+    std::cout << "Texture loaded: " << width << "x" << height << " ("
+         << numberOfChannels << " channels)" << std::endl;
 
     GLenum format = GL_RGB;
     if (numberOfChannels == 1)
@@ -285,8 +284,8 @@ unsigned int Engine::addTextureToObject(string path, GLenum target,
     GL_CHECK(texture->specifyTextureImage2D(data, format, width, height, true));
     texture->freeImageData(data);
   } else {
-    cout << "Failed to load texture: " << path << " - using fallback color"
-         << endl;
+    std::cout << "Failed to load texture: " << path << " - using fallback color"
+         << std::endl;
 
     GL_CHECK(texture->specifyTextureImage2D(data, GL_RGB, 1, 1, false));
     if (data) {

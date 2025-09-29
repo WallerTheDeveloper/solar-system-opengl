@@ -1,11 +1,11 @@
 #include "planet.h"
 
 void Planet::create(const char* texturePath) {
-  cout << "Creating planet: " << bodyType << endl;
+  std::cout << "Creating planet: " << bodyType << std::endl;
 
   meshData = engine->generateSphereMesh(1.0f, 36, 18);
-  cout << "Generated mesh with " << meshData.vertices.size() << " vertices and "
-       << meshData.indices.size() << " indices" << endl;
+  std::cout << "Generated mesh with " << meshData.vertices.size() << " vertices and "
+       << meshData.indices.size() << " indices" << std::endl;
 
   engine->generateVAO(&VAO);
   GL_CHECK(engine->bindVAO(VAO));
@@ -31,24 +31,24 @@ void Planet::create(const char* texturePath) {
   checkBufferBinding(GL_ARRAY_BUFFER, "VBO");
   checkBufferBinding(GL_ELEMENT_ARRAY_BUFFER, "EBO");
 
-  cout << "OpenGL buffers created successfully for planet " << bodyType << endl;
+  std::cout << "OpenGL buffers created successfully for planet " << bodyType << std::endl;
 
   this->textureID = engine->addTextureToObject(texturePath, GL_TEXTURE_2D, GL_REPEAT, GL_LINEAR);
 
   try {
     shader =
-        make_unique<Shader>("../shaders/object.vert", "../shaders/object.frag");
+        std::make_unique<Shader>("../shaders/object.vert", "../shaders/object.frag");
     GL_CHECK(shader->use());
     GL_CHECK(shader->setInt("texture", 0));
-    cout << "Shader compiled successfully for planet " << bodyType << endl;
+    std::cout << "Shader compiled successfully for planet " << bodyType << std::endl;
   } catch (const std::exception& e) {
-    cout << "ERROR: Failed to create shader for planet " << bodyType << ": "
-         << e.what() << endl;
+    std::cout << "ERROR: Failed to create shader for planet " << bodyType << ": "
+         << e.what() << std::endl;
     return;
   }
 
   this->created = true;
-  cout << "Planet " << bodyType << " created successfully!" << endl;
+  std::cout << "Planet " << bodyType << " created successfully!" << std::endl;
 
   GL_CHECK(glBindVertexArray(0));
   GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, 0));
@@ -57,9 +57,9 @@ void Planet::create(const char* texturePath) {
 
 void Planet::render(glm::mat4 model, glm::mat4 view, glm::mat4 projection) {
   if (!created) {
-    cout << "Planet was not created. Nothing to render! Did you call "
+    std::cout << "Planet was not created. Nothing to render! Did you call "
             "Planet::create before?"
-         << endl;
+         << std::endl;
     return;
   }
 
