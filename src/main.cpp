@@ -16,6 +16,8 @@
 
 const std::string WINDOW_NAME = "Solar System Simulation";
 const bool ENABLE_GL_DEPTH_TEST = true;
+const float TIME_SCALE = 1.5f;
+
 
 std::unique_ptr<Skybox> skybox;
 std::unique_ptr<Ring> saturnRing;
@@ -30,34 +32,6 @@ void renderPlanetInfo(Engine* engine, int planetIndex);
 
 float getPlanetsRotationSpeed(CelestialBody::BodyType body);
 glm::vec3 getPlanetScale(CelestialBody::BodyType body);
-
-// struct PlanetInfo {
-//   std::string name;
-//   float distanceFromSun;  // in AU or your units
-//   float temperature;      // in Kelvin or Celsius
-//   std::string type;
-//   std::string additionalInfo;
-// };
-
-// std::map<CelestialBody::BodyType, PlanetInfo> planetInfoDatabase = {
-//     {CelestialBody::Sun,
-//      {"Sun", 0.0f, 5778.0f, "Star", "G-type main-sequence star"}},
-//     {CelestialBody::Mercury,
-//      {"Mercury", 0.39f, 167.0f, "Terrestrial", "Smallest planet"}},
-//     {CelestialBody::Venus,
-//      {"Venus", 0.72f, 464.0f, "Terrestrial", "Hottest planet"}},
-//     {CelestialBody::Earth,
-//      {"Earth", 1.0f, 15.0f, "Terrestrial", "Our home world"}},
-//     {CelestialBody::Mars,
-//      {"Mars", 1.52f, -65.0f, "Terrestrial", "The Red Planet"}},
-//     {CelestialBody::Jupiter,
-//      {"Jupiter", 5.20f, -110.0f, "Gas Giant", "Largest planet"}},
-//     {CelestialBody::Saturn,
-//      {"Saturn", 9.58f, -140.0f, "Gas Giant", "Famous for rings"}},
-//     {CelestialBody::Uranus,
-//      {"Uranus", 19.22f, -195.0f, "Ice Giant", "Tilted rotation"}},
-//     {CelestialBody::Neptune,
-//      {"Neptune", 30.05f, -200.0f, "Ice Giant", "Windiest planet"}}};
 
 // Global state for selection
 std::unique_ptr<PlanetInfoPanel> planetInfoPanel;
@@ -185,8 +159,6 @@ void onRender(Engine* engine) {
   float deltaTime = currentTime - lastTime;
   lastTime = currentTime;
 
-  const float TIME_SCALE = 5.0f;
-
   for (auto& body : celestialBodies) {
     body.updateOrbitalPositions(deltaTime * TIME_SCALE);
   }
@@ -245,11 +217,13 @@ void renderUI(Engine* engine) {
                            glm::vec3(1.0f, 1.0f, 1.0f));
   textRenderer->renderText("SCROLL  -   ZOOM", 20.0f, 200.0f, 2.8f,
                            glm::vec3(1.0f, 1.0f, 1.0f));
-  textRenderer->renderText("ESC     -   EXIT", 20.0f, 230.0f, 2.8f,
+  textRenderer->renderText("CLICK   -   SELECT PLANET", 20.0f, 230.0f, 2.8f,
+                           glm::vec3(0.5f, 1.0f, 0.5f));
+  textRenderer->renderText("ESC     -   EXIT", 20.0f, 260.0f, 2.8f,
                            glm::vec3(1.0f, 0.5f, 0.5f));
 
-
-  textRenderer->renderText("SOLAR SYSTEM SIMULATION", (engine->SCR_WIDTH/2.0f) - 300.0f,
+  textRenderer->renderText("SOLAR SYSTEM SIMULATION",
+                           (engine->SCR_WIDTH/2.0f) - 300.0f,
                            (engine->SCR_HEIGHT / 2.0f) - 400.0f, 3.0f,
                            glm::vec3(0.0f, 0.8f, 1.0f));
 
@@ -262,10 +236,26 @@ void renderUI(Engine* engine) {
                            (engine->SCR_HEIGHT / 2.0f) - 350.0f, 3.0f,
                            glm::vec3(0.0f, 0.8f, 1.0f));
 
+  // Render crosshair
   float centerX = engine->SCR_WIDTH / 2.0f;
   float centerY = engine->SCR_HEIGHT / 2.0f;
-  textRenderer->renderText("+", centerX - 12.0f, centerY - 12.0f, 4.0f,
+  textRenderer->renderText(":+:", centerX - 12.0f, centerY - 12.0f, 4.0f,
                            glm::vec3(0.0f, 1.0f, 0.0f));
+
+  // *** ADD THIS CODE TO RENDER PLANET INFO PANEL ***
+  if (planetInfoPanel && selectedPlanetIndex >= 0 &&
+      selectedPlanetIndex < static_cast<int>(celestialBodies.size())) {
+    const auto& selectedPlanet = celestialBodies[selectedPlanetIndex];
+    PlanetInfo info = PlanetInfoPanel::getPlanetInfo(selectedPlanet.bodyType);
+
+    planetInfoPanel->renderPanel(
+        selectedPlanet.position,
+        info,
+        engine->camera,
+        static_cast<float>(engine->SCR_WIDTH),
+        static_cast<float>(engine->SCR_HEIGHT)
+    );
+  }
 }
 
 float getPlanetsRotationSpeed(CelestialBody::BodyType body) {
