@@ -11,6 +11,7 @@
 #include "celestialbody.h"
 #include "ring.h"
 #include "textrenderer.h"
+#include "planetinfopanel.h"
 #include "planetpicker.h"
 
 const std::string WINDOW_NAME = "Solar System Simulation";
@@ -24,40 +25,42 @@ std::vector<Planet> celestialBodies;
 
 void onRender(Engine* engine);
 void renderUI(Engine* engine);
-void renderCrosshair(Engine* engine);
+void renderPlanetInfo(Engine* engine, int planetIndex);
+
 
 float getPlanetsRotationSpeed(CelestialBody::BodyType body);
 glm::vec3 getPlanetScale(CelestialBody::BodyType body);
 
-struct PlanetInfo {
-  std::string name;
-  float distanceFromSun;  // in AU or your units
-  float temperature;      // in Kelvin or Celsius
-  std::string type;
-  std::string additionalInfo;
-};
+// struct PlanetInfo {
+//   std::string name;
+//   float distanceFromSun;  // in AU or your units
+//   float temperature;      // in Kelvin or Celsius
+//   std::string type;
+//   std::string additionalInfo;
+// };
 
-std::map<CelestialBody::BodyType, PlanetInfo> planetInfoDatabase = {
-    {CelestialBody::Sun,
-     {"Sun", 0.0f, 5778.0f, "Star", "G-type main-sequence star"}},
-    {CelestialBody::Mercury,
-     {"Mercury", 0.39f, 167.0f, "Terrestrial", "Smallest planet"}},
-    {CelestialBody::Venus,
-     {"Venus", 0.72f, 464.0f, "Terrestrial", "Hottest planet"}},
-    {CelestialBody::Earth,
-     {"Earth", 1.0f, 15.0f, "Terrestrial", "Our home world"}},
-    {CelestialBody::Mars,
-     {"Mars", 1.52f, -65.0f, "Terrestrial", "The Red Planet"}},
-    {CelestialBody::Jupiter,
-     {"Jupiter", 5.20f, -110.0f, "Gas Giant", "Largest planet"}},
-    {CelestialBody::Saturn,
-     {"Saturn", 9.58f, -140.0f, "Gas Giant", "Famous for rings"}},
-    {CelestialBody::Uranus,
-     {"Uranus", 19.22f, -195.0f, "Ice Giant", "Tilted rotation"}},
-    {CelestialBody::Neptune,
-     {"Neptune", 30.05f, -200.0f, "Ice Giant", "Windiest planet"}}};
+// std::map<CelestialBody::BodyType, PlanetInfo> planetInfoDatabase = {
+//     {CelestialBody::Sun,
+//      {"Sun", 0.0f, 5778.0f, "Star", "G-type main-sequence star"}},
+//     {CelestialBody::Mercury,
+//      {"Mercury", 0.39f, 167.0f, "Terrestrial", "Smallest planet"}},
+//     {CelestialBody::Venus,
+//      {"Venus", 0.72f, 464.0f, "Terrestrial", "Hottest planet"}},
+//     {CelestialBody::Earth,
+//      {"Earth", 1.0f, 15.0f, "Terrestrial", "Our home world"}},
+//     {CelestialBody::Mars,
+//      {"Mars", 1.52f, -65.0f, "Terrestrial", "The Red Planet"}},
+//     {CelestialBody::Jupiter,
+//      {"Jupiter", 5.20f, -110.0f, "Gas Giant", "Largest planet"}},
+//     {CelestialBody::Saturn,
+//      {"Saturn", 9.58f, -140.0f, "Gas Giant", "Famous for rings"}},
+//     {CelestialBody::Uranus,
+//      {"Uranus", 19.22f, -195.0f, "Ice Giant", "Tilted rotation"}},
+//     {CelestialBody::Neptune,
+//      {"Neptune", 30.05f, -200.0f, "Ice Giant", "Windiest planet"}}};
 
 // Global state for selection
+std::unique_ptr<PlanetInfoPanel> planetInfoPanel;
 int selectedPlanetIndex = -1;
 
 int main() {
@@ -84,6 +87,32 @@ int main() {
       std::cerr << "Failed to initialize text renderer!" << std::endl;
       return -1;
     }
+
+    // Initialize planet info panel
+    planetInfoPanel = std::make_unique<PlanetInfoPanel>(textRenderer.get());
+
+    // Setup mouse click callback
+    Engine::onLeftClickCallback = [&engine]() {
+      std::vector<glm::vec3> scales;
+      for (const auto& body : celestialBodies) {
+        scales.push_back(getPlanetScale(body.bodyType));
+      }
+
+      auto result =
+          PlanetPicker::pickPlanet(engine.camera, celestialBodies, scales);
+
+      if (result.hit) {
+        selectedPlanetIndex = static_cast<int>(result.planetIndex);
+        std::cout << "Selected planet: "
+                  << PlanetInfoPanel::getPlanetInfo(
+                         celestialBodies[result.planetIndex].bodyType)
+                         .name
+                  << std::endl;
+      } else {
+        selectedPlanetIndex = -1;
+        std::cout << "Deselected planet" << std::endl;
+      }
+    };
 
     celestialBodies.emplace_back(
         &engine, CelestialBody::Sun, 1.989e30f, 696340000.0f, 0.0f, 0.0f, 0.0f,
@@ -138,26 +167,6 @@ int main() {
       std::cerr << "Failed to create skybox!" << std::endl;
       return -1;
     }
-
-    Engine::onLeftClickCallback = [&engine]() {
-      std::vector<glm::vec3> scales;
-      for (const auto& body : celestialBodies) {
-        scales.push_back(getPlanetScale(body.bodyType));
-      }
-
-      auto result = PlanetPicker::pickPlanet(engine.camera, celestialBodies, scales);
-
-      if (result.hit) {
-        selectedPlanetIndex = static_cast<int>(result.planetIndex);
-        std::cout
-            << "Selected planet: "
-            << planetInfoDatabase[celestialBodies[result.planetIndex].bodyType]
-                   .name
-            << std::endl;
-      } else {
-        selectedPlanetIndex = -1;
-      }
-    };
 
     engine.render(onRender, &engine);
   } catch (const std::exception& e) {
@@ -217,10 +226,6 @@ void onRender(Engine* engine) {
   }
 
   renderUI(engine);
-  renderCrosshair(engine);
-  if (selectedPlanetIndex >= 0) {
-    // renderPlanetInfo(engine, selectedPlanetIndex);
-  }
 }
 
 void renderUI(Engine* engine) {
@@ -249,12 +254,18 @@ void renderUI(Engine* engine) {
                            glm::vec3(0.0f, 0.8f, 1.0f));
 
   glm::vec3 camPos = engine->camera.Position;
-  std::string posText = "POSITION:(X:" + std::to_string(static_cast<int>(camPos.x)) + "." +
-                        std::to_string(static_cast<int>(camPos.y)) + ", Y:" +
-                        std::to_string(static_cast<int>(camPos.z)) + ")";
-  textRenderer->renderText(posText, (engine->SCR_WIDTH/2.0f) - 300.0f,
+  std::string posText =
+      "POSITION: X:" + std::to_string(static_cast<int>(camPos.x)) +
+      " Y:" + std::to_string(static_cast<int>(camPos.y)) +
+      " Z:" + std::to_string(static_cast<int>(camPos.z));
+  textRenderer->renderText(posText, (engine->SCR_WIDTH / 2.0f) - 300.0f,
                            (engine->SCR_HEIGHT / 2.0f) - 350.0f, 3.0f,
                            glm::vec3(0.0f, 0.8f, 1.0f));
+
+  float centerX = engine->SCR_WIDTH / 2.0f;
+  float centerY = engine->SCR_HEIGHT / 2.0f;
+  textRenderer->renderText("+", centerX - 12.0f, centerY - 12.0f, 4.0f,
+                           glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
 float getPlanetsRotationSpeed(CelestialBody::BodyType body) {
@@ -354,50 +365,4 @@ glm::vec3 getPlanetScale(CelestialBody::BodyType body) {
     }
   }
   return scale;
-}
-
-void renderCrosshair(Engine* engine) {
-  float centerX = engine->SCR_WIDTH / 2.0f;
-  float centerY = engine->SCR_HEIGHT / 2.0f;
-
-  textRenderer->renderText("+", centerX - 10.0f, centerY - 10.0f, 3.0f,
-                         glm::vec3(0.0f, 1.0f, 0.0f));
-}
-
-void renderPlanetInfo(Engine* engine, int planetIndex) {
-  if (planetIndex < 0 || planetIndex >= celestialBodies.size()) {
-    return;
-  }
-
-  const auto& planet = celestialBodies[planetIndex];
-  const auto& info = planetInfoDatabase[planet.bodyType];
-
-  // Calculate screen position above the planet
-  glm::mat4 view = engine->camera.getViewMatrix();
-  glm::mat4 projection = glm::perspective(
-      glm::radians(engine->camera.Zoom),
-      static_cast<float>(engine->SCR_WIDTH) / engine->SCR_HEIGHT, 0.1f,
-      10000.0f);
-
-  glm::vec4 planetWorldPos = glm::vec4(planet.position, 1.0f);
-  glm::vec4 clipSpace = projection * view * planetWorldPos;
-
-  if (clipSpace.w > 0) {  // Only render if in front of camera
-    glm::vec3 ndc = glm::vec3(clipSpace) / clipSpace.w;
-    float screenX = (ndc.x + 1.0f) * 0.5f * engine->SCR_WIDTH;
-    float screenY = (1.0f - ndc.y) * 0.5f * engine->SCR_HEIGHT;
-
-    // Render info panel
-    float panelY = screenY - 150.0f;
-    textRenderer->renderText(info.name, screenX - 50.0f, panelY, 3.5f,
-                             glm::vec3(1.0f, 1.0f, 0.0f));
-    textRenderer->renderText(
-        "Distance: " + std::to_string(info.distanceFromSun) + " AU",
-        screenX - 80.0f, panelY + 30.0f, 2.5f, glm::vec3(1.0f, 1.0f, 1.0f));
-    textRenderer->renderText(
-        "Temp: " + std::to_string(static_cast<int>(info.temperature)) + " K",
-        screenX - 80.0f, panelY + 55.0f, 2.5f, glm::vec3(1.0f, 1.0f, 1.0f));
-    textRenderer->renderText("Type: " + info.type, screenX - 80.0f,
-                             panelY + 80.0f, 2.5f, glm::vec3(1.0f, 1.0f, 1.0f));
-  }
 }
