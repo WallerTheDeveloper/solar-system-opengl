@@ -366,6 +366,29 @@ void Engine::processInput(GLFWwindow* window) {
     camera.processKeyboard(DOWN, deltaTime, speedMultiplier);
   }
 }
+void Engine::toggleFullscreen() {
+  if (!window) {
+    return;
+  }
+
+  GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+  const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+
+  if (!isFullscreen) {
+    glfwGetWindowPos(window, &windowedPosX, &windowedPosY);
+    glfwGetWindowSize(window, &windowedWidth, &windowedHeight);
+
+    glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+
+    std::cout << "Switched to fullscreen mode (" << mode->width << "x" << mode->height << ")" << std::endl;
+    isFullscreen = true;
+  } else {
+    glfwSetWindowMonitor(window, nullptr, windowedPosX, windowedPosY, windowedWidth, windowedHeight, 0);
+
+    std::cout << "Switched to windowed mode (" << windowedWidth << "x" << windowedHeight << ")" << std::endl;
+    isFullscreen = false;
+  }
+}
 
 void Engine::framebuffer_size_callback(GLFWwindow* window, int width,
                                        int height) {
@@ -414,6 +437,17 @@ void Engine::mouse_button_callback(GLFWwindow* window, int button, int action,
     }
   }
 }
+void Engine::key_callback(GLFWwindow* window, int key, int scancode, int action,
+                          int mods) {
+  if (!instance) {
+    return;
+  }
+
+  // Check for SHIFT + ENTER to toggle fullscreen
+  if (key == GLFW_KEY_ENTER && action == GLFW_PRESS && (mods & GLFW_MOD_SHIFT)) {
+    instance->toggleFullscreen();
+  }
+}
 
 GLFWwindow* Engine::createWindow(std::string name, int width, int height) {
   GLFWwindow* newWindow =
@@ -431,7 +465,7 @@ GLFWwindow* Engine::createWindow(std::string name, int width, int height) {
   glfwSetCursorPosCallback(newWindow, mouse_callback);
   glfwSetScrollCallback(newWindow, scroll_callback);
   glfwSetMouseButtonCallback(newWindow, mouse_button_callback);
-
+  glfwSetKeyCallback(newWindow, key_callback);
 
   glfwSetInputMode(newWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
