@@ -1,4 +1,4 @@
-#include "../headers/CelestialBody.h"
+#include "../headers/celestialbody/CelestialBody.h"
 
 CelestialBody::CelestialBody(Engine* engine, BodyType bodyType, float mass,
                              float radius, float semiMajorAxis,

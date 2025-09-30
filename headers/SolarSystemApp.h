@@ -8,16 +8,16 @@
 #include <memory>
 #include <vector>
 
-#include "CelestialBodyFactory.h"
-#include "CelestialBodyPicker.h"
-#include "Engine.h"
-#include "PlanetInfoPanel.h"
+#include "celestialbody/CelestialBodyFactory.h"
+#include "celestialbody/CelestialBodyPicker.h"
 #include "Ring.h"
-#include "SceneRenderer.h"
-#include "Skybox.h"
-#include "TextRenderer.h"
-#include "UIRenderer.h"
-#include "CelestialBody.h"
+#include "celestialbody/CelestialBody.h"
+#include "celestialbody/CelestialBodyInfoPanel.h"
+#include "core/Engine.h"
+#include "core/Skybox.h"
+#include "renderers/SceneRenderer.h"
+#include "renderers/TextRenderer.h"
+#include "renderers/UIRenderer.h"
 
 // Configuration
 struct AppConfig {

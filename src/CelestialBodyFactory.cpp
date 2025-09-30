@@ -1,7 +1,7 @@
 ﻿//
 // Created by Daniel on 30-Sep-25.
 //
-#include "CelestialBodyFactory.h"
+#include "../headers/celestialbody/CelestialBodyFactory.h"
 
 std::vector<CelestialBodyConfig> CelestialBodyFactory::getSolarSystemConfig() {
     return {

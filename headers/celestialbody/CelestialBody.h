@@ -3,9 +3,9 @@
 
 #include <glm/glm.hpp>
 
-#include "Engine.h"
-#include "Shader.h"
-#include "Texture.h"
+#include "../core/Engine.h"
+#include "../core/Shader.h"
+#include "../core/Texture.h"
 
 #ifndef SUN_MASS
 #define SUN_MASS 1.989e30f

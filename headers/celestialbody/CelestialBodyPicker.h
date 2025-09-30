@@ -8,7 +8,7 @@
 #include <glm/glm.hpp>
 #include <vector>
 
-#include "Camera.h"
+#include "../core/Camera.h"
 #include "CelestialBody.h"
 
 class CelestialBodyPicker {

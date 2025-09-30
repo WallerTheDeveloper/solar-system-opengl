@@ -4,8 +4,8 @@
 
 #ifndef SOLAR_SYSTEM_OPENGL_RING_H
 #define SOLAR_SYSTEM_OPENGL_RING_H
-#include "Engine.h"
-#include "Shader.h"
+#include "core/Engine.h"
+#include "core/Shader.h"
 #include "debug_utils.h"
 
 class Ring {

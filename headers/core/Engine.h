@@ -9,9 +9,9 @@
 #include <string>
 #include <vector>
 
+#include "../debug_utils.h"
 #include "Camera.h"
 #include "Texture.h"
-#include "debug_utils.h"
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846

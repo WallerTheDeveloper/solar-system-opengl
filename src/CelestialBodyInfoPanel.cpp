@@ -1,7 +1,7 @@
 ﻿//
 // Created by Daniel on 29-Sep-25.
 //
-#include "PlanetInfoPanel.h"
+#include "../headers/celestialbody/CelestialBodyInfoPanel.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <iomanip>

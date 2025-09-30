@@ -8,8 +8,8 @@
 #include <memory>
 #include <vector>
 
+#include "../core/Engine.h"
 #include "CelestialBody.h"
-#include "Engine.h"
 
 struct CelestialBodyConfig {
   CelestialBody::BodyType type;

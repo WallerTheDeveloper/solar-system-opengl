@@ -8,9 +8,9 @@
 #include <glm/glm.hpp>
 #include <string>
 
-#include "Camera.h"
+#include "../core/Camera.h"
+#include "../renderers/TextRenderer.h"
 #include "CelestialBody.h"
-#include "TextRenderer.h"
 
 struct CelestialBodyInfo {
   std::string name;

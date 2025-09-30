@@ -2,9 +2,9 @@
 // Created by Daniel on 29-Sep-25.
 //
 
-#include <limits>
+#include "../headers/celestialbody/CelestialBodyPicker.h"
 
-#include "CelestialBodyPicker.h"
+#include <limits>
 
 bool CelestialBodyPicker::raySphereIntersection(const glm::vec3& rayOrigin,
                                          const glm::vec3& rayDirection,

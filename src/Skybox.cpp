@@ -1,6 +1,6 @@
 // Replace your skybox.cpp with this complete working version:
 
-#include "Skybox.h"
+#include "../headers/core/Skybox.h"
 
 #include <iostream>
 

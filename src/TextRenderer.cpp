@@ -1,4 +1,4 @@
-﻿#include "TextRenderer.h"
+﻿#include "../headers/renderers/TextRenderer.h"
 
 TextRenderer::TextRenderer(Engine* engine) : engine(engine) {}
 

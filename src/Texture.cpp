@@ -1,4 +1,4 @@
-#include "Texture.h"
+#include "../headers/core/Texture.h"
 
 #include <iostream>
 

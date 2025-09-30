@@ -8,8 +8,8 @@
 #include <glm/glm.hpp>
 #include <string>
 
-#include "Camera.h"
-#include "PlanetInfoPanel.h"
+#include "../celestialbody/CelestialBodyInfoPanel.h"
+#include "../core/Camera.h"
 #include "TextRenderer.h"
 
 class UIRenderer {

@@ -7,11 +7,11 @@
 
 #include <vector>
 
-#include "Camera.h"
-#include "CelestialBody.h"
-#include "CelestialBodyFactory.h"
-#include "Ring.h"
-#include "Skybox.h"
+#include "../celestialbody/CelestialBodyFactory.h"
+#include "../Ring.h"
+#include "../celestialbody/CelestialBody.h"
+#include "../core/Camera.h"
+#include "../core/Skybox.h"
 
 struct RenderContext {
   const Camera& camera;
