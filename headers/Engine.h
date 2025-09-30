@@ -28,7 +28,7 @@ struct BoxMeshData : ObjectMeshData {};
 
 class Engine {
  public:
-  const unsigned int SCR_WIDTH = 1980;
+  const unsigned int SCR_WIDTH = 1920;
   const unsigned int SCR_HEIGHT = 1080;
   Camera camera;
   float deltaTime = 0.0f;  // time between current frame and last frame

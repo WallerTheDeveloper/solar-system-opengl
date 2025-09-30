@@ -44,7 +44,7 @@ class SolarSystemApp {
   std::unique_ptr<Skybox> skybox_;
   std::unique_ptr<Ring> saturnRing_;
   std::unique_ptr<TextRenderer> textRenderer_;
-  std::unique_ptr<PlanetInfoPanel> planetInfoPanel_;
+  std::unique_ptr<CelestialBodyInfoPanel> planetInfoPanel_;
 
   // Rendering helpers
   std::unique_ptr<SceneRenderer> sceneRenderer_;

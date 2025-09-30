@@ -72,7 +72,7 @@ bool SolarSystemApp::initializeCoreSystems() {
     }
 
     // Create planet info panel
-    planetInfoPanel_ = std::make_unique<PlanetInfoPanel>(textRenderer_.get());
+    planetInfoPanel_ = std::make_unique<CelestialBodyInfoPanel>(textRenderer_.get());
 
     return true;
 }
@@ -132,15 +132,15 @@ void SolarSystemApp::handlePlanetSelection() {
 
     if (result.hit) {
         selectedPlanetIndex_ = static_cast<int>(result.planetIndex);
-        uiRenderer_->setShowPlanetInfo(true);
+        uiRenderer_->setShowCelestialBodyInfo(true);
 
         std::cout << "✓ Selected planet: "
-                  << PlanetInfoPanel::getPlanetInfo(
+                  << CelestialBodyInfoPanel::getBodyInfo(
                          celestialBodies_[result.planetIndex]->type).name
                   << std::endl;
     } else {
         selectedPlanetIndex_ = -1;
-        uiRenderer_->setShowPlanetInfo(false);
+        uiRenderer_->setShowCelestialBodyInfo(false);
         std::cout << "✓ Deselected planet" << std::endl;
     }
 }
@@ -206,9 +206,9 @@ void SolarSystemApp::render(float currentTime) {
         selectedPlanetIndex_ < static_cast<int>(celestialBodies_.size())) {
 
         const auto& selectedPlanet = celestialBodies_[selectedPlanetIndex_];
-        PlanetInfo info = PlanetInfoPanel::getPlanetInfo(selectedPlanet->type);
+        CelestialBodyInfo info = CelestialBodyInfoPanel::getBodyInfo(selectedPlanet->type);
 
-        uiRenderer_->renderPlanetInfo(
+        uiRenderer_->renderCelestialBodyInfo(
             selectedPlanet->position,
             info,
             engine_->camera,

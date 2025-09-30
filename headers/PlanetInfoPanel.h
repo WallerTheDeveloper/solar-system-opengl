@@ -12,7 +12,7 @@
 #include "CelestialBody.h"
 #include "TextRenderer.h"
 
-struct PlanetInfo {
+struct CelestialBodyInfo {
   std::string name;
   float distanceFromSun;  // in AU
   float temperature;      // in Celsius
@@ -22,14 +22,14 @@ struct PlanetInfo {
   int moons;
 };
 
-class PlanetInfoPanel {
+class CelestialBodyInfoPanel {
  public:
-  PlanetInfoPanel(TextRenderer* textRenderer);
+  CelestialBodyInfoPanel(TextRenderer* textRenderer);
 
-  void renderPanel(const glm::vec3& worldPosition, const PlanetInfo& info,
+  void renderPanel(const glm::vec3& worldPosition, const CelestialBodyInfo& info,
                    const Camera& camera, float screenWidth, float screenHeight);
 
-  static PlanetInfo getPlanetInfo(CelestialBody::BodyType type);
+  static CelestialBodyInfo getBodyInfo(CelestialBody::BodyType type);
 
  private:
   TextRenderer* textRenderer;

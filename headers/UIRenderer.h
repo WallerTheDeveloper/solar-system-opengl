@@ -14,21 +14,21 @@
 
 class UIRenderer {
  public:
-  UIRenderer(TextRenderer* textRenderer, PlanetInfoPanel* planetInfoPanel);
+  UIRenderer(TextRenderer* textRenderer, CelestialBodyInfoPanel* planetInfoPanel);
 
   void renderUI(float fps, const Camera& camera, unsigned int screenWidth,
                 unsigned int screenHeight);
 
-  void renderPlanetInfo(const glm::vec3& planetPosition, const PlanetInfo& info,
+  void renderCelestialBodyInfo(const glm::vec3& bodyPosition, const CelestialBodyInfo& info,
                         const Camera& camera, unsigned int screenWidth,
                         unsigned int screenHeight);
 
-  void setShowPlanetInfo(bool show) { showPlanetInfo_ = show; }
+  void setShowCelestialBodyInfo(bool show) { showCelestialBodyInfo_ = show; }
 
  private:
   TextRenderer* textRenderer_;
-  PlanetInfoPanel* planetInfoPanel_;
-  bool showPlanetInfo_ = false;
+  CelestialBodyInfoPanel* planetInfoPanel_;
+  bool showCelestialBodyInfo_ = false;
 
   void renderFPS(float fps, unsigned int screenWidth);
   void renderControls();

@@ -9,10 +9,10 @@
 
 #include "glm/detail/_noise.hpp"
 
-PlanetInfoPanel::PlanetInfoPanel(TextRenderer* textRenderer)
+CelestialBodyInfoPanel::CelestialBodyInfoPanel(TextRenderer* textRenderer)
     : textRenderer(textRenderer) {}
 
-PlanetInfo PlanetInfoPanel::getPlanetInfo(CelestialBody::BodyType type) {
+CelestialBodyInfo CelestialBodyInfoPanel::getBodyInfo(CelestialBody::BodyType type) {
     switch (type) {
         case CelestialBody::Sun:
             return {"SUN", 0.0f, 5505.0f, "STAR", 333000.0f, 1392700.0f, 0};
@@ -37,7 +37,7 @@ PlanetInfo PlanetInfoPanel::getPlanetInfo(CelestialBody::BodyType type) {
     }
 }
 
-PlanetInfoPanel::ScreenPosition PlanetInfoPanel::worldToScreen(
+CelestialBodyInfoPanel::ScreenPosition CelestialBodyInfoPanel::worldToScreen(
     const glm::vec3& worldPos,
     const Camera& camera,
     float screenWidth,
@@ -79,7 +79,7 @@ PlanetInfoPanel::ScreenPosition PlanetInfoPanel::worldToScreen(
     return result;
 }
 
-void PlanetInfoPanel::renderBackground(float x, float y, float width, float height) {
+void CelestialBodyInfoPanel::renderBackground(float x, float y, float width, float height) {
     // We'll render a semi-transparent background using lines
     // since we don't have a quad renderer, we'll use text characters as blocks
 
@@ -93,7 +93,7 @@ void PlanetInfoPanel::renderBackground(float x, float y, float width, float heig
     }
 }
 
-void PlanetInfoPanel::renderBorder(float x, float y, float width, float height) {
+void CelestialBodyInfoPanel::renderBorder(float x, float y, float width, float height) {
     // Top border
     textRenderer->renderText("-", x, y - 10.0f, 2.0f,
                            glm::vec3(0.0f, 0.8f, 1.0f));
@@ -101,8 +101,8 @@ void PlanetInfoPanel::renderBorder(float x, float y, float width, float height) 
     // You can add more border rendering here if desired
 }
 
-void PlanetInfoPanel::renderPanel(const glm::vec3& worldPosition,
-                                  const PlanetInfo& info, const Camera& camera,
+void CelestialBodyInfoPanel::renderPanel(const glm::vec3& worldPosition,
+                                  const CelestialBodyInfo& info, const Camera& camera,
                                   float screenWidth, float screenHeight) {
 
     // Calculate the position above the planet
