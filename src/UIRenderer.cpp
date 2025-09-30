@@ -36,23 +36,25 @@ void UIRenderer::renderFPS(float fps, unsigned int screenWidth) {
 }
 
 void UIRenderer::renderControls() {
-  textRenderer_->renderText("CONTROLS:", 20.0f, 20.0f, 2.5f,
+  textRenderer_->renderText("CONTROLS", 20.0f, 20.0f, 2.5f,
                             glm::vec3(1.0f, 1.0f, 0.0f));
-  textRenderer_->renderText("WASD    -   MOVE", 20.0f, 50.0f, 2.2f,
+  textRenderer_->renderText("W,A,S,D      - MOVE", 20.0f, 50.0f, 2.2f,
                             glm::vec3(1.0f, 1.0f, 1.0f));
-  textRenderer_->renderText("E       -   MOVE UP", 20.0f, 80.0f, 2.2f,
+  textRenderer_->renderText("E            - MOVE UP", 20.0f, 80.0f, 2.2f,
                             glm::vec3(1.0f, 1.0f, 1.0f));
-  textRenderer_->renderText("Q       -   MOVE DOWN", 20.0f, 110.0f, 2.2f,
+  textRenderer_->renderText("Q            - MOVE DOWN", 20.0f, 110.0f, 2.2f,
                             glm::vec3(1.0f, 1.0f, 1.0f));
-  textRenderer_->renderText("SHIFT   -   SPRINT", 20.0f, 140.0f, 2.2f,
+  textRenderer_->renderText("SHIFT        - SPRINT", 20.0f, 140.0f, 2.2f,
                             glm::vec3(1.0f, 1.0f, 1.0f));
-  textRenderer_->renderText("MOUSE   -   LOOK AROUND", 20.0f, 170.0f, 2.2f,
+  textRenderer_->renderText("MOUSE        - LOOK AROUND", 20.0f, 170.0f, 2.2f,
                             glm::vec3(1.0f, 1.0f, 1.0f));
-  textRenderer_->renderText("SCROLL  -   ZOOM", 20.0f, 200.0f, 2.2f,
+  textRenderer_->renderText("SCROLL       - ZOOM", 20.0f, 200.0f, 2.2f,
                             glm::vec3(1.0f, 1.0f, 1.0f));
-  textRenderer_->renderText("CLICK   -   SELECT PLANET", 20.0f, 230.0f, 2.2f,
+  textRenderer_->renderText("SHIFT+ENTER  - FULL SCREEN", 20.0f, 230.0f, 2.2f,
+                            glm::vec3(1.0f, 1.0f, 1.0f));
+  textRenderer_->renderText("CLICK        - SELECT PLANET", 20.0f, 260.0f, 2.2f,
                             glm::vec3(0.5f, 1.0f, 0.5f));
-  textRenderer_->renderText("ESC     -   EXIT", 20.0f, 260.0f, 2.2f,
+  textRenderer_->renderText("ESC          - EXIT", 20.0f, 290.0f, 2.2f,
                             glm::vec3(1.0f, 0.5f, 0.5f));
 }
 

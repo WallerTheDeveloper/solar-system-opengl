@@ -107,7 +107,7 @@ float CelestialBodyFactory::getRotationSpeed(CelestialBody::BodyType type) {
 
 glm::vec3 CelestialBodyFactory::getScale(CelestialBody::BodyType type) {
     switch (type) {
-        case CelestialBody::Sun: return glm::vec3(5.0f);
+        case CelestialBody::Sun: return glm::vec3(3.0f);
         case CelestialBody::Mercury: return glm::vec3(0.4f);
         case CelestialBody::Venus: return glm::vec3(0.9f);
         case CelestialBody::Earth: return glm::vec3(1.0f);
