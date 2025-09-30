@@ -27,7 +27,7 @@ class PlanetInfoPanel {
   PlanetInfoPanel(TextRenderer* textRenderer);
 
   void renderPanel(const glm::vec3& worldPosition, const PlanetInfo& info,
-                   Camera& camera, float screenWidth, float screenHeight);
+                   const Camera& camera, float screenWidth, float screenHeight);
 
   static PlanetInfo getPlanetInfo(CelestialBody::BodyType type);
 
@@ -40,7 +40,7 @@ class PlanetInfoPanel {
     bool visible;
   };
 
-  ScreenPosition worldToScreen(const glm::vec3& worldPos, Camera& camera,
+  ScreenPosition worldToScreen(const glm::vec3& worldPos, const Camera& camera,
                                float screenWidth, float screenHeight);
 
   void renderBackground(float x, float y, float width, float height);

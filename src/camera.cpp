@@ -20,55 +20,9 @@ Camera::Camera(float posX, float posY, float posZ, float upX, float upY, float u
     updateCameraVectors();
 }
 
-glm::mat4 Camera::getViewMatrix()
+glm::mat4 Camera::getViewMatrix() const
 {
-    return Camera::lookAt(Position, Position + Front, Up);
-    //return glm::lookAt(Position, Position + Front, Up);
-}
-
-glm::mat4 Camera::lookAt(glm::vec3 from, glm::vec3 to, glm::vec3 up)
-{
-    glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
-    glm::vec3 cameraDirection = glm::normalize(from - to);
-
-    float cameraMatrix[4][4] =
-    {
-        { Right.x, Right.y, Right.z, 0},
-        { Up.x, Up.y, Up.z, 0 },
-        { cameraDirection.x, cameraDirection.y, cameraDirection.z, 0},
-        { 0, 0, 0, 1 }
-    };
-
-    float transformationMatrix[4][4] =
-    {
-        { 1, 0, 0, -Position.x },
-        { 0, 1, 0, -Position.y },
-        { 0, 0, 1, -Position.z },
-        { 0, 0, 0, 1}
-    };
-
-    float result[4][4] = {
-        1.0f, 0.0f, 0.0f, 0.0f,
-        0.0f, 1.0f, 0.0f, 0.0f,
-        0.0f, 0.0f, 1.0f, 0.0f,
-        0.0f, 0.0f, 0.0f, 1.0f
-    };
-
-    for (int row = 0; row < 4; row++) {
-        for (int col = 0; col < 4; col++) {
-            result[row][col] = 0.0f;
-            for (int k = 0; k < 4; k++) {
-                result[row][col] += cameraMatrix[row][k] * transformationMatrix[k][col];
-            }
-        }
-    }
-
-    return glm::mat4(
-        result[0][0], result[1][0], result[2][0], result[3][0],
-        result[0][1], result[1][1], result[2][1], result[3][1],
-        result[0][2], result[1][2], result[2][2], result[3][2],
-        result[0][3], result[1][3], result[2][3], result[3][3] 
-    );
+    return glm::lookAt(Position, Position + Front, Up);
 }
 
 glm::vec3 Camera::getRayDirection() const {

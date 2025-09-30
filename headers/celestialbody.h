@@ -43,7 +43,7 @@ class CelestialBody {
   void updateOrbitalPositions(float deltaTime);
   virtual void create(const char* texturePath) = 0;
   virtual void render(glm::mat4 model, glm::mat4 view,
-                      glm::mat4 projection) = 0;
+                      glm::mat4 projection) const = 0;
 
  protected:
   ~CelestialBody() = default;

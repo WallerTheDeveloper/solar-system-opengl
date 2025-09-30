@@ -39,7 +39,7 @@ PlanetInfo PlanetInfoPanel::getPlanetInfo(CelestialBody::BodyType type) {
 
 PlanetInfoPanel::ScreenPosition PlanetInfoPanel::worldToScreen(
     const glm::vec3& worldPos,
-    Camera& camera,
+    const Camera& camera,
     float screenWidth,
     float screenHeight) {
 
@@ -102,7 +102,7 @@ void PlanetInfoPanel::renderBorder(float x, float y, float width, float height) 
 }
 
 void PlanetInfoPanel::renderPanel(const glm::vec3& worldPosition,
-                                  const PlanetInfo& info, Camera& camera,
+                                  const PlanetInfo& info, const Camera& camera,
                                   float screenWidth, float screenHeight) {
 
     // Calculate the position above the planet

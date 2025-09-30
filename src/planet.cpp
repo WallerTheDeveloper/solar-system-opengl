@@ -55,7 +55,7 @@ void Planet::create(const char* texturePath) {
   GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 }
 
-void Planet::render(glm::mat4 model, glm::mat4 view, glm::mat4 projection) {
+void Planet::render(glm::mat4 model, glm::mat4 view, glm::mat4 projection) const {
   if (!created) {
     std::cout << "Planet was not created. Nothing to render! Did you call "
             "Planet::create before?"

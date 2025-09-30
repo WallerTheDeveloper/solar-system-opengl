@@ -11,7 +11,7 @@ class Planet : public CelestialBody {
  public:
   using CelestialBody::CelestialBody;
   void create(const char* texturePath) override;
-  void render(glm::mat4 model, glm::mat4 view, glm::mat4 projection) override;
+  void render(glm::mat4 model, glm::mat4 view, glm::mat4 projection) const override;
 
  private:
   bool created = false;
