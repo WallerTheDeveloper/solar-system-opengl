@@ -24,7 +24,7 @@ class SceneRenderer {
  public:
   SceneRenderer(Skybox* skybox, Ring* saturnRing);
 
-  void renderScene(const std::vector<CelestialBody>& celestialBodies,
+  void renderScene(const std::vector<std::unique_ptr<CelestialBody>>& celestialBodies,
                    const RenderContext& context);
 
  private:
@@ -33,7 +33,7 @@ class SceneRenderer {
 
   glm::mat4 calculateViewMatrix(const Camera& camera) const;
   glm::mat4 calculateProjectionMatrix(const RenderContext& context) const;
-  glm::mat4 calculateModelMatrix(const CelestialBody& celestialBody, float currentTime) const;
+  glm::mat4 calculateModelMatrix(const std::unique_ptr<CelestialBody>& celestialBody, float currentTime) const;
 };
 
 #endif  // SCENE_RENDERER_H

@@ -51,7 +51,7 @@ class SolarSystemApp {
   std::unique_ptr<UIRenderer> uiRenderer_;
 
   // Scene data
-  std::vector<CelestialBody> celestialBodies_;
+  std::vector<std::unique_ptr<CelestialBody>> celestialBodies_;
   int selectedPlanetIndex_ = -1;
 
   // Time & performance tracking

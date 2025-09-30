@@ -6,7 +6,7 @@ CelestialBody::CelestialBody(Engine* engine, BodyType bodyType, float mass,
                              float currentAngle, glm::vec3 position,
                              glm::vec3 velocity)
     : engine(engine),
-      bodyType(bodyType),
+      type(bodyType),
       mass(mass),
       radius(radius),
       semiMajorAxis(semiMajorAxis),
@@ -17,7 +17,7 @@ CelestialBody::CelestialBody(Engine* engine, BodyType bodyType, float mass,
       velocity(velocity) {}
 
 void CelestialBody::updateOrbitalPositions(float deltaTime) {
-  if (this->bodyType == Sun) {
+  if (this->type == Sun) {
     return;
   }
 
@@ -42,7 +42,7 @@ void CelestialBody::updateOrbitalPositions(float deltaTime) {
 }
 
 void CelestialBody::create(const char* texturePath) {
-  std::cout << "Creating planet: " << bodyType << std::endl;
+  std::cout << "Creating planet: " << type << std::endl;
 
   meshData = engine->generateSphereMesh(1.0f, 36, 18);
   std::cout << "Generated mesh with " << meshData.vertices.size()
@@ -73,7 +73,7 @@ void CelestialBody::create(const char* texturePath) {
   checkBufferBinding(GL_ARRAY_BUFFER, "VBO");
   checkBufferBinding(GL_ELEMENT_ARRAY_BUFFER, "EBO");
 
-  std::cout << "OpenGL buffers created successfully for planet " << bodyType
+  std::cout << "OpenGL buffers created successfully for planet " << type
             << std::endl;
 
   this->textureID = engine->addTextureToObject(texturePath, GL_TEXTURE_2D,
@@ -84,16 +84,16 @@ void CelestialBody::create(const char* texturePath) {
                                       "../shaders/object.frag");
     GL_CHECK(shader->use());
     GL_CHECK(shader->setInt("texture", 0));
-    std::cout << "Shader compiled successfully for planet " << bodyType
+    std::cout << "Shader compiled successfully for planet " << type
               << std::endl;
   } catch (const std::exception& e) {
-    std::cout << "ERROR: Failed to create shader for planet " << bodyType
+    std::cout << "ERROR: Failed to create shader for planet " << type
               << ": " << e.what() << std::endl;
     return;
   }
 
   this->created = true;
-  std::cout << "Planet " << bodyType << " created successfully!" << std::endl;
+  std::cout << "Planet " << type << " created successfully!" << std::endl;
 
   GL_CHECK(glBindVertexArray(0));
   GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, 0));

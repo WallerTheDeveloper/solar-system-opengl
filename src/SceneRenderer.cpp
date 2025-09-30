@@ -5,7 +5,7 @@
 SceneRenderer::SceneRenderer(Skybox* skybox, Ring* saturnRing)
     : skybox_(skybox), saturnRing_(saturnRing) {}
 
-void SceneRenderer::renderScene(const std::vector<CelestialBody>& celestialBodies,
+void SceneRenderer::renderScene(const std::vector<std::unique_ptr<CelestialBody>>& celestialBodies,
                                 const RenderContext& context) {
   glm::mat4 view = calculateViewMatrix(context.camera);
   glm::mat4 projection = calculateProjectionMatrix(context);
@@ -16,10 +16,10 @@ void SceneRenderer::renderScene(const std::vector<CelestialBody>& celestialBodie
   // Render all planets
   for (const auto& body : celestialBodies) {
     glm::mat4 model = calculateModelMatrix(body, context.currentTime);
-    body.render(model, view, projection);
+    body->render(model, view, projection);
 
     // Special case: render Saturn's ring
-    if (body.bodyType == CelestialBody::Saturn) {
+    if (body->type == CelestialBody::Saturn) {
       saturnRing_->render(model, view, projection);
     }
   }
@@ -37,21 +37,21 @@ glm::mat4 SceneRenderer::calculateProjectionMatrix(
                           0.1f, 10000.0f);
 }
 
-glm::mat4 SceneRenderer::calculateModelMatrix(const CelestialBody& celestialBody  ,
+glm::mat4 SceneRenderer::calculateModelMatrix(const std::unique_ptr<CelestialBody>& celestialBody  ,
                                               float currentTime) const {
   glm::mat4 model = glm::mat4(1.0f);
 
   // Translation
-  model = glm::translate(model, celestialBody.position);
+  model = glm::translate(model, celestialBody->position);
 
   // Rotation
-  float rotationSpeed = CelestialBodyFactory::getRotationSpeed(celestialBody.bodyType);
-  glm::vec3 rotationAxis = CelestialBodyFactory::getRotationAxis(celestialBody.bodyType);
+  float rotationSpeed = CelestialBodyFactory::getRotationSpeed(celestialBody->type);
+  glm::vec3 rotationAxis = CelestialBodyFactory::getRotationAxis(celestialBody->type);
   model = glm::rotate(model, currentTime * glm::radians(rotationSpeed),
                       rotationAxis);
 
   // Scale
-  glm::vec3 scale = CelestialBodyFactory::getScale(celestialBody.bodyType);
+  glm::vec3 scale = CelestialBodyFactory::getScale(celestialBody->type);
   model = glm::scale(model, scale);
 
   return model;

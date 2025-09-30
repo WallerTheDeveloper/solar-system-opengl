@@ -119,8 +119,8 @@ void SolarSystemApp::handlePlanetSelection() {
     std::vector<glm::vec3> scales;
     scales.reserve(celestialBodies_.size());
 
-    for (const auto& planet : celestialBodies_) {
-        scales.push_back(CelestialBodyFactory::getScale(planet.bodyType));
+    for (const auto& body : celestialBodies_) {
+        scales.push_back(CelestialBodyFactory::getScale(body->type));
     }
 
     // Perform ray-sphere intersection test
@@ -136,7 +136,7 @@ void SolarSystemApp::handlePlanetSelection() {
 
         std::cout << "✓ Selected planet: "
                   << PlanetInfoPanel::getPlanetInfo(
-                         celestialBodies_[result.planetIndex].bodyType).name
+                         celestialBodies_[result.planetIndex]->type).name
                   << std::endl;
     } else {
         selectedPlanetIndex_ = -1;
@@ -176,8 +176,8 @@ void SolarSystemApp::calculateFPS(float currentTime) {
 
 void SolarSystemApp::update(float deltaTime) {
     // Update all celestial body orbital positions
-    for (auto& planet : celestialBodies_) {
-        planet.updateOrbitalPositions(deltaTime * AppConfig::TIME_SCALE);
+    for (auto& body : celestialBodies_) {
+        body->updateOrbitalPositions(deltaTime * AppConfig::TIME_SCALE);
     }
 }
 
@@ -206,10 +206,10 @@ void SolarSystemApp::render(float currentTime) {
         selectedPlanetIndex_ < static_cast<int>(celestialBodies_.size())) {
 
         const auto& selectedPlanet = celestialBodies_[selectedPlanetIndex_];
-        PlanetInfo info = PlanetInfoPanel::getPlanetInfo(selectedPlanet.bodyType);
+        PlanetInfo info = PlanetInfoPanel::getPlanetInfo(selectedPlanet->type);
 
         uiRenderer_->renderPlanetInfo(
-            selectedPlanet.position,
+            selectedPlanet->position,
             info,
             engine_->camera,
             engine_->SCR_WIDTH,

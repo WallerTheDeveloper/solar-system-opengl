@@ -20,7 +20,7 @@ public:
   };
 
   static SelectionResult pickPlanet(const Camera& camera,
-                                   const std::vector<CelestialBody>& celestialBodies,
+                                   const std::vector<std::unique_ptr<CelestialBody>>& celestialBodies,
                                    const std::vector<glm::vec3>& scales);
 
 private:

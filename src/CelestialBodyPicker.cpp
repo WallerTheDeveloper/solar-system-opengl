@@ -34,7 +34,7 @@ bool CelestialBodyPicker::raySphereIntersection(const glm::vec3& rayOrigin,
 }
 
 CelestialBodyPicker::SelectionResult CelestialBodyPicker::pickPlanet(
-    const Camera& camera, const std::vector<CelestialBody>& celestialBodies,
+    const Camera& camera, const std::vector<std::unique_ptr<CelestialBody>>& celestialBodies,
     const std::vector<glm::vec3>& scales) {
   SelectionResult result{false, 0, std::numeric_limits<float>::max()};
   glm::vec3 rayOrigin = camera.Position;
@@ -49,7 +49,7 @@ CelestialBodyPicker::SelectionResult CelestialBodyPicker::pickPlanet(
     float sphereRadius = scales[i].x;
     float distance;
 
-    if (raySphereIntersection(rayOrigin, rayDirection, celestialBodies[i].position,
+    if (raySphereIntersection(rayOrigin, rayDirection, celestialBodies[i]->position,
                               sphereRadius, distance)) {
       std::cout << "  Hit planet " << i << " at distance " << distance
                 << " (radius: " << sphereRadius << ")" << std::endl;

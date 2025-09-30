@@ -71,20 +71,20 @@ std::vector<CelestialBodyConfig> CelestialBodyFactory::getSolarSystemConfig() {
     };
 }
 
-std::vector<CelestialBody> CelestialBodyFactory::createSolarSystem(Engine* engine) {
-    std::vector<CelestialBody> celestialBodies;
+std::vector<std::unique_ptr<CelestialBody>> CelestialBodyFactory::createSolarSystem(Engine* engine) {
+    std::vector<std::unique_ptr<CelestialBody>> celestialBodies;
     auto configs = getSolarSystemConfig();
 
     celestialBodies.reserve(configs.size());
 
     for (const auto& config : configs) {
-        celestialBodies.emplace_back(
-            engine, config.type, config.mass, config.radius,
+        celestialBodies.push_back(
+            std::make_unique<CelestialBody>(engine, config.type, config.mass, config.radius,
             config.orbitalRadius, config.eccentricity, config.orbitalPeriod,
-            config.rotationAngle, config.position, config.velocity
+            config.rotationAngle, config.position, config.velocity)
         );
 
-        celestialBodies.back().create(config.texturePath);
+        celestialBodies.back()->create(config.texturePath);
     }
 
     return celestialBodies;

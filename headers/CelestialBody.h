@@ -33,7 +33,7 @@ class CelestialBody {
                 float currentAngle, glm::vec3 position, glm::vec3 velocity);
   ~CelestialBody() = default;
 
-  BodyType bodyType;
+  BodyType type;
   float mass;           // kg
   float radius;         // meters (for rendering scale)
   float semiMajorAxis;  // meters (orbital radius)
