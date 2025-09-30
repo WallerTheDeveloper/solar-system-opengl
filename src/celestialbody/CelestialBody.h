@@ -6,14 +6,7 @@
 #include "../core/Engine.h"
 #include "../core/Shader.h"
 #include "../core/Texture.h"
-
-#ifndef SUN_MASS
-#define SUN_MASS 1.989e30f
-#endif
-
-#ifndef G_CONST
-#define G_CONST 6.674e-11f
-#endif
+#include "../utils/math_utils.h"
 
 class CelestialBody {
  public:

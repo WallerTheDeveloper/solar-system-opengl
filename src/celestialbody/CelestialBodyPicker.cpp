@@ -2,7 +2,7 @@
 // Created by Daniel on 29-Sep-25.
 //
 
-#include "../headers/celestialbody/CelestialBodyPicker.h"
+#include "CelestialBodyPicker.h"
 
 #include <limits>
 

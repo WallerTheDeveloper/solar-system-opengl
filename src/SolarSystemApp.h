@@ -8,11 +8,11 @@
 #include <memory>
 #include <vector>
 
-#include "celestialbody/CelestialBodyFactory.h"
-#include "celestialbody/CelestialBodyPicker.h"
 #include "Ring.h"
 #include "celestialbody/CelestialBody.h"
+#include "celestialbody/CelestialBodyFactory.h"
 #include "celestialbody/CelestialBodyInfoPanel.h"
+#include "celestialbody/CelestialBodyPicker.h"
 #include "core/Engine.h"
 #include "core/Skybox.h"
 #include "renderers/SceneRenderer.h"

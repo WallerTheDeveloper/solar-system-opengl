@@ -7,9 +7,9 @@
 
 #include <vector>
 
-#include "../celestialbody/CelestialBodyFactory.h"
 #include "../Ring.h"
 #include "../celestialbody/CelestialBody.h"
+#include "../celestialbody/CelestialBodyFactory.h"
 #include "../core/Camera.h"
 #include "../core/Skybox.h"
 

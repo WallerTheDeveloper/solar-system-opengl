@@ -9,13 +9,10 @@
 #include <string>
 #include <vector>
 
-#include "../debug_utils.h"
+#include "../utils/debug_utils.h"
+#include "../utils/math_utils.h"
 #include "Camera.h"
 #include "Texture.h"
-
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
 
 struct ObjectMeshData {
   std::vector<float> vertices;
@@ -70,8 +67,8 @@ class Engine {
                               float depth = 2.0f);
 
   // Textures
-  unsigned int addTextureToObject(std::string path, GLenum target, GLint wrapping,
-                                  GLint filtering);
+  unsigned int addTextureToObject(std::string path, GLenum target,
+                                  GLint wrapping, GLint filtering);
   void renderTexture2D(GLenum textureUnit, unsigned int textureID);
   unsigned int createCubemap(std::vector<std::string> faces);
 
@@ -109,8 +106,10 @@ class Engine {
   static void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
   static void scroll_callback(GLFWwindow* window, double xoffset,
                               double yoffset);
-  static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
-  static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+  static void mouse_button_callback(GLFWwindow* window, int button, int action,
+                                    int mods);
+  static void key_callback(GLFWwindow* window, int key, int scancode,
+                           int action, int mods);
 
   // Window
   GLFWwindow* createWindow(std::string name, int width, int height);

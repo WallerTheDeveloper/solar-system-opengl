@@ -1,4 +1,4 @@
-#include "../headers/core/Engine.h"
+#include "Engine.h"
 
 Engine* Engine::instance = nullptr;
 std::function<void()> Engine::onLeftClickCallback = nullptr;

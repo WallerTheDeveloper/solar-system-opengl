@@ -1,4 +1,4 @@
-﻿#include "../headers/renderers/SceneRenderer.h"
+﻿#include "SceneRenderer.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 

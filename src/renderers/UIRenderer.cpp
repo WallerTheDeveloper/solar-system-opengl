@@ -1,7 +1,7 @@
 ﻿//
 // Created by Daniel on 30-Sep-25.
 //
-#include "../headers/renderers/UIRenderer.h"
+#include "UIRenderer.h"
 
 UIRenderer::UIRenderer(TextRenderer* textRenderer,
                        CelestialBodyInfoPanel* planetInfoPanel)

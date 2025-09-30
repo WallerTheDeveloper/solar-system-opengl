@@ -1,5 +1,6 @@
-#include "SolarSystemApp.h"
 #include <iostream>
+
+#include "SolarSystemApp.h"
 
 int main() {
   try {

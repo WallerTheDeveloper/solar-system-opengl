@@ -6,7 +6,7 @@
 #define SOLAR_SYSTEM_OPENGL_RING_H
 #include "core/Engine.h"
 #include "core/Shader.h"
-#include "debug_utils.h"
+#include "utils/debug_utils.h"
 
 class Ring {
  public:

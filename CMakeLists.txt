@@ -30,19 +30,14 @@ include_directories(${CMAKE_SOURCE_DIR}/headers)
 find_package(OpenGL REQUIRED)
 
 # Collect source files
-file(GLOB SOURCES
+file(GLOB_RECURSE SOURCES
+        "src/*.h"
         "src/*.cpp"
         "src/*.c"
 )
 
-# Collect header files
-file(GLOB HEADERS
-        "headers/*.h"
-        "headers/*.hpp"
-)
-
 # Create executable
-add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
+add_executable(${PROJECT_NAME} ${SOURCES})
 
 # Compiler-specific settings
 if(MSVC)
