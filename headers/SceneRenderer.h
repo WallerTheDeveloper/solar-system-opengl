@@ -7,11 +7,11 @@
 
 #include <vector>
 
-#include "PlanetFactory.h"
-#include "camera.h"
-#include "planet.h"
-#include "ring.h"
-#include "skybox.h"
+#include "Camera.h"
+#include "CelestialBody.h"
+#include "CelestialBodyFactory.h"
+#include "Ring.h"
+#include "Skybox.h"
 
 struct RenderContext {
   const Camera& camera;
@@ -24,7 +24,7 @@ class SceneRenderer {
  public:
   SceneRenderer(Skybox* skybox, Ring* saturnRing);
 
-  void renderScene(const std::vector<Planet>& planets,
+  void renderScene(const std::vector<CelestialBody>& celestialBodies,
                    const RenderContext& context);
 
  private:
@@ -33,7 +33,7 @@ class SceneRenderer {
 
   glm::mat4 calculateViewMatrix(const Camera& camera) const;
   glm::mat4 calculateProjectionMatrix(const RenderContext& context) const;
-  glm::mat4 calculateModelMatrix(const Planet& planet, float currentTime) const;
+  glm::mat4 calculateModelMatrix(const CelestialBody& celestialBody, float currentTime) const;
 };
 
 #endif  // SCENE_RENDERER_H

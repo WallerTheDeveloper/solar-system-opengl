@@ -1,7 +1,7 @@
 ﻿//
 // Created by Daniel on 29-Sep-25.
 //
-#include "planetinfopanel.h"
+#include "PlanetInfoPanel.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <iomanip>

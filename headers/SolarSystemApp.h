@@ -8,17 +8,16 @@
 #include <memory>
 #include <vector>
 
-#include "PlanetFactory.h"
+#include "CelestialBodyFactory.h"
+#include "CelestialBodyPicker.h"
+#include "Engine.h"
+#include "PlanetInfoPanel.h"
+#include "Ring.h"
 #include "SceneRenderer.h"
+#include "Skybox.h"
+#include "TextRenderer.h"
 #include "UIRenderer.h"
-#include "engine.h"
-#include "planet.h"
-#include "planetinfopanel.h"
-#include "ring.h"
-#include "skybox.h"
-#include "textrenderer.h"
-#include "planetpicker.h"
-
+#include "CelestialBody.h"
 
 // Configuration
 struct AppConfig {
@@ -52,7 +51,7 @@ class SolarSystemApp {
   std::unique_ptr<UIRenderer> uiRenderer_;
 
   // Scene data
-  std::vector<Planet> planets_;
+  std::vector<CelestialBody> celestialBodies_;
   int selectedPlanetIndex_ = -1;
 
   // Time & performance tracking

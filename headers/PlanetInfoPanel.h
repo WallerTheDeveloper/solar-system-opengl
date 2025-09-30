@@ -8,9 +8,9 @@
 #include <glm/glm.hpp>
 #include <string>
 
-#include "camera.h"
-#include "celestialbody.h"
-#include "textrenderer.h"
+#include "Camera.h"
+#include "CelestialBody.h"
+#include "TextRenderer.h"
 
 struct PlanetInfo {
   std::string name;

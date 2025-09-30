@@ -3,8 +3,8 @@
 
 #include <glm/glm.hpp>
 
-#include "engine.h"
-#include "shader.h"
+#include "Engine.h"
+#include "Shader.h"
 
 class Skybox {
  public:

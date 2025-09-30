@@ -8,9 +8,9 @@
 #include <glm/glm.hpp>
 #include <string>
 
-#include "camera.h"
-#include "planetinfopanel.h"
-#include "textrenderer.h"
+#include "Camera.h"
+#include "PlanetInfoPanel.h"
+#include "TextRenderer.h"
 
 class UIRenderer {
  public:

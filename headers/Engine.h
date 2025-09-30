@@ -8,9 +8,10 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "camera.h"
+
+#include "Camera.h"
+#include "Texture.h"
 #include "debug_utils.h"
-#include "texture.h"
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846

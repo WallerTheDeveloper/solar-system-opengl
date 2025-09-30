@@ -7,10 +7,11 @@
 
 #include <glm/glm.hpp>
 #include <vector>
-#include "planet.h"
-#include "camera.h"
 
-class PlanetPicker {
+#include "Camera.h"
+#include "CelestialBody.h"
+
+class CelestialBodyPicker {
 public:
   struct SelectionResult {
     bool hit;
@@ -19,7 +20,7 @@ public:
   };
 
   static SelectionResult pickPlanet(const Camera& camera,
-                                   const std::vector<Planet>& planets,
+                                   const std::vector<CelestialBody>& celestialBodies,
                                    const std::vector<glm::vec3>& scales);
 
 private:

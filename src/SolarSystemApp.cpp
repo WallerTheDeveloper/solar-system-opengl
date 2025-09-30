@@ -79,14 +79,14 @@ bool SolarSystemApp::initializeCoreSystems() {
 
 bool SolarSystemApp::initializePlanets() {
     // Use factory to create all planets with proper configuration
-    planets_ = PlanetFactory::createSolarSystem(engine_.get());
+    celestialBodies_ = CelestialBodyFactory::createSolarSystem(engine_.get());
 
-    if (planets_.empty()) {
+    if (celestialBodies_.empty()) {
         std::cerr << "Failed to create any planets" << std::endl;
         return false;
     }
 
-    std::cout << "✓ Created " << planets_.size() << " celestial bodies" << std::endl;
+    std::cout << "✓ Created " << celestialBodies_.size() << " celestial bodies" << std::endl;
     return true;
 }
 
@@ -117,16 +117,16 @@ void SolarSystemApp::onLeftClickCallbackBridge() {
 void SolarSystemApp::handlePlanetSelection() {
     // Gather scales for all planets
     std::vector<glm::vec3> scales;
-    scales.reserve(planets_.size());
+    scales.reserve(celestialBodies_.size());
 
-    for (const auto& planet : planets_) {
-        scales.push_back(PlanetFactory::getScale(planet.bodyType));
+    for (const auto& planet : celestialBodies_) {
+        scales.push_back(CelestialBodyFactory::getScale(planet.bodyType));
     }
 
     // Perform ray-sphere intersection test
-    auto result = PlanetPicker::pickPlanet(
+    auto result = CelestialBodyPicker::pickPlanet(
         engine_->camera,
-        planets_,
+        celestialBodies_,
         scales
     );
 
@@ -136,7 +136,7 @@ void SolarSystemApp::handlePlanetSelection() {
 
         std::cout << "✓ Selected planet: "
                   << PlanetInfoPanel::getPlanetInfo(
-                         planets_[result.planetIndex].bodyType).name
+                         celestialBodies_[result.planetIndex].bodyType).name
                   << std::endl;
     } else {
         selectedPlanetIndex_ = -1;
@@ -176,7 +176,7 @@ void SolarSystemApp::calculateFPS(float currentTime) {
 
 void SolarSystemApp::update(float deltaTime) {
     // Update all celestial body orbital positions
-    for (auto& planet : planets_) {
+    for (auto& planet : celestialBodies_) {
         planet.updateOrbitalPositions(deltaTime * AppConfig::TIME_SCALE);
     }
 }
@@ -191,7 +191,7 @@ void SolarSystemApp::render(float currentTime) {
     };
 
     // Render 3D scene
-    sceneRenderer_->renderScene(planets_, context);
+    sceneRenderer_->renderScene(celestialBodies_, context);
 
     // Render UI
     uiRenderer_->renderUI(
@@ -203,9 +203,9 @@ void SolarSystemApp::render(float currentTime) {
 
     // Render planet info if selected
     if (selectedPlanetIndex_ >= 0 &&
-        selectedPlanetIndex_ < static_cast<int>(planets_.size())) {
+        selectedPlanetIndex_ < static_cast<int>(celestialBodies_.size())) {
 
-        const auto& selectedPlanet = planets_[selectedPlanetIndex_];
+        const auto& selectedPlanet = celestialBodies_[selectedPlanetIndex_];
         PlanetInfo info = PlanetInfoPanel::getPlanetInfo(selectedPlanet.bodyType);
 
         uiRenderer_->renderPlanetInfo(

@@ -1,9 +1,9 @@
 ﻿//
 // Created by Daniel on 30-Sep-25.
 //
-#include "PlanetFactory.h"
+#include "CelestialBodyFactory.h"
 
-std::vector<PlanetConfig> PlanetFactory::getSolarSystemConfig() {
+std::vector<CelestialBodyConfig> CelestialBodyFactory::getSolarSystemConfig() {
     return {
         // Sun
         {
@@ -71,26 +71,26 @@ std::vector<PlanetConfig> PlanetFactory::getSolarSystemConfig() {
     };
 }
 
-std::vector<Planet> PlanetFactory::createSolarSystem(Engine* engine) {
-    std::vector<Planet> planets;
+std::vector<CelestialBody> CelestialBodyFactory::createSolarSystem(Engine* engine) {
+    std::vector<CelestialBody> celestialBodies;
     auto configs = getSolarSystemConfig();
 
-    planets.reserve(configs.size());
+    celestialBodies.reserve(configs.size());
 
     for (const auto& config : configs) {
-        planets.emplace_back(
+        celestialBodies.emplace_back(
             engine, config.type, config.mass, config.radius,
             config.orbitalRadius, config.eccentricity, config.orbitalPeriod,
             config.rotationAngle, config.position, config.velocity
         );
 
-        planets.back().create(config.texturePath);
+        celestialBodies.back().create(config.texturePath);
     }
 
-    return planets;
+    return celestialBodies;
 }
 
-float PlanetFactory::getRotationSpeed(CelestialBody::BodyType type) {
+float CelestialBodyFactory::getRotationSpeed(CelestialBody::BodyType type) {
     switch (type) {
         case CelestialBody::Sun: return 2.0f;
         case CelestialBody::Mercury: return 10.0f;
@@ -105,7 +105,7 @@ float PlanetFactory::getRotationSpeed(CelestialBody::BodyType type) {
     }
 }
 
-glm::vec3 PlanetFactory::getScale(CelestialBody::BodyType type) {
+glm::vec3 CelestialBodyFactory::getScale(CelestialBody::BodyType type) {
     switch (type) {
         case CelestialBody::Sun: return glm::vec3(5.0f);
         case CelestialBody::Mercury: return glm::vec3(0.4f);
@@ -120,7 +120,7 @@ glm::vec3 PlanetFactory::getScale(CelestialBody::BodyType type) {
     }
 }
 
-glm::vec3 PlanetFactory::getRotationAxis(CelestialBody::BodyType type) {
+glm::vec3 CelestialBodyFactory::getRotationAxis(CelestialBody::BodyType type) {
     if (type == CelestialBody::Uranus) {
         return glm::vec3(0.8f, 0.2f, 0.1f); // Tilted rotation
     }

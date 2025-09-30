@@ -2,11 +2,11 @@
 // Created by Daniel on 29-Sep-25.
 //
 
-#include "planetpicker.h"
-
 #include <limits>
 
-bool PlanetPicker::raySphereIntersection(const glm::vec3& rayOrigin,
+#include "CelestialBodyPicker.h"
+
+bool CelestialBodyPicker::raySphereIntersection(const glm::vec3& rayOrigin,
                                          const glm::vec3& rayDirection,
                                          const glm::vec3& sphereCenter,
                                          float sphereRadius, float& distance) {
@@ -33,8 +33,8 @@ bool PlanetPicker::raySphereIntersection(const glm::vec3& rayOrigin,
   return true;
 }
 
-PlanetPicker::SelectionResult PlanetPicker::pickPlanet(
-    const Camera& camera, const std::vector<Planet>& planets,
+CelestialBodyPicker::SelectionResult CelestialBodyPicker::pickPlanet(
+    const Camera& camera, const std::vector<CelestialBody>& celestialBodies,
     const std::vector<glm::vec3>& scales) {
   SelectionResult result{false, 0, std::numeric_limits<float>::max()};
   glm::vec3 rayOrigin = camera.Position;
@@ -45,11 +45,11 @@ PlanetPicker::SelectionResult PlanetPicker::pickPlanet(
   std::cout << "Ray Direction: (" << rayDirection.x << ", " << rayDirection.y
             << ", " << rayDirection.z << ")" << std::endl;
 
-  for (size_t i = 0; i < planets.size(); i++) {
+  for (size_t i = 0; i < celestialBodies.size(); i++) {
     float sphereRadius = scales[i].x;
     float distance;
 
-    if (raySphereIntersection(rayOrigin, rayDirection, planets[i].position,
+    if (raySphereIntersection(rayOrigin, rayDirection, celestialBodies[i].position,
                               sphereRadius, distance)) {
       std::cout << "  Hit planet " << i << " at distance " << distance
                 << " (radius: " << sphereRadius << ")" << std::endl;
@@ -63,9 +63,9 @@ PlanetPicker::SelectionResult PlanetPicker::pickPlanet(
   }
 
   if (result.hit) {
-    std::cout << "Selected planet " << result.planetIndex << std::endl;
+    std::cout << "Selected celestial body " << result.planetIndex << std::endl;
   } else {
-    std::cout << "No planet selected" << std::endl;
+    std::cout << "No celestial body selected" << std::endl;
   }
 
   return result;

@@ -2,7 +2,7 @@
 // Created by Daniel on 25-Sep-25.
 //
 
-#include "ring.h"
+#include "Ring.h"
 
 void Ring::create(Engine* engine, const char* ringTexturePath) {
   float ringVertices[] = {

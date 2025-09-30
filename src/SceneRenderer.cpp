@@ -5,7 +5,7 @@
 SceneRenderer::SceneRenderer(Skybox* skybox, Ring* saturnRing)
     : skybox_(skybox), saturnRing_(saturnRing) {}
 
-void SceneRenderer::renderScene(const std::vector<Planet>& planets,
+void SceneRenderer::renderScene(const std::vector<CelestialBody>& celestialBodies,
                                 const RenderContext& context) {
   glm::mat4 view = calculateViewMatrix(context.camera);
   glm::mat4 projection = calculateProjectionMatrix(context);
@@ -14,12 +14,12 @@ void SceneRenderer::renderScene(const std::vector<Planet>& planets,
   skybox_->render(view, projection);
 
   // Render all planets
-  for (const auto& planet : planets) {
-    glm::mat4 model = calculateModelMatrix(planet, context.currentTime);
-    planet.render(model, view, projection);
+  for (const auto& body : celestialBodies) {
+    glm::mat4 model = calculateModelMatrix(body, context.currentTime);
+    body.render(model, view, projection);
 
     // Special case: render Saturn's ring
-    if (planet.bodyType == CelestialBody::Saturn) {
+    if (body.bodyType == CelestialBody::Saturn) {
       saturnRing_->render(model, view, projection);
     }
   }
@@ -37,21 +37,21 @@ glm::mat4 SceneRenderer::calculateProjectionMatrix(
                           0.1f, 10000.0f);
 }
 
-glm::mat4 SceneRenderer::calculateModelMatrix(const Planet& planet,
+glm::mat4 SceneRenderer::calculateModelMatrix(const CelestialBody& celestialBody  ,
                                               float currentTime) const {
   glm::mat4 model = glm::mat4(1.0f);
 
   // Translation
-  model = glm::translate(model, planet.position);
+  model = glm::translate(model, celestialBody.position);
 
   // Rotation
-  float rotationSpeed = PlanetFactory::getRotationSpeed(planet.bodyType);
-  glm::vec3 rotationAxis = PlanetFactory::getRotationAxis(planet.bodyType);
+  float rotationSpeed = CelestialBodyFactory::getRotationSpeed(celestialBody.bodyType);
+  glm::vec3 rotationAxis = CelestialBodyFactory::getRotationAxis(celestialBody.bodyType);
   model = glm::rotate(model, currentTime * glm::radians(rotationSpeed),
                       rotationAxis);
 
   // Scale
-  glm::vec3 scale = PlanetFactory::getScale(planet.bodyType);
+  glm::vec3 scale = CelestialBodyFactory::getScale(celestialBody.bodyType);
   model = glm::scale(model, scale);
 
   return model;

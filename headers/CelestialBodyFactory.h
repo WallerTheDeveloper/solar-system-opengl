@@ -7,10 +7,11 @@
 
 #include <memory>
 #include <vector>
-#include "planet.h"
-#include "engine.h"
 
-struct PlanetConfig {
+#include "CelestialBody.h"
+#include "Engine.h"
+
+struct CelestialBodyConfig {
   CelestialBody::BodyType type;
   float mass;
   float radius;
@@ -23,16 +24,16 @@ struct PlanetConfig {
   const char* texturePath;
 };
 
-class PlanetFactory {
+class CelestialBodyFactory {
 public:
-  static std::vector<Planet> createSolarSystem(Engine* engine);
+  static std::vector<CelestialBody> createSolarSystem(Engine* engine);
 
   static float getRotationSpeed(CelestialBody::BodyType type);
   static glm::vec3 getScale(CelestialBody::BodyType type);
   static glm::vec3 getRotationAxis(CelestialBody::BodyType type);
 
 private:
-  static std::vector<PlanetConfig> getSolarSystemConfig();
+  static std::vector<CelestialBodyConfig> getSolarSystemConfig();
 };
 
 #endif // PLANET_FACTORY_H

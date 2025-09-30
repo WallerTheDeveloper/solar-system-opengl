@@ -1,9 +1,11 @@
 #ifndef CELESTIALBODY_H
 #define CELESTIALBODY_H
 
-#include "engine.h"
-
 #include <glm/glm.hpp>
+
+#include "Engine.h"
+#include "Shader.h"
+#include "Texture.h"
 
 #ifndef SUN_MASS
 #define SUN_MASS 1.989e30f
@@ -29,6 +31,7 @@ class CelestialBody {
   CelestialBody(Engine* engine, BodyType bodyType, float mass, float radius,
                 float semiMajorAxis, float eccentricity, float orbitalPeriod,
                 float currentAngle, glm::vec3 position, glm::vec3 velocity);
+  ~CelestialBody() = default;
 
   BodyType bodyType;
   float mass;           // kg
@@ -41,13 +44,17 @@ class CelestialBody {
   glm::vec3 velocity;
 
   void updateOrbitalPositions(float deltaTime);
-  virtual void create(const char* texturePath) = 0;
-  virtual void render(glm::mat4 model, glm::mat4 view,
-                      glm::mat4 projection) const = 0;
+  void create(const char* texturePath);
+  void render(glm::mat4 model, glm::mat4 view, glm::mat4 projection) const;
 
- protected:
-  ~CelestialBody() = default;
+ private:
   Engine* engine;
+  bool created = false;
+  unsigned int textureID;
+  unsigned int VAO, VBO, EBO;
+  SphereMeshData meshData;
+  std::unique_ptr<Texture> texture;
+  std::unique_ptr<Shader> shader;
 };
 
 #endif

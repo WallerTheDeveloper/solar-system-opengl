@@ -13,10 +13,8 @@
 #include <string>
 #include <vector>
 
-#include "engine.h"
-
-
-#include "shader.h"
+#include "Engine.h"
+#include "Shader.h"
 
 struct Character {
   unsigned int TextureID;  // ID handle of the glyph texture
