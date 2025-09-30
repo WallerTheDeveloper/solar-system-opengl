@@ -59,20 +59,23 @@ void createCoreSystems() {
   planetInfoPanel = std::make_unique<PlanetInfoPanel>(textRenderer.get());
 }
 
+bool initializeCoreSystems() {
+  if (!skybox->initialize()) {
+    std::cerr << "Failed to create skybox!" << std::endl;
+    return true;
+  }
+
+  saturnRing->create(engine.get(), "../textures/saturn_ring.png");
+  if (!textRenderer->initialize()) {
+    std::cerr << "Failed to initialize text renderer!" << std::endl;
+    return true;
+  }
+  return false;
+}
 int main() {
   try {
     createCoreSystems();
-
-    if (!skybox->initialize()) {
-      std::cerr << "Failed to create skybox!" << std::endl;
-      return -1;
-    }
-
-    saturnRing->create(engine.get(), "../textures/saturn_ring.png");
-    if (!textRenderer->initialize()) {
-      std::cerr << "Failed to initialize text renderer!" << std::endl;
-      return -1;
-    }
+    initializeCoreSystems();
 
     celestialBodies.emplace_back(
         engine.get(), CelestialBody::Sun, 1.989e30f, 696340000.0f, 0.0f, 0.0f, 0.0f,

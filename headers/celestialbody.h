@@ -46,6 +46,7 @@ class CelestialBody {
                       glm::mat4 projection) = 0;
 
  protected:
+  ~CelestialBody() = default;
   Engine* engine;
 };
 
