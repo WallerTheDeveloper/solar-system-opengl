@@ -8,9 +8,9 @@
 #include <glm/glm.hpp>
 #include <string>
 
-#include "../core/Camera.h"
-#include "../renderers/TextRenderer.h"
-#include "CelestialBody.h"
+#include "../../core/Camera.h"
+#include "../../renderers/TextRenderer.h"
+#include "../CelestialBody.h"
 
 struct CelestialBodyInfo {
   std::string name;
@@ -44,7 +44,6 @@ class CelestialBodyInfoPanel {
                                float screenWidth, float screenHeight);
 
   void renderBackground(float x, float y, float width, float height);
-  void renderBorder(float x, float y, float width, float height);
 };
 
 #endif  // SOLAR_SYSTEM_OPENGL_PLANETINFOPANEL_H

@@ -93,14 +93,6 @@ void CelestialBodyInfoPanel::renderBackground(float x, float y, float width, flo
     }
 }
 
-void CelestialBodyInfoPanel::renderBorder(float x, float y, float width, float height) {
-    // Top border
-    textRenderer->renderText("-", x, y - 10.0f, 2.0f,
-                           glm::vec3(0.0f, 0.8f, 1.0f));
-
-    // You can add more border rendering here if desired
-}
-
 void CelestialBodyInfoPanel::renderPanel(const glm::vec3& worldPosition,
                                   const CelestialBodyInfo& info, const Camera& camera,
                                   float screenWidth, float screenHeight) {

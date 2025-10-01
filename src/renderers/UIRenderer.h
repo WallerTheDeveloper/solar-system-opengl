@@ -8,7 +8,7 @@
 #include <glm/glm.hpp>
 #include <string>
 
-#include "../celestialbody/CelestialBodyInfoPanel.h"
+#include "../celestialbody/UI/CelestialBodyInfoPanel.h"
 #include "../core/Camera.h"
 #include "TextRenderer.h"
 
