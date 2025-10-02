@@ -43,9 +43,9 @@ void BufferHandle::release() {
   if (manager != nullptr) {
     manager->releaseBufferSet(vao, vbo, ebo);
   } else {
-    glDeleteVertexArrays(1, &vao);
-    glDeleteBuffers(1, &vbo);
-    glDeleteBuffers(1, &ebo);
+    GL_CHECK(glDeleteVertexArrays(1, &vao));
+    GL_CHECK(glDeleteBuffers(1, &vbo));
+    GL_CHECK(glDeleteBuffers(1, &ebo));
   }
 
   vao = vbo = ebo = 0;
