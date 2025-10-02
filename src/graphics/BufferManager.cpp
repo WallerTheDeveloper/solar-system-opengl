@@ -6,11 +6,19 @@
 #include <iostream>
 
 BufferManager::~BufferManager() {
-    if (!bufferRegistry.empty()) {
-        std::cout << "Warning: " << bufferRegistry.size()
-                  << " buffer sets still active at shutdown:\n";
-        printActiveBuffers();
+  if (!bufferRegistry.empty()) {
+    std::cout << "BufferManager cleaning up " << bufferRegistry.size()
+              << " remaining buffer sets:\n";
+
+    for (const auto& [vao, info] : bufferRegistry) {
+      std::cout << "  - " << info.ownerName << "\n";
+      glDeleteVertexArrays(1, &info.vao);
+      glDeleteBuffers(1, &info.vbo);
+      glDeleteBuffers(1, &info.ebo);
     }
+  }
+
+  bufferRegistry.clear();
 }
 
 BufferHandle BufferManager::createBufferSet(
@@ -64,17 +72,18 @@ BufferHandle BufferManager::createBufferSet(
     return BufferHandle(vao, vbo, ebo, this);
 }
 
-void BufferManager::releaseBufferSet(unsigned int vao, unsigned int vbo, unsigned int ebo) {
-    auto it = bufferRegistry.find(vao);
-    if (it != bufferRegistry.end()) {
-        std::cout << "Releasing buffer set: " << it->second.ownerName
-                  << " (VAO=" << vao << ")\n";
-        bufferRegistry.erase(it);
-    }
+void BufferManager::releaseBufferSet(unsigned int vao, unsigned int vbo,
+                                     unsigned int ebo) {
+  auto it = bufferRegistry.find(vao);
+  if (it != bufferRegistry.end()) {
+    std::cout << "Releasing buffer set: " << it->second.ownerName
+              << " (VAO=" << vao << ")\n";
+    bufferRegistry.erase(it);
+  }
 
-    GL_CHECK(glDeleteVertexArrays(1, &vao));
-    GL_CHECK(glDeleteBuffers(1, &vbo));
-    GL_CHECK(glDeleteBuffers(1, &ebo));
+  GL_CHECK(glDeleteVertexArrays(1, &vao));
+  GL_CHECK(glDeleteBuffers(1, &vbo));
+  GL_CHECK(glDeleteBuffers(1, &ebo));
 }
 
 void BufferManager::registerBuffer(unsigned int vao, unsigned int vbo,

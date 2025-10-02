@@ -36,9 +36,18 @@ BufferHandle& BufferHandle::operator=(BufferHandle&& other) noexcept {
 }
 
 void BufferHandle::release() {
-  if (vao != 0 && manager != nullptr) {
-    manager->releaseBufferSet(vao, vbo, ebo);
+  if (vao == 0) {
+    return;
   }
+
+  if (manager != nullptr) {
+    manager->releaseBufferSet(vao, vbo, ebo);
+  } else {
+    glDeleteVertexArrays(1, &vao);
+    glDeleteBuffers(1, &vbo);
+    glDeleteBuffers(1, &ebo);
+  }
+
   vao = vbo = ebo = 0;
   manager = nullptr;
 }
