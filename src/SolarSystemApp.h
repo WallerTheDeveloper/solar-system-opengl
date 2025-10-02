@@ -18,6 +18,7 @@
 #include "renderers/SceneRenderer.h"
 #include "renderers/TextRenderer.h"
 #include "renderers/UIRenderer.h"
+#include "graphics/BufferManager.h"
 
 // Configuration
 struct AppConfig {
@@ -41,6 +42,7 @@ class SolarSystemApp {
  private:
   // Core systems
   std::unique_ptr<Engine> engine_;
+  std::unique_ptr<BufferManager> bufferManager_;
   std::unique_ptr<Skybox> skybox_;
   std::unique_ptr<Ring> saturnRing_;
   std::unique_ptr<TextRenderer> textRenderer_;

@@ -55,6 +55,8 @@ bool SolarSystemApp::initializeCoreSystems() {
         AppConfig::ENABLE_GL_DEPTH_TEST
     );
 
+    bufferManager_ = std::make_unique<BufferManager>();
+
     // Create and initialize skybox
     skybox_ = std::make_unique<Skybox>(engine_.get(), AppConfig::SKYBOX_FACES);
     if (!skybox_->initialize()) {
@@ -79,7 +81,8 @@ bool SolarSystemApp::initializeCoreSystems() {
 
 bool SolarSystemApp::initializePlanets() {
     // Use factory to create all planets with proper configuration
-    celestialBodies_ = CelestialBodyFactory::createSolarSystem(engine_.get());
+
+    celestialBodies_ = CelestialBodyFactory::createSolarSystem(engine_.get(), bufferManager_.get());
 
     if (celestialBodies_.empty()) {
         std::cerr << "Failed to create any planets" << std::endl;

@@ -3,8 +3,6 @@
 //
 #include "CelestialBodyFactory.h"
 
-#include "../graphics/BufferManager.h"
-
 std::vector<CelestialBodyConfig> CelestialBodyFactory::getSolarSystemConfig() {
     return {
         // Sun
@@ -73,7 +71,7 @@ std::vector<CelestialBodyConfig> CelestialBodyFactory::getSolarSystemConfig() {
     };
 }
 
-std::vector<std::unique_ptr<CelestialBody>> CelestialBodyFactory::createSolarSystem(Engine* engine) {
+std::vector<std::unique_ptr<CelestialBody>> CelestialBodyFactory::createSolarSystem(Engine* engine, BufferManager* bufferManager) {
     std::vector<std::unique_ptr<CelestialBody>> celestialBodies;
     auto configs = getSolarSystemConfig();
 
@@ -86,8 +84,7 @@ std::vector<std::unique_ptr<CelestialBody>> CelestialBodyFactory::createSolarSys
             config.rotationAngle, config.position, config.velocity)
         );
 
-        std::unique_ptr<BufferManager> bm = std::make_unique<BufferManager>();
-        celestialBodies.back()->create(bm.get(), config.texturePath);
+        celestialBodies.back()->create(bufferManager, config.texturePath);
     }
 
     return celestialBodies;

@@ -26,7 +26,7 @@ struct CelestialBodyConfig {
 
 class CelestialBodyFactory {
 public:
-  static std::vector<std::unique_ptr<CelestialBody>> createSolarSystem(Engine* engine);
+  static std::vector<std::unique_ptr<CelestialBody>> createSolarSystem(Engine* engine, BufferManager* bufferManager);
 
   static float getRotationSpeed(CelestialBody::BodyType type);
   static glm::vec3 getScale(CelestialBody::BodyType type);
