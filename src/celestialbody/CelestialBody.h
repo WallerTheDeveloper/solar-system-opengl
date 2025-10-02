@@ -7,7 +7,7 @@
 #include "../core/Shader.h"
 #include "../core/Texture.h"
 #include "../utils/math_utils.h"
-
+#include "../graphics/BufferHandle.h"
 class CelestialBody {
  public:
   enum BodyType {
@@ -37,14 +37,14 @@ class CelestialBody {
   glm::vec3 velocity;
 
   void updateOrbitalPositions(float deltaTime);
-  void create(const char* texturePath);
+  void create(BufferManager* bufferManager, const char* texturePath);
   void render(glm::mat4 model, glm::mat4 view, glm::mat4 projection) const;
 
  private:
+  BufferHandle bufferHandle;
   Engine* engine;
   bool created = false;
   unsigned int textureID;
-  unsigned int VAO, VBO, EBO;
   SphereMeshData meshData;
   std::unique_ptr<Texture> texture;
   std::unique_ptr<Shader> shader;

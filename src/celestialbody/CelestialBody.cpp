@@ -1,5 +1,7 @@
 #include "CelestialBody.h"
 
+#include "../graphics/BufferManager.h"
+
 CelestialBody::CelestialBody(Engine* engine, BodyType bodyType, float mass,
                              float radius, float semiMajorAxis,
                              float eccentricity, float orbitalPeriod,
@@ -41,7 +43,7 @@ void CelestialBody::updateOrbitalPositions(float deltaTime) {
   }
 }
 
-void CelestialBody::create(const char* texturePath) {
+void CelestialBody::create(BufferManager* bufferManager, const char* texturePath) {
   std::cout << "Creating planet: " << type << std::endl;
 
   meshData = engine->generateSphereMesh(1.0f, 36, 18);
@@ -49,29 +51,18 @@ void CelestialBody::create(const char* texturePath) {
             << " vertices and " << meshData.indices.size() << " indices"
             << std::endl;
 
-  engine->generateVAO(&VAO);
-  GL_CHECK(engine->bindVAO(VAO));
-
-  engine->generateBuffer(&VBO);
-  GL_CHECK(engine->bindBuffer(GL_ARRAY_BUFFER, VBO));
-  GL_CHECK(engine->setBufferData(GL_ARRAY_BUFFER,
-                                 meshData.vertices.size() * sizeof(float),
-                                 meshData.vertices.data(), GL_STATIC_DRAW));
-
-  engine->generateBuffer(&EBO);
-  GL_CHECK(engine->bindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO));
-  GL_CHECK(engine->setBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                                 meshData.indices.size() * sizeof(unsigned int),
-                                 meshData.indices.data(), GL_STATIC_DRAW));
-
-  GL_CHECK(engine->defineVertexLayout(0, 3, GL_FLOAT, GL_FALSE,
-                                      5 * sizeof(float), (void*)0));
-  GL_CHECK(engine->defineVertexLayout(
-      1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float))));
-
-  checkVAOBinding();
-  checkBufferBinding(GL_ARRAY_BUFFER, "VBO");
-  checkBufferBinding(GL_ELEMENT_ARRAY_BUFFER, "EBO");
+  std::vector<VertexAttribute> attributes = {
+      // position
+      {0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0},
+      // texCoord
+      {1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float))}
+  };
+  bufferHandle = bufferManager->createBufferSet(
+        "Planet_" + type,
+        meshData.vertices,
+        meshData.indices,
+        attributes
+    );
 
   std::cout << "OpenGL buffers created successfully for planet " << type
             << std::endl;
@@ -94,10 +85,6 @@ void CelestialBody::create(const char* texturePath) {
 
   this->created = true;
   std::cout << "Planet " << type << " created successfully!" << std::endl;
-
-  GL_CHECK(glBindVertexArray(0));
-  GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, 0));
-  GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 }
 
 void CelestialBody::render(glm::mat4 model, glm::mat4 view,
@@ -119,7 +106,7 @@ void CelestialBody::render(glm::mat4 model, glm::mat4 view,
   glBindTexture(GL_TEXTURE_2D, textureID);
   shader->setInt("texture", 0);
 
-  glBindVertexArray(VAO);
+  glBindVertexArray(bufferHandle.getVAO());
   glDrawElements(GL_TRIANGLES, meshData.indicesCount, GL_UNSIGNED_INT, 0);
 
   glBindVertexArray(0);
