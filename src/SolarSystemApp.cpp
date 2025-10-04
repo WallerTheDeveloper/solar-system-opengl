@@ -72,7 +72,7 @@ bool SolarSystemApp::initializeCoreSystems() {
 
     // Create Saturn's ring
     saturnRing_ = std::make_unique<Ring>();
-    saturnRing_->create(engine_.get(), "../textures/saturn_ring.png");
+    saturnRing_->create(engine_.get(), bufferManager_.get(), "../textures/saturn_ring.png");
 
     // Create text renderer
     textRenderer_ = std::make_unique<TextRenderer>(engine_.get());
@@ -176,25 +176,30 @@ void SolarSystemApp::run() {
 
 void SolarSystemApp::cleanup() {
   if (isCleanedUp) {
-    std::cout << "Already cleaned up, skipping...\n";
+    std::cout << "Already cleaned up, skipping..." << std::endl;
     return;
   }
 
   std::cout << "\n=== Starting Solar System Cleanup ===\n";
 
   if (skybox_) {
-    std::cout << "Destroying skybox...\n";
+    std::cout << "\nDestroying skybox...\n" << std::endl;
     skybox_.reset();
   }
 
   if (!celestialBodies_.empty()) {
-    std::cout << "Destroying " << celestialBodies_.size()
-              << " celestial bodies...\n";
+    std::cout << "\nDestroying " << celestialBodies_.size()
+              << " celestial bodies...\n" << std::endl;
     celestialBodies_.clear();
   }
 
+  if (saturnRing_) {
+    std::cout << "\nDestroying saturn ring...\n" << std::endl;
+    saturnRing_.reset();
+  }
+
   if (bufferManager_) {
-    std::cout << "Destroying buffer manager...\n";
+    std::cout << "\nDestroying buffer manager...\n" << std::endl;
     bufferManager_.reset();
   }
 

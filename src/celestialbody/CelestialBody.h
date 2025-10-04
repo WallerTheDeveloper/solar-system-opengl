@@ -8,6 +8,8 @@
 #include "../core/Texture.h"
 #include "../utils/math_utils.h"
 #include "../graphics/BufferHandle.h"
+#include "../graphics/BufferManager.h"
+
 class CelestialBody {
  public:
   enum BodyType {

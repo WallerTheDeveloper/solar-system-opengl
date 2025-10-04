@@ -1,7 +1,5 @@
 #include "CelestialBody.h"
 
-#include "../graphics/BufferManager.h"
-
 CelestialBody::CelestialBody(Engine* engine, BodyType bodyType, float mass,
                              float radius, float semiMajorAxis,
                              float eccentricity, float orbitalPeriod,

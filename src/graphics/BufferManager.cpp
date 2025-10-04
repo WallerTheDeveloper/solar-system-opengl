@@ -129,16 +129,3 @@ size_t BufferManager::getTotalVRAMUsage() const {
     }
     return total;
 }
-
-void BufferManager::bindVAO(unsigned int vao) {
-    GL_CHECK(glBindVertexArray(vao));
-}
-
-void BufferManager::bindBuffer(GLenum target, unsigned int buffer) {
-    GL_CHECK(glBindBuffer(target, buffer));
-}
-
-void BufferManager::setBufferData(GLenum target, GLsizeiptr size,
-                                 const void* data, GLenum usage) {
-    GL_CHECK(glBufferData(target, size, data, usage));
-}

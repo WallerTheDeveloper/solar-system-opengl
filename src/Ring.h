@@ -4,17 +4,20 @@
 
 #ifndef SOLAR_SYSTEM_OPENGL_RING_H
 #define SOLAR_SYSTEM_OPENGL_RING_H
+
 #include "core/Engine.h"
 #include "core/Shader.h"
+#include "graphics/BufferManager.h"
+#include "graphics/BufferHandle.h"
 #include "utils/debug_utils.h"
 
 class Ring {
  public:
-  void create(Engine* engine, const char* ringTexturePath);
+  void create(Engine* engine, BufferManager* bufferManager, const char* ringTexturePath);
   void render(glm::mat4 model, glm::mat4 view, glm::mat4 projection);
 
  private:
-  unsigned int VAO, VBO, EBO;
+  BufferHandle bufferHandle;
   unsigned int textureID;
   std::unique_ptr<Shader> shader;
 };

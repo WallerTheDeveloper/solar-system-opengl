@@ -4,8 +4,8 @@
 
 #include "Ring.h"
 
-void Ring::create(Engine* engine, const char* ringTexturePath) {
-  float ringVertices[] = {
+void Ring::create(Engine* engine, BufferManager* bufferManager, const char* ringTexturePath) {
+  std::vector<float> ringVertices = {
       // Positions (x, y, z)    // Texture coords (u, v)
       -3.0f, 0.0f, -3.0f,       0.0f, 0.0f,  // Bottom left
       3.0f,  0.0f, -3.0f,       1.0f, 0.0f,  // Bottom right
@@ -13,25 +13,21 @@ void Ring::create(Engine* engine, const char* ringTexturePath) {
       -3.0f, 0.0f, 3.0f,        0.0f, 1.0f   // Top left
   };
 
-  unsigned int indices[] = {0, 1, 2, 2, 3, 0};
+  std::vector<unsigned int> indices = {0, 1, 2, 2, 3, 0};
 
-  engine->generateVAO(&VAO);
-  engine->bindVAO(VAO);
+  std::vector<VertexAttribute> attributes = {
+      // position
+      {0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0},
+      // texCoord
+      {1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float))}
+  };
 
-  engine->generateBuffer(&VBO);
-  engine->bindBuffer(GL_ARRAY_BUFFER, VBO);
-  engine->setBufferData(GL_ARRAY_BUFFER, sizeof(ringVertices), ringVertices,
-                        GL_STATIC_DRAW);
-
-  engine->generateBuffer(&EBO);
-  engine->bindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-  engine->setBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
-                        GL_STATIC_DRAW);
-
-  engine->defineVertexLayout(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float),
-                             (void*)0);
-  engine->defineVertexLayout(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float),
-                             (void*)(3 * sizeof(float)));
+  bufferHandle = bufferManager->createBufferSet(
+        "Saturn_Ring",
+        ringVertices,
+        indices,
+        attributes
+    );
 
   textureID = engine->addTextureToObject(ringTexturePath, GL_TEXTURE_2D,
                                          GL_REPEAT, GL_LINEAR);
@@ -58,7 +54,7 @@ void Ring::render(glm::mat4 model, glm::mat4 view, glm::mat4 projection) {
   glBindTexture(GL_TEXTURE_2D, textureID);
   shader->setInt("ringTexture", 0);
 
-  glBindVertexArray(VAO);
+  glBindVertexArray(bufferHandle.getVAO());
   glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
   if (cullFaceWasEnabled) {

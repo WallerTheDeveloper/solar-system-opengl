@@ -44,16 +44,6 @@ class BufferManager {
                                const std::vector<VertexAttribute>& attributes,
                                GLenum usage = GL_STATIC_DRAW);
 
-  unsigned int createVAO();
-  unsigned int createBuffer();
-  void setupVertexAttributes(unsigned int vao,
-                             const std::vector<VertexAttribute>& attributes);
-
-  void bindVAO(unsigned int vao);
-  void bindBuffer(GLenum target, unsigned int buffer);
-  void setBufferData(GLenum target, GLsizeiptr size, const void* data,
-                     GLenum usage);
-
   void releaseBufferSet(unsigned int vao, unsigned int vbo, unsigned int ebo);
 
   // Diagnostics
