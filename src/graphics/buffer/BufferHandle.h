@@ -5,7 +5,7 @@
 #ifndef BUFFER_HANDLE_H
 #define BUFFER_HANDLE_H
 
-#include "../utils/debug_utils.h"
+#include "../../utils/debug_utils.h"
 
 class BufferHandle {
  public:

@@ -11,7 +11,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "../utils/debug_utils.h"
+#include "../../utils/debug_utils.h"
 #include "BufferHandle.h"
 
 struct VertexAttribute {

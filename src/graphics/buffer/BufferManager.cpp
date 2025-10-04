@@ -3,6 +3,7 @@
 //
 
 #include "BufferManager.h"
+
 #include <iostream>
 
 BufferManager::~BufferManager() {

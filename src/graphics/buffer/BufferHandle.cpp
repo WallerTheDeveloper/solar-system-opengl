@@ -3,7 +3,6 @@
 //
 
 #include "BufferHandle.h"
-
 #include "BufferManager.h"
 
 BufferHandle::BufferHandle(unsigned int vao, unsigned int vbo, unsigned int ebo,
