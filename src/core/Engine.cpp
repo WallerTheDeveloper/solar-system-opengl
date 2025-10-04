@@ -79,6 +79,9 @@ void Engine::renderIndices(unsigned int VAO, unsigned int indicesCount,
     glBindVertexArray(0);
   }
 }
+GLFWwindow* Engine::getWindow() {
+  return window;
+}
 
 Engine& Engine::getInstance() {
   if (!instance) {

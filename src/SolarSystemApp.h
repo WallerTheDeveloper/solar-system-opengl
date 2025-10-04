@@ -31,13 +31,14 @@ struct AppConfig {
 class SolarSystemApp {
  public:
   SolarSystemApp();
-  ~SolarSystemApp() = default;
+  ~SolarSystemApp();
 
   SolarSystemApp(const SolarSystemApp&) = delete;
   SolarSystemApp& operator=(const SolarSystemApp&) = delete;
 
   bool initialize();
   void run();
+  void cleanup();
 
  private:
   // Core systems
@@ -60,6 +61,9 @@ class SolarSystemApp {
   float lastFPSTime_ = 0.0f;
   float currentFPS_ = 0.0f;
   int frameCount_ = 0;
+
+  // Cleaup
+  bool isCleanedUp = false;
 
   // Initialization
   bool initializeCoreSystems();

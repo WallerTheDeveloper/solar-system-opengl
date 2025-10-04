@@ -41,6 +41,7 @@ class Engine {
   void render(const std::function<void()>& renderCallback = nullptr);
   void renderIndices(unsigned int VAO, unsigned int indicesCount,
                      bool unbind = false);
+  GLFWwindow* getWindow();
 
   // Buffers
   void generateVAO(unsigned int* VAO);

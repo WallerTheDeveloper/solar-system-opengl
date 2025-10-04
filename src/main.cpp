@@ -3,24 +3,20 @@
 #include "SolarSystemApp.h"
 
 int main() {
+  SolarSystemApp app;
+
   try {
-    // Create application
-    SolarSystemApp app;
+    std::cout << "Initializing Solar System Application...\n";
+    app.initialize();
 
-    // Initialize all systems
-    if (!app.initialize()) {
-      std::cerr << "✗ Failed to initialize application" << std::endl;
-      return -1;
-    }
+    std::cout << "✓ Solar System Application initialized successfully!\n";
 
-    // Run main loop
     app.run();
-
   } catch (const std::exception& e) {
-    std::cerr << "✗ Application error: " << e.what() << std::endl;
+    std::cerr << "Fatal error: " << e.what() << std::endl;
     return -1;
   }
 
-  std::cout << "Application terminated successfully" << std::endl;
+  std::cout << "Application terminated successfully\n";
   return 0;
 }

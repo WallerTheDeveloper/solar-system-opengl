@@ -23,6 +23,13 @@ const std::vector<std::string> AppConfig::SKYBOX_FACES = {
 SolarSystemApp::SolarSystemApp() {
     instance_ = this;
 }
+SolarSystemApp::~SolarSystemApp() {
+  if (!isCleanedUp) {
+    std::cout << "Warning: cleanup() was not called explicitly, cleaning up in "
+                 "destructor\n";
+    cleanup();
+  }
+}
 
 bool SolarSystemApp::initialize() {
     std::cout << "Initializing Solar System Application..." << std::endl;
@@ -149,12 +156,51 @@ void SolarSystemApp::handlePlanetSelection() {
 }
 
 void SolarSystemApp::run() {
-    std::cout << "Starting main loop..." << std::endl;
+  std::cout << "Starting main loop..." << std::endl;
 
-    // Pass frame callback to engine
-    engine_->render([this]() {
-        onFrame();
-    });
+  bool shouldExit = false;
+
+  engine_->render([this, &shouldExit]() {
+    if (glfwGetKey(engine_->getWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+      shouldExit = true;
+    }
+
+    onFrame();
+
+    if (shouldExit && !isCleanedUp) {
+      cleanup();  // Clean up BEFORE setting window should close
+      glfwSetWindowShouldClose(engine_->getWindow(), true);
+    }
+  });
+}
+
+void SolarSystemApp::cleanup() {
+  if (isCleanedUp) {
+    std::cout << "Already cleaned up, skipping...\n";
+    return;
+  }
+
+  std::cout << "\n=== Starting Solar System Cleanup ===\n";
+
+  if (skybox_) {
+    std::cout << "Destroying skybox...\n";
+    skybox_.reset();
+  }
+
+  if (!celestialBodies_.empty()) {
+    std::cout << "Destroying " << celestialBodies_.size()
+              << " celestial bodies...\n";
+    celestialBodies_.clear();
+  }
+
+  if (bufferManager_) {
+    std::cout << "Destroying buffer manager...\n";
+    bufferManager_.reset();
+  }
+
+  std::cout << "=== Solar System Cleanup Complete ===\n\n";
+
+  isCleanedUp = true;
 }
 
 void SolarSystemApp::onFrame() {

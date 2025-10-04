@@ -7,8 +7,8 @@
 
 BufferManager::~BufferManager() {
   if (!bufferRegistry.empty()) {
-    std::cout << "BufferManager cleaning up " << bufferRegistry.size()
-              << " remaining buffer sets:\n";
+    std::cout << "BufferManager: Cleaning up " << bufferRegistry.size()
+              << " remaining buffer sets\n";
 
     for (const auto& [vao, info] : bufferRegistry) {
       std::cout << "  - " << info.ownerName << "\n";
@@ -16,6 +16,8 @@ BufferManager::~BufferManager() {
       glDeleteBuffers(1, &info.vbo);
       glDeleteBuffers(1, &info.ebo);
     }
+  } else {
+    std::cout << "BufferManager: All buffers were properly released\n";
   }
 
   bufferRegistry.clear();
@@ -81,9 +83,14 @@ void BufferManager::releaseBufferSet(unsigned int vao, unsigned int vbo,
     bufferRegistry.erase(it);
   }
 
-  GL_CHECK(glDeleteVertexArrays(1, &vao));
-  GL_CHECK(glDeleteBuffers(1, &vbo));
-  GL_CHECK(glDeleteBuffers(1, &ebo));
+  glUseProgram(0);
+  glBindVertexArray(0);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+  glDeleteVertexArrays(1, &vao);
+  glDeleteBuffers(1, &vbo);
+  glDeleteBuffers(1, &ebo);
 }
 
 void BufferManager::registerBuffer(unsigned int vao, unsigned int vbo,
