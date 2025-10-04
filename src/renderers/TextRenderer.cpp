@@ -6,7 +6,7 @@ TextRenderer::~TextRenderer() {
   cleanup();
 }
 
-bool TextRenderer::initialize() {
+bool TextRenderer::initialize(BufferManager* bufferManager) {
   try {
     textShader = std::make_unique<Shader>("../shaders/uiText.vert",
                                           "../shaders/uiText.frag");
@@ -21,17 +21,19 @@ bool TextRenderer::initialize() {
   textShader->use();
   textShader->setMat4("projection", projection);
 
-  engine->generateVAO(&VAO);
-  engine->generateBuffer(&VBO);
-  engine->bindVAO(VAO);
+  std::vector<VertexAttribute> attributes = {
+    // position
+    {0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0},
+  };
 
-  engine->bindBuffer(GL_ARRAY_BUFFER, VBO);
-  engine->setBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
-
-  engine->defineVertexLayout(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-
-  engine->unbindVBO();
-  engine->unbindVAO();
+  bufferHandle_ = bufferManager->createBufferSet(
+    "TextRenderer",
+    {},
+    {},
+    attributes,
+    GL_DYNAMIC_DRAW,
+    true
+  );
 
   loadFont();
   std::cout << "Text renderer initialized successfully" << std::endl;
@@ -148,7 +150,7 @@ void TextRenderer::renderText(const std::string& text, float x, float y,
   textShader->use();
   textShader->setVec3("textColor", color);
   glActiveTexture(GL_TEXTURE0);
-  glBindVertexArray(VAO);
+  glBindVertexArray(bufferHandle_.getVAO());
 
   // Convert from top-left coordinates to OpenGL bottom-left coordinates
   float yPos =
@@ -179,7 +181,7 @@ void TextRenderer::renderText(const std::string& text, float x, float y,
     glBindTexture(GL_TEXTURE_2D, ch.TextureID);
 
     // Update content of VBO memory
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, bufferHandle_.getVBO());
     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -219,15 +221,6 @@ void TextRenderer::cleanup() {
     glDeleteTextures(1, &pair.second.TextureID);
   }
   Characters.clear();
-
-  if (VAO != 0) {
-    glDeleteVertexArrays(1, &VAO);
-    VAO = 0;
-  }
-  if (VBO != 0) {
-    glDeleteBuffers(1, &VBO);
-    VBO = 0;
-  }
 
   std::cout << "Text renderer cleaned up" << std::endl;
 }

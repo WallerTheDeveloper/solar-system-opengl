@@ -76,7 +76,7 @@ bool SolarSystemApp::initializeCoreSystems() {
 
     // Create text renderer
     textRenderer_ = std::make_unique<TextRenderer>(engine_.get());
-    if (!textRenderer_->initialize()) {
+    if (!textRenderer_->initialize(bufferManager_.get())) {
         return false;
     }
 
@@ -185,6 +185,11 @@ void SolarSystemApp::cleanup() {
   if (skybox_) {
     std::cout << "\nDestroying skybox...\n" << std::endl;
     skybox_.reset();
+  }
+
+  if (textRenderer_) {
+    std::cout << "\nDestroying text renderer...\n" << std::endl;
+    textRenderer_.reset();
   }
 
   if (!celestialBodies_.empty()) {

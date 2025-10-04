@@ -28,7 +28,8 @@ BufferHandle BufferManager::createBufferSet(
     const std::vector<float>& vertexData,
     const std::vector<unsigned int>& indexData,
     const std::vector<VertexAttribute>& attributes,
-    GLenum usage
+    GLenum usage,
+    bool isBufferText
 ) {
     unsigned int vao, vbo, ebo;
     GL_CHECK(glGenVertexArrays(1, &vao));
@@ -38,10 +39,13 @@ BufferHandle BufferManager::createBufferSet(
     GL_CHECK(glBindVertexArray(vao));
 
     GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, vbo));
-    GL_CHECK(glBufferData(GL_ARRAY_BUFFER,
-                 vertexData.size() * sizeof(float),
-                 vertexData.data(),
-                 usage));
+    if (isBufferText) {
+      GL_CHECK(glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 24,
+                            NULL, usage));
+    } else {
+      GL_CHECK(glBufferData(GL_ARRAY_BUFFER, vertexData.size() * sizeof(float),
+                            vertexData.data(), usage));
+    }
 
     if (!indexData.empty()) {
       GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo));

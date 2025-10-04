@@ -15,6 +15,7 @@
 
 #include "../core/Engine.h"
 #include "../core/Shader.h"
+#include "../graphics/BufferManager.h"
 
 struct Character {
   unsigned int TextureID;  // ID handle of the glyph texture
@@ -28,17 +29,18 @@ class TextRenderer {
   TextRenderer(Engine* engine);
   ~TextRenderer();
 
-  bool initialize();
+  bool initialize(BufferManager* bufferManager);
   void renderText(const std::string& text, float x, float y, float scale,
                   glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f));
   void cleanup();
   void setScreenSize();
 
  private:
+  BufferHandle bufferHandle_;
   Engine* engine;
   std::map<char, Character> Characters;
   std::unique_ptr<Shader> textShader;
-  unsigned int VAO = 0, VBO = 0;
+  // unsigned int VAO = 0, VBO = 0;
 
   bool loadFont();
 };

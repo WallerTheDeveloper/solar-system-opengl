@@ -42,7 +42,8 @@ class BufferManager {
                                const std::vector<float>& vertexData,
                                const std::vector<unsigned int>& indexData,
                                const std::vector<VertexAttribute>& attributes,
-                               GLenum usage = GL_STATIC_DRAW);
+                               GLenum usage = GL_STATIC_DRAW,
+                               bool isBufferText = false);
 
   void releaseBufferSet(unsigned int vao, unsigned int vbo, unsigned int ebo);
 
