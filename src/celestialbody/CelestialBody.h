@@ -21,6 +21,19 @@ class CelestialBody {
     Uranus,
     Neptune
   };
+  std::string typeToString(BodyType body) {
+    switch (body) {
+        case Sun: return "Sun";
+        case Mercury: return "Mercury";
+        case Venus: return "Venus";
+        case Earth: return "Earth";
+        case Mars: return "Mars";
+        case Jupiter: return "Jupiter";
+        case Saturn: return "Saturn";
+        case Uranus: return "Uranus";
+        case Neptune: return "Neptune";
+    }
+  }
   CelestialBody(Engine* engine, BodyType bodyType, float mass, float radius,
                 float semiMajorAxis, float eccentricity, float orbitalPeriod,
                 float currentAngle, glm::vec3 position, glm::vec3 velocity);

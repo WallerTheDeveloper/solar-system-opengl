@@ -58,7 +58,7 @@ void CelestialBody::create(BufferManager* bufferManager, const char* texturePath
       {1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float))}
   };
   bufferHandle = bufferManager->createBufferSet(
-        "Planet_" + type,
+        "Body_" + typeToString(type),
         meshData.vertices,
         meshData.indices,
         attributes
