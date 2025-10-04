@@ -66,7 +66,7 @@ bool SolarSystemApp::initializeCoreSystems() {
 
     // Create and initialize skybox
     skybox_ = std::make_unique<Skybox>(engine_.get(), AppConfig::SKYBOX_FACES);
-    if (!skybox_->initialize()) {
+    if (!skybox_->initialize(bufferManager_.get())) {
         return false;
     }
 

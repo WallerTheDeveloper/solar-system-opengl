@@ -43,11 +43,12 @@ BufferHandle BufferManager::createBufferSet(
                  vertexData.data(),
                  usage));
 
-    GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo));
-    GL_CHECK(glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                 indexData.size() * sizeof(unsigned int),
-                 indexData.data(),
-                 usage));
+    if (!indexData.empty()) {
+      GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo));
+      GL_CHECK(glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+                            indexData.size() * sizeof(unsigned int),
+                            indexData.data(), usage));
+    }
 
     for (const auto& attr : attributes) {
         GL_CHECK(glVertexAttribPointer(attr.index, attr.size, attr.type,

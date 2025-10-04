@@ -5,22 +5,24 @@
 
 #include "Engine.h"
 #include "Shader.h"
+#include "../graphics/BufferHandle.h"
+#include "../graphics/BufferManager.h"
 
 class Skybox {
  public:
   Skybox(Engine* engine, std::vector<std::string> facesTextures);
-  ~Skybox();
+  ~Skybox() = default;
 
-  bool initialize();
+  bool initialize(BufferManager* bufferManager);
 
   void render(const glm::mat4& view, const glm::mat4& projection);
 
  private:
+  BufferHandle bufferHandle_;
   Engine* engine;
 
   std::vector<std::string> m_faces;
 
-  unsigned int m_VAO, m_VBO, m_EBO;
   unsigned int m_textureID;
 
   std::unique_ptr<Shader> m_shader;
