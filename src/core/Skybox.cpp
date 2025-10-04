@@ -7,7 +7,6 @@
 Skybox::Skybox(Engine* engine, std::vector<std::string> facesTextures)
     : engine(engine),
       m_faces(facesTextures),
-      m_boxMeshData(nullptr),
       m_textureID(0),
       m_indexCount(0),
       m_initialized(false),

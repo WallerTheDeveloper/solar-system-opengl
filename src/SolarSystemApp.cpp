@@ -56,7 +56,6 @@ bool SolarSystemApp::initialize() {
 }
 
 bool SolarSystemApp::initializeCoreSystems() {
-    // Create engine
     engine_ = std::make_unique<Engine>(
         AppConfig::WINDOW_NAME,
         AppConfig::ENABLE_GL_DEPTH_TEST
@@ -64,23 +63,21 @@ bool SolarSystemApp::initializeCoreSystems() {
 
     bufferManager_ = std::make_unique<BufferManager>();
 
-    // Create and initialize skybox
+    meshGenerator_ = std::make_unique<MeshGenerator>();
+
     skybox_ = std::make_unique<Skybox>(engine_.get(), AppConfig::SKYBOX_FACES);
     if (!skybox_->initialize(bufferManager_.get())) {
         return false;
     }
 
-    // Create Saturn's ring
     saturnRing_ = std::make_unique<Ring>();
     saturnRing_->create(engine_.get(), bufferManager_.get(), "../textures/saturn_ring.png");
 
-    // Create text renderer
     textRenderer_ = std::make_unique<TextRenderer>(engine_.get());
     if (!textRenderer_->initialize(bufferManager_.get())) {
         return false;
     }
 
-    // Create planet info panel
     planetInfoPanel_ = std::make_unique<CelestialBodyInfoPanel>(textRenderer_.get());
 
     return true;
@@ -88,8 +85,7 @@ bool SolarSystemApp::initializeCoreSystems() {
 
 bool SolarSystemApp::initializePlanets() {
     // Use factory to create all planets with proper configuration
-
-    celestialBodies_ = CelestialBodyFactory::createSolarSystem(engine_.get(), bufferManager_.get());
+    celestialBodies_ = CelestialBodyFactory::createSolarSystem(engine_.get(), bufferManager_.get(), meshGenerator_.get());
 
     if (celestialBodies_.empty()) {
         std::cerr << "Failed to create any planets" << std::endl;
@@ -201,6 +197,11 @@ void SolarSystemApp::cleanup() {
   if (saturnRing_) {
     std::cout << "\nDestroying saturn ring...\n" << std::endl;
     saturnRing_.reset();
+  }
+
+  if (meshGenerator_) {
+    std::cout << "\nDestroying mesh generator...\n" << std::endl;
+    meshGenerator_.reset();
   }
 
   if (bufferManager_) {

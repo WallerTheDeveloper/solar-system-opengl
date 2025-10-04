@@ -10,18 +10,8 @@
 #include <vector>
 
 #include "../utils/debug_utils.h"
-#include "../utils/math_utils.h"
 #include "Camera.h"
 #include "Texture.h"
-
-struct ObjectMeshData {
-  std::vector<float> vertices;
-  std::vector<unsigned int> indices;
-  unsigned int indicesCount;
-};
-
-struct SphereMeshData : ObjectMeshData {};
-struct BoxMeshData : ObjectMeshData {};
 
 class Engine {
  public:
@@ -44,10 +34,10 @@ class Engine {
   GLFWwindow* getWindow();
 
   // Primitives mesh generation
-  SphereMeshData generateSphereMesh(float radius, unsigned int sectorCount,
-                                    unsigned int stackCount);
-  BoxMeshData generateBoxMesh(float width = 2.0f, float height = 2.0f,
-                              float depth = 2.0f);
+  // SphereMeshData generateSphereMesh(float radius, unsigned int sectorCount,
+  //                                   unsigned int stackCount);
+  // BoxMeshData generateBoxMesh(float width = 2.0f, float height = 2.0f,
+  //                             float depth = 2.0f);
 
   // Textures
   unsigned int addTextureToObject(std::string path, GLenum target,

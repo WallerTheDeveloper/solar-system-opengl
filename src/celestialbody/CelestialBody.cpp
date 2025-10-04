@@ -1,5 +1,19 @@
 #include "CelestialBody.h"
 
+std::string CelestialBody::typeToString(BodyType body) {
+    switch (body) {
+      case Sun: return "Sun";
+      case Mercury: return "Mercury";
+      case Venus: return "Venus";
+      case Earth: return "Earth";
+      case Mars: return "Mars";
+      case Jupiter: return "Jupiter";
+      case Saturn: return "Saturn";
+      case Uranus: return "Uranus";
+      case Neptune: return "Neptune";
+      default: return "Unknown Body Type";
+  }
+}
 CelestialBody::CelestialBody(Engine* engine, BodyType bodyType, float mass,
                              float radius, float semiMajorAxis,
                              float eccentricity, float orbitalPeriod,
@@ -41,10 +55,10 @@ void CelestialBody::updateOrbitalPositions(float deltaTime) {
   }
 }
 
-void CelestialBody::create(BufferManager* bufferManager, const char* texturePath) {
+void CelestialBody::create(BufferManager* bufferManager, MeshGenerator* meshGenerator, const char* texturePath) {
   std::cout << "Creating planet: " << type << std::endl;
 
-  meshData = engine->generateSphereMesh(1.0f, 36, 18);
+  meshData = meshGenerator->generateSphereMesh(1.0f, 36, 18);
   std::cout << "Generated mesh with " << meshData.vertices.size()
             << " vertices and " << meshData.indices.size() << " indices"
             << std::endl;

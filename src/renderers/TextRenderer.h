@@ -15,7 +15,7 @@
 
 #include "../core/Engine.h"
 #include "../core/Shader.h"
-#include "../graphics/BufferManager.h"
+#include "../graphics/buffer/BufferManager.h"
 
 struct Character {
   unsigned int TextureID;  // ID handle of the glyph texture

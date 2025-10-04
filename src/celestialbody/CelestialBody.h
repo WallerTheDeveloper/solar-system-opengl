@@ -6,9 +6,10 @@
 #include "../core/Engine.h"
 #include "../core/Shader.h"
 #include "../core/Texture.h"
+#include "../graphics/buffer/BufferManager.h"
+#include "../graphics/buffer/BufferHandle.h"
 #include "../utils/math_utils.h"
-#include "../graphics/BufferHandle.h"
-#include "../graphics/BufferManager.h"
+#include "../graphics/mesh/MeshGenerator.h"
 
 class CelestialBody {
  public:
@@ -23,19 +24,8 @@ class CelestialBody {
     Uranus,
     Neptune
   };
-  std::string typeToString(BodyType body) {
-    switch (body) {
-        case Sun: return "Sun";
-        case Mercury: return "Mercury";
-        case Venus: return "Venus";
-        case Earth: return "Earth";
-        case Mars: return "Mars";
-        case Jupiter: return "Jupiter";
-        case Saturn: return "Saturn";
-        case Uranus: return "Uranus";
-        case Neptune: return "Neptune";
-    }
-  }
+  std::string typeToString(BodyType body);
+
   CelestialBody(Engine* engine, BodyType bodyType, float mass, float radius,
                 float semiMajorAxis, float eccentricity, float orbitalPeriod,
                 float currentAngle, glm::vec3 position, glm::vec3 velocity);
@@ -52,7 +42,7 @@ class CelestialBody {
   glm::vec3 velocity;
 
   void updateOrbitalPositions(float deltaTime);
-  void create(BufferManager* bufferManager, const char* texturePath);
+  void create(BufferManager* bufferManager, MeshGenerator* meshGenerator, const char* texturePath);
   void render(glm::mat4 model, glm::mat4 view, glm::mat4 projection) const;
 
  private:

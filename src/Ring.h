@@ -7,8 +7,8 @@
 
 #include "core/Engine.h"
 #include "core/Shader.h"
-#include "graphics/BufferManager.h"
-#include "graphics/BufferHandle.h"
+#include "graphics/buffer/BufferManager.h"
+#include "graphics/buffer/BufferHandle.h"
 #include "utils/debug_utils.h"
 
 class Ring {

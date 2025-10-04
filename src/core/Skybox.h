@@ -3,10 +3,10 @@
 
 #include <glm/glm.hpp>
 
+#include "../graphics/buffer/BufferManager.h"
+#include "../graphics/buffer/BufferHandle.h"
 #include "Engine.h"
 #include "Shader.h"
-#include "../graphics/BufferHandle.h"
-#include "../graphics/BufferManager.h"
 
 class Skybox {
  public:
@@ -26,7 +26,6 @@ class Skybox {
   unsigned int m_textureID;
 
   std::unique_ptr<Shader> m_shader;
-  std::unique_ptr<BoxMeshData> m_boxMeshData;
 
   unsigned int m_indexCount;
 

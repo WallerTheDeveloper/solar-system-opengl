@@ -15,10 +15,11 @@
 #include "celestialbody/UI/CelestialBodyInfoPanel.h"
 #include "core/Engine.h"
 #include "core/Skybox.h"
+#include "graphics/buffer/BufferManager.h"
+#include "graphics/mesh/MeshGenerator.h"
 #include "renderers/SceneRenderer.h"
 #include "renderers/TextRenderer.h"
 #include "renderers/UIRenderer.h"
-#include "graphics/BufferManager.h"
 
 // Configuration
 struct AppConfig {
@@ -48,6 +49,7 @@ class SolarSystemApp {
   std::unique_ptr<Ring> saturnRing_;
   std::unique_ptr<TextRenderer> textRenderer_;
   std::unique_ptr<CelestialBodyInfoPanel> planetInfoPanel_;
+  std::unique_ptr<MeshGenerator> meshGenerator_;
 
   // Rendering helpers
   std::unique_ptr<SceneRenderer> sceneRenderer_;

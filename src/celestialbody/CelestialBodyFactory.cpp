@@ -71,7 +71,7 @@ std::vector<CelestialBodyConfig> CelestialBodyFactory::getSolarSystemConfig() {
     };
 }
 
-std::vector<std::unique_ptr<CelestialBody>> CelestialBodyFactory::createSolarSystem(Engine* engine, BufferManager* bufferManager) {
+std::vector<std::unique_ptr<CelestialBody>> CelestialBodyFactory::createSolarSystem(Engine* engine, BufferManager* bufferManager, MeshGenerator* meshGenerator) {
     std::vector<std::unique_ptr<CelestialBody>> celestialBodies;
     auto configs = getSolarSystemConfig();
 
@@ -84,7 +84,7 @@ std::vector<std::unique_ptr<CelestialBody>> CelestialBodyFactory::createSolarSys
             config.rotationAngle, config.position, config.velocity)
         );
 
-        celestialBodies.back()->create(bufferManager, config.texturePath);
+        celestialBodies.back()->create(bufferManager, meshGenerator, config.texturePath);
     }
 
     return celestialBodies;
