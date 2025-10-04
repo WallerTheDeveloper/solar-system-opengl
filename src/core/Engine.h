@@ -43,24 +43,6 @@ class Engine {
                      bool unbind = false);
   GLFWwindow* getWindow();
 
-  // Buffers
-  void generateVAO(unsigned int* VAO);
-  void generateBuffer(unsigned int* buffer);
-
-  void bindVAO(unsigned int VAO);
-  void bindBuffer(GLenum target, unsigned int buffer);
-
-  void setBufferData(GLenum target, GLsizeiptr size, const void* data,
-                     GLenum usage);
-  void defineVertexLayout(unsigned int shaderLayoutIndex, int size, GLenum type,
-                          GLboolean normalizeData, int stride,
-                          const void* offset);
-
-  void unbindVBO();
-  void unbindVAO();
-  void deleteVAO(int size, unsigned int& VAO);
-  void deleteBuffers(int size, const unsigned int& buffer);
-
   // Primitives mesh generation
   SphereMeshData generateSphereMesh(float radius, unsigned int sectorCount,
                                     unsigned int stackCount);

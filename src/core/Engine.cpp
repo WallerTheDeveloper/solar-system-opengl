@@ -93,47 +93,6 @@ Engine& Engine::getInstance() {
 
 bool Engine::isEngineInitialized() { return instance != nullptr; }
 
-void Engine::generateVAO(unsigned int* VAO) { glGenVertexArrays(1, VAO); }
-
-void Engine::generateBuffer(unsigned int* buffer) { glGenBuffers(1, buffer); }
-
-void Engine::bindVAO(unsigned int VAO) { glBindVertexArray(VAO); }
-
-void Engine::bindBuffer(GLenum target, unsigned int buffer) {
-  // example: glBindBuffer(GL_ARRAY_BUFFER, VBO);
-  glBindBuffer(target, buffer);
-}
-
-void Engine::setBufferData(GLenum target, GLsizeiptr size, const void* data,
-                           GLenum usage) {
-  // example VBO: glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices,
-  // GL_STATIC_DRAW); example EBO: glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-  // sizeof(indicies), indicies, GL_STATIC_DRAW);
-  glBufferData(target, size, data, usage);
-}
-
-void Engine::unbindVAO() { glBindVertexArray(0); }
-void Engine::unbindVBO() { glBindBuffer(GL_ARRAY_BUFFER, 0); }
-
-void Engine::deleteVAO(int size, unsigned int& VAO) {
-  glDeleteVertexArrays(size, &VAO);
-}
-
-void Engine::deleteBuffers(int size, const unsigned int& buffer) {
-  glDeleteBuffers(size, &buffer);
-}
-
-void Engine::defineVertexLayout(unsigned int shaderLayoutIndex, int size,
-                                GLenum type, GLboolean normalizeData,
-                                int stride, const void* offset) {
-  // example:   glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 *
-  // sizeof(float), (void*)(3 * sizeof(float)));
-  glVertexAttribPointer(shaderLayoutIndex, size, type, normalizeData, stride,
-                        offset);
-
-  glEnableVertexAttribArray(shaderLayoutIndex);
-}
-
 SphereMeshData Engine::generateSphereMesh(float radius,
                                           unsigned int sectorCount,
                                           unsigned int stackCount) {
