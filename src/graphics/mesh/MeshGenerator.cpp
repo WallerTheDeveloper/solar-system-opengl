@@ -4,9 +4,11 @@
 
 #include "MeshGenerator.h"
 
+#include <utils/math_utils.h>
+
 SphereMeshData MeshGenerator::generateSphereMesh(float radius,
                                                  unsigned int sectorCount,
-                                                 unsigned int stackCount) {
+                                                 unsigned int stackCount) const {
   SphereMeshData data;
 
   float x, y, z, xy;

@@ -4,9 +4,15 @@
 
 #include "CelestialBodyPicker.h"
 
+#include <core/Camera.h>
+#include <rendering/renderables/scene/CelestialBody.h>
+
+#include <iostream>
 #include <limits>
 
-bool CelestialBodyPicker::raySphereIntersection(const glm::vec3& rayOrigin,
+#include "glm/detail/type_vec3.hpp"
+
+bool BodySelectionHandler::raySphereIntersection(const glm::vec3& rayOrigin,
                                          const glm::vec3& rayDirection,
                                          const glm::vec3& sphereCenter,
                                          float sphereRadius, float& distance) {
@@ -33,7 +39,7 @@ bool CelestialBodyPicker::raySphereIntersection(const glm::vec3& rayOrigin,
   return true;
 }
 
-CelestialBodyPicker::SelectionResult CelestialBodyPicker::pickPlanet(
+BodySelectionHandler::SelectionResult BodySelectionHandler::pickPlanet(
     const Camera& camera, const std::vector<std::unique_ptr<CelestialBody>>& celestialBodies,
     const std::vector<glm::vec3>& scales) {
   SelectionResult result{false, 0, std::numeric_limits<float>::max()};
@@ -49,7 +55,7 @@ CelestialBodyPicker::SelectionResult CelestialBodyPicker::pickPlanet(
     float sphereRadius = scales[i].x;
     float distance;
 
-    if (raySphereIntersection(rayOrigin, rayDirection, celestialBodies[i]->position,
+    if (raySphereIntersection(rayOrigin, rayDirection, celestialBodies[i]->getBodyProps().position,
                               sphereRadius, distance)) {
       std::cout << "  Hit planet " << i << " at distance " << distance
                 << " (radius: " << sphereRadius << ")" << std::endl;

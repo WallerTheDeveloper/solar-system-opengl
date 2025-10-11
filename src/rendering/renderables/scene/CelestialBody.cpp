@@ -1,5 +1,10 @@
 #include "CelestialBody.h"
 
+#include <core/Shader.h>
+#include <utils/math_utils.h>
+#include <utils/debug_utils.h>
+
+
 std::string CelestialBody::typeToString(BodyType body) {
     switch (body) {
       case Sun: return "Sun";
@@ -14,22 +19,25 @@ std::string CelestialBody::typeToString(BodyType body) {
       default: return "Unknown Body Type";
   }
 }
-CelestialBody::CelestialBody(Engine* engine, BodyType bodyType, float mass,
-                             float radius, float semiMajorAxis,
-                             float eccentricity, float orbitalPeriod,
-                             float currentAngle, glm::vec3 position,
-                             glm::vec3 velocity)
-    : engine(engine),
-      type(bodyType),
-      mass(mass),
-      radius(radius),
-      semiMajorAxis(semiMajorAxis),
-      eccentricity(eccentricity),
-      orbitalPeriod(orbitalPeriod),
-      currentAngle(currentAngle),
-      position(position),
-      velocity(velocity) {}
 
+CelestialBody::CelestialBody(const BodyProps& bodyProperties,
+                             BufferManager& bufferManager,
+                             MeshGenerator& meshGenerator,
+                             TextureManager& textureManager)
+    : type(bodyProperties.type),
+      mass(bodyProperties.mass),
+      radius(bodyProperties.radius),
+      semiMajorAxis(bodyProperties.semiMajorAxis),
+      eccentricity(bodyProperties.eccentricity),
+      orbitalPeriod(bodyProperties.orbitalPeriod),
+      currentAngle(bodyProperties.currentAngle),
+      position(bodyProperties.position),
+      velocity(bodyProperties.velocity),
+      bufferManager_(bufferManager),
+      meshGenerator_(meshGenerator),
+      textureManager_(textureManager),
+      props_(bodyProperties)
+{}
 void CelestialBody::updateOrbitalPositions(float deltaTime) {
   if (this->type == Sun) {
     return;
@@ -54,11 +62,10 @@ void CelestialBody::updateOrbitalPositions(float deltaTime) {
     this->velocity.y = 0.0f;
   }
 }
-
-void CelestialBody::create(BufferManager* bufferManager, MeshGenerator* meshGenerator, const char* texturePath) {
+void CelestialBody::create(const char* texturePath) {
   std::cout << "Creating planet: " << type << std::endl;
 
-  meshData = meshGenerator->generateSphereMesh(1.0f, 36, 18);
+  meshData = meshGenerator_.generateSphereMesh(1.0f, 36, 18);
   std::cout << "Generated mesh with " << meshData.vertices.size()
             << " vertices and " << meshData.indices.size() << " indices"
             << std::endl;
@@ -69,7 +76,7 @@ void CelestialBody::create(BufferManager* bufferManager, MeshGenerator* meshGene
       // texCoord
       {1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float))}
   };
-  bufferHandle = bufferManager->createBufferSet(
+  bufferHandle = bufferManager_.createBufferSet(
         "Body_" + typeToString(type),
         meshData.vertices,
         meshData.indices,
@@ -79,7 +86,7 @@ void CelestialBody::create(BufferManager* bufferManager, MeshGenerator* meshGene
   std::cout << "OpenGL buffers created successfully for planet " << type
             << std::endl;
 
-  this->textureID = engine->addTextureToObject(texturePath, GL_TEXTURE_2D,
+  this->textureID = textureManager_.createTexture(texturePath, GL_TEXTURE_2D,
                                                GL_REPEAT, GL_LINEAR);
 
   try {
@@ -99,8 +106,8 @@ void CelestialBody::create(BufferManager* bufferManager, MeshGenerator* meshGene
   std::cout << "Planet " << type << " created successfully!" << std::endl;
 }
 
-void CelestialBody::render(glm::mat4 model, glm::mat4 view,
-                           glm::mat4 projection) const {
+void CelestialBody::render(const glm::mat4 model, const glm::mat4 view,
+                           const glm::mat4 projection) const {
   if (!created) {
     std::cout << "Planet was not created. Nothing to render! Did you call "
                  "Planet::create before?"

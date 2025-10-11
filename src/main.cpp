@@ -3,13 +3,12 @@
 #include "SolarSystemApp.h"
 
 int main() {
-  SolarSystemApp app;
-
   try {
-    std::cout << "Initializing Solar System Application...\n";
-    app.initialize();
-
-    std::cout << "✓ Solar System Application initialized successfully!\n";
+    SolarSystemApp app;
+    if (!app.initialize()) {
+      std::cout << "App initialization failed" << std::endl;
+      return -1;
+    }
 
     app.run();
   } catch (const std::exception& e) {

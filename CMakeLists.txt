@@ -22,10 +22,6 @@ else()
     add_compile_options(-Wall -Wextra -pedantic)
 endif()
 
-# Include directories
-include_directories(${CMAKE_SOURCE_DIR}/include)
-include_directories(${CMAKE_SOURCE_DIR}/headers)
-
 # Find OpenGL
 find_package(OpenGL REQUIRED)
 
@@ -36,8 +32,15 @@ file(GLOB_RECURSE SOURCES
         "src/*.c"
 )
 
-# Create executable
+# Create executable FIRST
 add_executable(${PROJECT_NAME} ${SOURCES})
+
+# THEN add include directories (moved here, after add_executable)
+target_include_directories(${PROJECT_NAME} PRIVATE
+        ${CMAKE_SOURCE_DIR}/src
+        ${CMAKE_SOURCE_DIR}/include
+        ${CMAKE_SOURCE_DIR}/headers
+)
 
 # Compiler-specific settings
 if(MSVC)

@@ -4,14 +4,15 @@
 
 #ifndef SOLAR_SYSTEM_OPENGL_PLANETPICKER_H
 #define SOLAR_SYSTEM_OPENGL_PLANETPICKER_H
-
-#include <glm/glm.hpp>
+#include <memory>
 #include <vector>
 
-#include "../core/Camera.h"
-#include "CelestialBody.h"
+#include "glm/detail/type_vec.hpp"
 
-class CelestialBodyPicker {
+class Camera;
+class CelestialBody;
+
+class BodySelectionHandler {
 public:
   struct SelectionResult {
     bool hit;

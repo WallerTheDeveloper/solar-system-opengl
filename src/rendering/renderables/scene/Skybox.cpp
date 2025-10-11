@@ -1,20 +1,23 @@
-// Replace your skybox.cpp with this complete working version:
-
 #include "Skybox.h"
+
+#include <core/Shader.h>
 
 #include <iostream>
 
-Skybox::Skybox(Engine* engine, std::vector<std::string> facesTextures)
-    : engine(engine),
-      m_faces(facesTextures),
+#include <graphics/buffer/BufferManager.h>
+
+Skybox::Skybox(BufferManager& bufferManager, TextureManager& textureManager)
+    : textureManager_(textureManager),
+      bufferManager_(bufferManager),
       m_textureID(0),
       m_indexCount(0),
       m_initialized(false),
       m_enabled(true) {}
 
-bool Skybox::initialize(BufferManager* bufferManager) {
+void Skybox::create(const std::vector<std::string>& facesTextures) {
   if (m_initialized) {
-    return true;
+    std::cerr << "Skybox already initialized! Check if you calling Skybox::create more that once!" << std::endl;
+    return;
   }
 
   std::cout << "\n=== SKYBOX CREATION ===" << std::endl;
@@ -27,14 +30,14 @@ bool Skybox::initialize(BufferManager* bufferManager) {
       std::cerr << "SKYBOX CREATION ERROR: failed to create shader" << std::endl;
     }
 
-    this->m_textureID = engine->createCubemap(this->m_faces);
+    this->m_textureID = textureManager_.createCubemap(facesTextures);
 
     if (m_textureID == 0) {
       std::cerr << "ERROR: Failed to create cubemap texture" << std::endl;
-      return false;
+      return;
     }
 
-    std::vector<float> skyboxVertices = {
+    std::vector skyboxVertices = {
       -1.0f,  1.0f, -1.0f,
       -1.0f, -1.0f, -1.0f,
        1.0f, -1.0f, -1.0f,
@@ -81,7 +84,7 @@ bool Skybox::initialize(BufferManager* bufferManager) {
       // position
       {0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0},
     };
-    bufferHandle_ = bufferManager->createBufferSet(
+    bufferHandle_ = bufferManager_.createBufferSet(
       "Skybox",
       skyboxVertices,
       {},
@@ -89,17 +92,15 @@ bool Skybox::initialize(BufferManager* bufferManager) {
     );
 
     m_initialized = true;
-    std::cout << "✓ Skybox initialized successfully!" << std::endl;
+    std::cout << "Skybox initialized successfully!" << std::endl;
     std::cout << "========================\n" << std::endl;
-
-    return true;
   } catch (const std::exception& e) {
     std::cerr << "EXCEPTION in skybox creation: " << e.what() << std::endl;
-    return false;
   }
 }
 
-void Skybox::render(const glm::mat4& view, const glm::mat4& projection) {
+void Skybox::render(const glm::mat4 model, const glm::mat4 view,
+                    const glm::mat4 projection) const {
   if (!m_initialized || !m_enabled) {
     return;
   }
@@ -111,7 +112,8 @@ void Skybox::render(const glm::mat4& view, const glm::mat4& projection) {
   glBindVertexArray(bufferHandle_.getVAO());
 
   // Remove translation from view matrix - this is the key!
-  glm::mat4 skyboxView = glm::mat4(glm::mat3(view)); // Convert to mat3 then back to mat4
+  const auto skyboxView =
+      glm::mat4(glm::mat3(view));  // Convert to mat3 then back to mat4
 
   m_shader->setMat4("view", skyboxView);
   m_shader->setMat4("projection", projection);

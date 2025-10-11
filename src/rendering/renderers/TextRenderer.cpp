@@ -1,23 +1,29 @@
 ﻿#include "TextRenderer.h"
 
-TextRenderer::TextRenderer(Engine* engine) : engine(engine) {}
+#include <core/Shader.h>
 
-TextRenderer::~TextRenderer() {
-  cleanup();
-}
+#include <graphics/buffer/BufferManager.h>
 
-bool TextRenderer::initialize(BufferManager* bufferManager) {
+#include <iostream>
+
+#include "glm/gtc/matrix_transform.hpp"
+
+TextRenderer::TextRenderer(BufferManager& bufferManager, const int screenWidth,
+                           const int screenHeight)
+    : bufferManager_(bufferManager),
+      screenWidth_(screenWidth),
+      screenHeight_(screenHeight)
+{
   try {
     textShader = std::make_unique<Shader>("../shaders/uiText.vert",
                                           "../shaders/uiText.frag");
   } catch (const std::exception& e) {
     std::cerr << "ERROR: Failed to load text shader: " << e.what() << std::endl;
-    return false;
   }
 
   glm::mat4 projection =
-      glm::ortho(0.0f, static_cast<float>(engine->SCR_WIDTH), 0.0f,
-                 static_cast<float>(engine->SCR_HEIGHT));
+      glm::ortho(0.0f, static_cast<float>(screenWidth_), 0.0f,
+                 static_cast<float>(screenHeight_));
   textShader->use();
   textShader->setMat4("projection", projection);
 
@@ -26,7 +32,7 @@ bool TextRenderer::initialize(BufferManager* bufferManager) {
     {0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0},
   };
 
-  bufferHandle_ = bufferManager->createBufferSet(
+  bufferHandle_ = bufferManager.createBufferSet(
     "TextRenderer",
     {},
     {},
@@ -37,7 +43,10 @@ bool TextRenderer::initialize(BufferManager* bufferManager) {
 
   loadFont();
   std::cout << "Text renderer initialized successfully" << std::endl;
-  return true;
+}
+
+TextRenderer::~TextRenderer() {
+  cleanup();
 }
 
 bool TextRenderer::loadFont() {
@@ -154,7 +163,7 @@ void TextRenderer::renderText(const std::string& text, float x, float y,
 
   // Convert from top-left coordinates to OpenGL bottom-left coordinates
   float yPos =
-      engine->SCR_HEIGHT - y - (8 * scale);  // Adjust for character height
+      screenHeight_ - y - (8 * scale);  // Adjust for character height
 
   std::string::const_iterator c;
   for (c = text.begin(); c != text.end(); c++) {
@@ -206,11 +215,11 @@ void TextRenderer::renderText(const std::string& text, float x, float y,
   }
 }
 
-void TextRenderer::setScreenSize() {
+void TextRenderer::setScreenSize() const {
   if (textShader) {
     glm::mat4 projection =
-        glm::ortho(0.0f, static_cast<float>(engine->SCR_WIDTH), 0.0f,
-                   static_cast<float>(engine->SCR_HEIGHT));
+        glm::ortho(0.0f, static_cast<float>(screenWidth_), 0.0f,
+                   static_cast<float>(screenHeight_));
     textShader->use();
     textShader->setMat4("projection", projection);
   }

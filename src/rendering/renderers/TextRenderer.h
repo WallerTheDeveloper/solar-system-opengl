@@ -6,16 +6,13 @@
 #define TEXTRENDERER_H
 
 #include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <iostream>
 #include <map>
 #include <memory>
 #include <string>
-#include <vector>
 
-#include "../core/Engine.h"
-#include "../core/Shader.h"
-#include "../graphics/buffer/BufferManager.h"
+#include <graphics/buffer/BufferHandle.h>
+
+class Shader;
 
 struct Character {
   unsigned int TextureID;  // ID handle of the glyph texture
@@ -26,21 +23,22 @@ struct Character {
 
 class TextRenderer {
  public:
-  TextRenderer(Engine* engine);
+  TextRenderer(BufferManager& bufferManager, int screenWidth, int screenHeight);
   ~TextRenderer();
 
-  bool initialize(BufferManager* bufferManager);
   void renderText(const std::string& text, float x, float y, float scale,
                   glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f));
   void cleanup();
-  void setScreenSize();
+  void setScreenSize() const;
 
  private:
   BufferHandle bufferHandle_;
-  Engine* engine;
+  BufferManager& bufferManager_;
+
   std::map<char, Character> Characters;
   std::unique_ptr<Shader> textShader;
-  // unsigned int VAO = 0, VBO = 0;
+  const int screenWidth_;
+  const int screenHeight_;
 
   bool loadFont();
 };

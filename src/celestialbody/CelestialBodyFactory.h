@@ -8,11 +8,15 @@
 #include <memory>
 #include <vector>
 
-#include "../core/Engine.h"
-#include "CelestialBody.h"
+#include <CelestialBodyTypes.h>
+
+class CelestialBody;
+class BufferManager;
+class MeshGenerator;
+class TextureManager;
 
 struct CelestialBodyConfig {
-  CelestialBody::BodyType type;
+  BodyType type;
   float mass;
   float radius;
   float orbitalRadius;
@@ -26,11 +30,13 @@ struct CelestialBodyConfig {
 
 class CelestialBodyFactory {
 public:
-  static std::vector<std::unique_ptr<CelestialBody>> createSolarSystem(Engine* engine, BufferManager* bufferManager, MeshGenerator* meshGenerator);
+  static std::vector<std::unique_ptr<CelestialBody>> createSolarSystem(
+      BufferManager& bufferManager, MeshGenerator& meshGenerator,
+      TextureManager& textureManager);
 
-  static float getRotationSpeed(CelestialBody::BodyType type);
-  static glm::vec3 getScale(CelestialBody::BodyType type);
-  static glm::vec3 getRotationAxis(CelestialBody::BodyType type);
+  static float getRotationSpeed(BodyType type);
+  static glm::vec3 getScale(BodyType type);
+  static glm::vec3 getRotationAxis(BodyType type);
 
 private:
   static std::vector<CelestialBodyConfig> getSolarSystemConfig();

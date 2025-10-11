@@ -5,7 +5,6 @@
 #ifndef SOLAR_SYSTEM_OPENGL_MESHGENERATOR_H
 #define SOLAR_SYSTEM_OPENGL_MESHGENERATOR_H
 #include <vector>
-#include "../../utils/math_utils.h"
 
 struct ObjectMeshData {
   std::vector<float> vertices;
@@ -19,6 +18,6 @@ struct BoxMeshData : ObjectMeshData {};
 class MeshGenerator {
 public:
   SphereMeshData generateSphereMesh(float radius, unsigned int sectorCount,
-                                    unsigned int stackCount);
+                                    unsigned int stackCount) const;
 };
 #endif  // SOLAR_SYSTEM_OPENGL_MESHGENERATOR_H

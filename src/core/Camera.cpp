@@ -29,7 +29,7 @@ glm::vec3 Camera::getRayDirection() const {
   return glm::normalize(Front);
 }
 
-void Camera::processKeyboard(Camera_Movement direction, float deltaTime, float speedMultiplier) 
+void Camera::processMovement(Camera_Movement direction, float deltaTime, float speedMultiplier)
 {
     float velocity = MovementSpeed * deltaTime * speedMultiplier;
     if (direction == FORWARD) 
@@ -56,7 +56,7 @@ void Camera::processKeyboard(Camera_Movement direction, float deltaTime, float s
     }
 }
 
-void Camera::processMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch)
+void Camera::processPointerMovement(float xoffset, float yoffset, GLboolean constrainPitch)
 {
     xoffset *= MouseSensitivity;
     yoffset *= MouseSensitivity;
@@ -75,7 +75,7 @@ void Camera::processMouseMovement(float xoffset, float yoffset, GLboolean constr
     updateCameraVectors();
 }
 
-void Camera::processMouseScroll(float yoffset)
+void Camera::processAxis(float yoffset)
 {
     Zoom -= (float)yoffset;
     if (Zoom < 1.0f)

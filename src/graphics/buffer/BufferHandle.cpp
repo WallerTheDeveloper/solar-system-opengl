@@ -3,7 +3,9 @@
 //
 
 #include "BufferHandle.h"
+
 #include "BufferManager.h"
+#include <utils/debug_utils.h>
 
 BufferHandle::BufferHandle(unsigned int vao, unsigned int vbo, unsigned int ebo,
                            BufferManager* manager)

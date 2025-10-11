@@ -3,8 +3,11 @@
 //
 
 #include "BufferManager.h"
+#include "BufferHandle.h"
 
 #include <iostream>
+#include <utils/debug_utils.h>
+
 
 BufferManager::~BufferManager() {
   if (!bufferRegistry.empty()) {

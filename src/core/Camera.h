@@ -44,9 +44,9 @@ public:
     glm::vec3 getRayDirection() const;
 
     // Input callbacks
-    void processKeyboard(Camera_Movement direction, float deltaTime, float speedMultiplier = 1.0f);
-    void processMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true);
-    void processMouseScroll(float yoffset);
+    void processMovement(Camera_Movement direction, float deltaTime, float speedMultiplier = 1.0f);
+    void processPointerMovement(float xoffset, float yoffset, GLboolean constrainPitch = true);
+    void processAxis(float yoffset);
 
 private:
     void updateCameraVectors();

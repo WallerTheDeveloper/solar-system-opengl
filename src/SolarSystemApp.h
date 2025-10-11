@@ -8,26 +8,21 @@
 #include <memory>
 #include <vector>
 
-#include "Ring.h"
-#include "celestialbody/CelestialBody.h"
-#include "celestialbody/CelestialBodyFactory.h"
-#include "celestialbody/CelestialBodyPicker.h"
-#include "celestialbody/UI/CelestialBodyInfoPanel.h"
-#include "core/Engine.h"
-#include "core/Skybox.h"
-#include "graphics/buffer/BufferManager.h"
-#include "graphics/mesh/MeshGenerator.h"
-#include "renderers/SceneRenderer.h"
-#include "renderers/TextRenderer.h"
-#include "renderers/UIRenderer.h"
-
-// Configuration
-struct AppConfig {
-  static constexpr const char* WINDOW_NAME = "Solar System Simulation";
-  static constexpr bool ENABLE_GL_DEPTH_TEST = true;
-  static constexpr float TIME_SCALE = 1.5f;
-  static const std::vector<std::string> SKYBOX_FACES;
-};
+class WindowManager;
+class InputManager;
+class Camera;
+class SceneRenderer;
+class UIRenderer;
+class SceneData;
+class Engine;
+class BufferManager;
+class Skybox;
+class Ring;
+class TextRenderer;
+class CelestialBodyInfoPanel;
+class MeshGenerator;
+class TextureManager;
+class CelestialBody;
 
 class SolarSystemApp {
  public:
@@ -39,52 +34,46 @@ class SolarSystemApp {
 
   bool initialize();
   void run();
-  void cleanup();
+  void shutdown();
 
  private:
-  // Core systems
+  // -- Engine Context Systems --
+  std::unique_ptr<WindowManager> windowManager_;
+  std::unique_ptr<InputManager> inputManager_;
+  std::unique_ptr<Camera> camera_;
+  std::unique_ptr<SceneRenderer> sceneRenderer_;
+  std::unique_ptr<UIRenderer> uiRenderer_;
+  std::unique_ptr<SceneData> sceneData_;
+
+  // -- Core Systems --
   std::unique_ptr<Engine> engine_;
   std::unique_ptr<BufferManager> bufferManager_;
   std::unique_ptr<Skybox> skybox_;
   std::unique_ptr<Ring> saturnRing_;
   std::unique_ptr<TextRenderer> textRenderer_;
-  std::unique_ptr<CelestialBodyInfoPanel> planetInfoPanel_;
+  std::unique_ptr<CelestialBodyInfoPanel> bodyInfoPanel_;
   std::unique_ptr<MeshGenerator> meshGenerator_;
+  std::unique_ptr<TextureManager> textureManager_;
 
-  // Rendering helpers
-  std::unique_ptr<SceneRenderer> sceneRenderer_;
-  std::unique_ptr<UIRenderer> uiRenderer_;
-
-  // Scene data
   std::vector<std::unique_ptr<CelestialBody>> celestialBodies_;
-  int selectedPlanetIndex_ = -1;
+  // int selectedPlanetIndex_;
 
-  // Time & performance tracking
-  float lastFPSTime_ = 0.0f;
-  float currentFPS_ = 0.0f;
-  int frameCount_ = 0;
-
-  // Cleaup
+  // Cleanup
   bool isCleanedUp = false;
 
   // Initialization
-  bool initializeCoreSystems();
-  bool initializePlanets();
-  bool initializeRenderers();
-  void setupInputCallbacks();
-
-  // Main loop
-  void onFrame();
-  void update(float deltaTime);
-  void render(float currentTime);
+  bool initializeCoreSystems(BufferManager& bufferManager,
+                             TextureManager& textureManager);
+  bool initializePlanets(BufferManager& bufferManager,
+                         TextureManager& textureManager,
+                         MeshGenerator& meshGenerator);
+  bool initializeRenderers(
+      const std::vector<std::unique_ptr<CelestialBody>>& celestialBodies,
+      TextRenderer& textRenderer, CelestialBodyInfoPanel& celestialBodyInfo);
+  void setupInputConfig();
 
   // Helpers
-  void calculateFPS(float currentTime);
-  void handlePlanetSelection();
-
-  // Static callback bridge (for Engine's static callback)
-  static SolarSystemApp* instance_;
-  static void onLeftClickCallbackBridge();
+  void handlePlanetSelection(const Camera& camera);
 };
 
 #endif  // SOLAR_SYSTEM_APP_H

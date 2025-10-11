@@ -5,14 +5,12 @@
 #ifndef BUFFER_MANAGER_H
 #define BUFFER_MANAGER_H
 
-#include <glad/glad.h>
-
+#include "glad/glad.h"
 #include <string>
 #include <unordered_map>
 #include <vector>
 
-#include "../../utils/debug_utils.h"
-#include "BufferHandle.h"
+class BufferHandle;
 
 struct VertexAttribute {
   unsigned int index;

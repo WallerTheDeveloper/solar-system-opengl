@@ -4,13 +4,10 @@
 
 #ifndef SOLAR_SYSTEM_OPENGL_PLANETINFOPANEL_H
 #define SOLAR_SYSTEM_OPENGL_PLANETINFOPANEL_H
+#include <CelestialBodyTypes.h>
+#include <rendering/renderers/TextRenderer.h>
 
-#include <glm/glm.hpp>
-#include <string>
-
-#include "../../core/Camera.h"
-#include "../../renderers/TextRenderer.h"
-#include "../CelestialBody.h"
+struct RenderContext;
 
 struct CelestialBodyInfo {
   std::string name;
@@ -24,15 +21,15 @@ struct CelestialBodyInfo {
 
 class CelestialBodyInfoPanel {
  public:
-  CelestialBodyInfoPanel(TextRenderer* textRenderer);
+  CelestialBodyInfoPanel(TextRenderer& textRenderer);
 
   void renderPanel(const glm::vec3& worldPosition, const CelestialBodyInfo& info,
-                   const Camera& camera, float screenWidth, float screenHeight);
+                   const RenderContext& renderContext);
 
-  static CelestialBodyInfo getBodyInfo(CelestialBody::BodyType type);
+  static CelestialBodyInfo getBodyInfo( BodyType type);
 
  private:
-  TextRenderer* textRenderer;
+  TextRenderer& textRenderer_;
 
   struct ScreenPosition {
     float x;
@@ -40,10 +37,9 @@ class CelestialBodyInfoPanel {
     bool visible;
   };
 
-  ScreenPosition worldToScreen(const glm::vec3& worldPos, const Camera& camera,
-                               float screenWidth, float screenHeight);
+  ScreenPosition worldToScreen(const glm::vec3& worldPos, const RenderContext& renderContext);
 
-  void renderBackground(float x, float y, float width, float height);
+  // void renderBackground(float x, float y, float width, float height);
 };
 
 #endif  // SOLAR_SYSTEM_OPENGL_PLANETINFOPANEL_H
