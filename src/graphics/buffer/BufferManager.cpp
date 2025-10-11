@@ -35,6 +35,10 @@ BufferHandle BufferManager::createBufferSet(
     GLenum usage,
     bool isBufferText
 ) {
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
     unsigned int vao, vbo, ebo;
     GL_CHECK(glGenVertexArrays(1, &vao));
     GL_CHECK(glGenBuffers(1, &vbo));
