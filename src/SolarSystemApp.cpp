@@ -92,8 +92,7 @@ bool SolarSystemApp::initializeCoreSystems(
   camera_ =
       std::make_unique<Camera>(glm::vec3(0.0f, 5.0f, 20.0f),
                                glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, -15.0f);
-  inputManager_ = std::make_unique<InputManager>(
-      windowManager_.get()->getWindow(), AppConfig::SCR_WIDTH,
+  inputManager_ = std::make_unique<InputManager>(AppConfig::SCR_WIDTH,
       AppConfig::SCR_HEIGHT);
 
   sceneRenderer_ = std::make_unique<SceneRenderer>();
@@ -117,6 +116,7 @@ bool SolarSystemApp::initializeCoreSystems(
   bodyInfoPanel_ =
       std::make_unique<CelestialBodyInfoPanel>(*textRenderer_);
 
+  std::cout << "CORE SYSTEMS INITIALIZED SUCCESSFULLY" << std::endl;
   return true;
 }
 

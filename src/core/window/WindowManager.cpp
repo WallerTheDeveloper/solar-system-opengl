@@ -13,13 +13,13 @@ WindowManager::~WindowManager() {
 
 void WindowManager::create(int width, int height, const std::string& title,
                            const std::function<void()>& onWindowCreated) {
-  GLFWwindow* newWindow = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
-  if (!newWindow) {
+  window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
+  if (!window) {
     glfwTerminate();
     throw std::runtime_error("Failed to create GLFW window");
   }
 
-  glfwMakeContextCurrent(newWindow);
+  glfwMakeContextCurrent(window);
   std::cout << "Window created: " << title << " (" << width << "x" << height
             << ")" << std::endl;
 

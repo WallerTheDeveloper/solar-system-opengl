@@ -4,18 +4,18 @@
 
 #include "InputManager.h"
 
-InputManager::InputManager(GLFWwindow* window, int windowWidth,
+InputManager::InputManager(int windowWidth,
                            int windowHeight)
-    : window_(window), windowWidth_(windowWidth), windowHeight_(windowHeight) {}
+    : windowWidth_(windowWidth), windowHeight_(windowHeight) {}
 
-void InputManager::setInputCallbacks() const {
-  glfwSetFramebufferSizeCallback(window_, framebuffer_size_callback);
-  glfwSetCursorPosCallback(window_, pointer_position_callback);
-  glfwSetScrollCallback(window_, scroll_callback);
-  glfwSetMouseButtonCallback(window_, button_callback);
-  glfwSetKeyCallback(window_, key_callback);
+void InputManager::setInputCallbacks(GLFWwindow* window) const {
+  glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+  glfwSetCursorPosCallback(window, pointer_position_callback);
+  glfwSetScrollCallback(window, scroll_callback);
+  glfwSetMouseButtonCallback(window, button_callback);
+  glfwSetKeyCallback(window, key_callback);
 
-  glfwSetInputMode(window_, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+  glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
 bool InputManager::processInput(GLFWwindow* window, float deltaTime) {

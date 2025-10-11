@@ -15,17 +15,15 @@ Engine::Engine(const EngineContext& engineContext, bool enable_gl_depth_test)
   try {
     initGLFW();
 
+    engineContext_.WindowManager->create(
+        AppConfig::SCR_WIDTH, AppConfig::SCR_HEIGHT, AppConfig::WINDOW_NAME,
+        [this, &engineContext] {
+          engineContext.InputManager.get()->setInputCallbacks(engineContext.WindowManager.get()->getWindow());
+        });
+
     initGLAD();
 
     initializeBasicDebugging();
-
-    engineContext_.WindowManager->create(
-      AppConfig::SCR_WIDTH,
-      AppConfig::SCR_HEIGHT,
-      AppConfig::WINDOW_NAME,
-      [this] {
-        engineContext_.InputManager.get()->setInputCallbacks();
-      });
 
     if (enable_gl_depth_test) {
       GL_CHECK(glEnable(GL_DEPTH_TEST));

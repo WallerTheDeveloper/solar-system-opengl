@@ -15,8 +15,8 @@ public:
   using PrimaryActionCallback = std::function<void()>;
   using KeyActionCallback = std::function<void(float deltaTime, float speedMultiplier)>;
 
-  InputManager(GLFWwindow* window, int windowWidth, int windowHeight);
-  void setInputCallbacks() const;
+  InputManager(int windowWidth, int windowHeight);
+  void setInputCallbacks(GLFWwindow* window) const;
   bool processInput(GLFWwindow* window, float deltaTime);
   void bindKey(int key,
                const std::function<void(float deltaTime, float speedMultiplier)>& onKeyBind);
@@ -26,7 +26,6 @@ public:
   void setPrimaryActionCallback(PrimaryActionCallback callback);
 
 private:
-  GLFWwindow* window_;
   int windowWidth_;
   int windowHeight_;
 
