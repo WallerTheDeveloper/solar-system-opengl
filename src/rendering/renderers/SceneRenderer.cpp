@@ -12,7 +12,7 @@
 SceneRenderer::SceneRenderer() = default;
 SceneRenderer::~SceneRenderer() = default;
 
-void SceneRenderer::render(const std::deque<std::unique_ptr<ISceneRenderable>>& renderables, const RenderContext& context) {
+void SceneRenderer::render(const std::deque<std::unique_ptr<ISceneRenderable>>& renderables, const RenderContext& context) const {
   glm::mat4 view = context.camera.getViewMatrix();
   glm::mat4 projection =
       glm::perspective(glm::radians(context.camera.Zoom),

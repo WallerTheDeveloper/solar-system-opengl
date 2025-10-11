@@ -20,7 +20,7 @@ class SceneRenderer {
   SceneRenderer();
   ~SceneRenderer();
   void render(const std::deque<std::unique_ptr<ISceneRenderable>>& renderables,
-                   const RenderContext& context);
+                   const RenderContext& context) const;
 
  private:
   glm::mat4 calculateModelMatrix(const CelestialBody& body, float currentTime) const;

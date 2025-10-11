@@ -65,7 +65,7 @@ class SolarSystemApp {
   bool initializeCoreSystems(
       BufferManager& bufferManager, TextureManager& textureManager,
       const std::vector<std::unique_ptr<CelestialBody>>& celestialBodies,
-      TextRenderer& textRenderer, CelestialBodyInfoPanel& celestialBodyInfo);
+      CelestialBodyInfoPanel& celestialBodyInfo);
   bool initializePlanets(BufferManager& bufferManager,
                          TextureManager& textureManager,
                          MeshGenerator& meshGenerator);

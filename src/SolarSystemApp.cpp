@@ -54,12 +54,11 @@ SolarSystemApp::~SolarSystemApp() {
 bool SolarSystemApp::initialize() {
     std::cout << "Initializing Solar System Application..." << std::endl;
 
-
     bufferManager_ = std::make_unique<BufferManager>();
     textureManager_ = std::make_unique<TextureManager>();
     meshGenerator_ = std::make_unique<MeshGenerator>();
 
-    if (!initializeCoreSystems(*bufferManager_, *textureManager_, celestialBodies_, *textRenderer_, *bodyInfoPanel_)) {
+    if (!initializeCoreSystems(*bufferManager_, *textureManager_, celestialBodies_, *bodyInfoPanel_)) {
       std::cerr << "Failed to initialize core systems" << std::endl;
       return false;
     }
@@ -86,17 +85,16 @@ bool SolarSystemApp::initialize() {
 
 bool SolarSystemApp::initializeCoreSystems(
     BufferManager& bufferManager, TextureManager& textureManager,
-    const std::vector<std::unique_ptr<CelestialBody>>& celestialBodies,
-    TextRenderer& textRenderer, CelestialBodyInfoPanel& celestialBodyInfo) {
+    const std::vector<std::unique_ptr<CelestialBody>>& celestialBodies, CelestialBodyInfoPanel& celestialBodyInfo) {
   windowManager_ = std::make_unique<WindowManager>();
   camera_ =
       std::make_unique<Camera>(glm::vec3(0.0f, 5.0f, 20.0f),
                                glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, -15.0f);
   inputManager_ = std::make_unique<InputManager>(AppConfig::SCR_WIDTH,
       AppConfig::SCR_HEIGHT);
-
   sceneRenderer_ = std::make_unique<SceneRenderer>();
-  uiRenderer_ = std::make_unique<UIRenderer>(celestialBodies, textRenderer, celestialBodyInfo);
+  textRenderer_ = std::make_unique<TextRenderer>(*bufferManager_, AppConfig::SCR_WIDTH, AppConfig::SCR_HEIGHT);
+  uiRenderer_ = std::make_unique<UIRenderer>(celestialBodies, *textRenderer_, celestialBodyInfo);
   sceneData_ = std::make_unique<SceneData>();
 
   EngineContext engineContext{
@@ -107,12 +105,10 @@ bool SolarSystemApp::initializeCoreSystems(
   engine_ =
       std::make_unique<Engine>(engineContext, AppConfig::ENABLE_GL_DEPTH_TEST);
 
+  textRenderer_.get()->create();
+
   skybox_ = std::make_unique<Skybox>(bufferManager, textureManager);
-
   saturnRing_ = std::make_unique<Ring>(bufferManager, textureManager);
-
-  textRenderer_ = std::make_unique<TextRenderer>(bufferManager, AppConfig::SCR_WIDTH, AppConfig::SCR_HEIGHT);
-
   bodyInfoPanel_ =
       std::make_unique<CelestialBodyInfoPanel>(*textRenderer_);
 

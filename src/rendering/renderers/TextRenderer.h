@@ -26,6 +26,7 @@ class TextRenderer {
   TextRenderer(BufferManager& bufferManager, int screenWidth, int screenHeight);
   ~TextRenderer();
 
+  void create();
   void renderText(const std::string& text, float x, float y, float scale,
                   glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f));
   void cleanup();

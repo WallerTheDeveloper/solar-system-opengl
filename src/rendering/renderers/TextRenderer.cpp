@@ -14,6 +14,14 @@ TextRenderer::TextRenderer(BufferManager& bufferManager, const int screenWidth,
       screenWidth_(screenWidth),
       screenHeight_(screenHeight)
 {
+
+}
+
+TextRenderer::~TextRenderer() {
+  cleanup();
+}
+
+void TextRenderer::create() {
   try {
     textShader = std::make_unique<Shader>("../shaders/uiText.vert",
                                           "../shaders/uiText.frag");
@@ -21,32 +29,21 @@ TextRenderer::TextRenderer(BufferManager& bufferManager, const int screenWidth,
     std::cerr << "ERROR: Failed to load text shader: " << e.what() << std::endl;
   }
 
-  glm::mat4 projection =
-      glm::ortho(0.0f, static_cast<float>(screenWidth_), 0.0f,
-                 static_cast<float>(screenHeight_));
+  glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(screenWidth_),
+                                    0.0f, static_cast<float>(screenHeight_));
   textShader->use();
   textShader->setMat4("projection", projection);
 
   std::vector<VertexAttribute> attributes = {
-    // position
-    {0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0},
+      // position
+      {0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0},
   };
 
-  bufferHandle_ = bufferManager.createBufferSet(
-    "TextRenderer",
-    {},
-    {},
-    attributes,
-    GL_DYNAMIC_DRAW,
-    true
-  );
+  bufferHandle_ = bufferManager_.createBufferSet(
+      "TextRenderer", {}, {}, attributes, GL_DYNAMIC_DRAW, true);
 
   loadFont();
   std::cout << "Text renderer initialized successfully" << std::endl;
-}
-
-TextRenderer::~TextRenderer() {
-  cleanup();
 }
 
 bool TextRenderer::loadFont() {
