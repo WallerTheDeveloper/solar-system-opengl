@@ -54,11 +54,12 @@ SolarSystemApp::~SolarSystemApp() {
 bool SolarSystemApp::initialize() {
     std::cout << "Initializing Solar System Application..." << std::endl;
 
+
     bufferManager_ = std::make_unique<BufferManager>();
     textureManager_ = std::make_unique<TextureManager>();
     meshGenerator_ = std::make_unique<MeshGenerator>();
 
-    if (!initializeCoreSystems(*bufferManager_, *textureManager_)) {
+    if (!initializeCoreSystems(*bufferManager_, *textureManager_, celestialBodies_, *textRenderer_, *bodyInfoPanel_)) {
       std::cerr << "Failed to initialize core systems" << std::endl;
       return false;
     }
@@ -69,10 +70,10 @@ bool SolarSystemApp::initialize() {
       return false;
     }
 
-    if (!initializeRenderers(celestialBodies_, *textRenderer_, *bodyInfoPanel_)) {
-        std::cerr << "Failed to initialize renderers" << std::endl;
-        return false;
-    }
+    // if (!initializeRenderers(celestialBodies_, *textRenderer_, *bodyInfoPanel_)) {
+    //     std::cerr << "Failed to initialize renderers" << std::endl;
+    //     return false;
+    // }
 
     skybox_->create(AppConfig::SKYBOX_FACES);
     saturnRing_->create("../textures/saturn_ring.png");
@@ -83,8 +84,10 @@ bool SolarSystemApp::initialize() {
     return true;
 }
 
-bool SolarSystemApp::initializeCoreSystems(BufferManager& bufferManager,
-                                           TextureManager& textureManager) {
+bool SolarSystemApp::initializeCoreSystems(
+    BufferManager& bufferManager, TextureManager& textureManager,
+    const std::vector<std::unique_ptr<CelestialBody>>& celestialBodies,
+    TextRenderer& textRenderer, CelestialBodyInfoPanel& celestialBodyInfo) {
   windowManager_ = std::make_unique<WindowManager>();
   camera_ =
       std::make_unique<Camera>(glm::vec3(0.0f, 5.0f, 20.0f),
@@ -93,7 +96,17 @@ bool SolarSystemApp::initializeCoreSystems(BufferManager& bufferManager,
       windowManager_.get()->getWindow(), AppConfig::SCR_WIDTH,
       AppConfig::SCR_HEIGHT);
 
+  sceneRenderer_ = std::make_unique<SceneRenderer>();
+  uiRenderer_ = std::make_unique<UIRenderer>(celestialBodies, textRenderer, celestialBodyInfo);
   sceneData_ = std::make_unique<SceneData>();
+
+  EngineContext engineContext{
+    (std::move(windowManager_)), (std::move(camera_)),
+    (std::move(inputManager_)),  (std::move(sceneRenderer_)),
+    (std::move(uiRenderer_)),    (std::move(sceneData_))};
+
+  engine_ =
+      std::make_unique<Engine>(engineContext, AppConfig::ENABLE_GL_DEPTH_TEST);
 
   skybox_ = std::make_unique<Skybox>(bufferManager, textureManager);
 
@@ -104,13 +117,6 @@ bool SolarSystemApp::initializeCoreSystems(BufferManager& bufferManager,
   bodyInfoPanel_ =
       std::make_unique<CelestialBodyInfoPanel>(*textRenderer_);
 
-  EngineContext engineContext {
-    (std::move(windowManager_)), (std::move(camera_)),
-    (std::move(inputManager_)),  (std::move(sceneRenderer_)),
-    (std::move(uiRenderer_)),    (std::move(sceneData_))};
-
-  engine_ =
-      std::make_unique<Engine>(engineContext, AppConfig::ENABLE_GL_DEPTH_TEST);
   return true;
 }
 
@@ -129,15 +135,15 @@ bool SolarSystemApp::initializePlanets(BufferManager& bufferManager,
     return true;
 }
 
-bool SolarSystemApp::initializeRenderers(
-    const std::vector<std::unique_ptr<CelestialBody>>& celestialBodies,
-    TextRenderer& textRenderer, CelestialBodyInfoPanel& celestialBodyInfo)
-{
-    sceneRenderer_ = std::make_unique<SceneRenderer>();
-    uiRenderer_ = std::make_unique<UIRenderer>(celestialBodies, textRenderer, celestialBodyInfo);
-
-    return true;
-}
+// bool SolarSystemApp::initializeRenderers(
+//     const std::vector<std::unique_ptr<CelestialBody>>& celestialBodies,
+//     TextRenderer& textRenderer, CelestialBodyInfoPanel& celestialBodyInfo)
+// {
+//     sceneRenderer_ = std::make_unique<SceneRenderer>();
+//     uiRenderer_ = std::make_unique<UIRenderer>(celestialBodies, textRenderer, celestialBodyInfo);
+//
+//     return true;
+// }
 void SolarSystemApp::setupInputConfig() {
   inputManager_.get()->bindKey(GLFW_KEY_W, [&](float dt, float sp) {
     camera_->processMovement(FORWARD, dt, sp);

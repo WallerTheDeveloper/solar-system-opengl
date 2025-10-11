@@ -62,14 +62,16 @@ class SolarSystemApp {
   bool isCleanedUp = false;
 
   // Initialization
-  bool initializeCoreSystems(BufferManager& bufferManager,
-                             TextureManager& textureManager);
+  bool initializeCoreSystems(
+      BufferManager& bufferManager, TextureManager& textureManager,
+      const std::vector<std::unique_ptr<CelestialBody>>& celestialBodies,
+      TextRenderer& textRenderer, CelestialBodyInfoPanel& celestialBodyInfo);
   bool initializePlanets(BufferManager& bufferManager,
                          TextureManager& textureManager,
                          MeshGenerator& meshGenerator);
-  bool initializeRenderers(
-      const std::vector<std::unique_ptr<CelestialBody>>& celestialBodies,
-      TextRenderer& textRenderer, CelestialBodyInfoPanel& celestialBodyInfo);
+  // bool initializeRenderers(
+  //     const std::vector<std::unique_ptr<CelestialBody>>& celestialBodies,
+  //     TextRenderer& textRenderer, CelestialBodyInfoPanel& celestialBodyInfo);
   void setupInputConfig();
 
   // Helpers
