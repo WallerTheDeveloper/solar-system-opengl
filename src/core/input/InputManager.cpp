@@ -21,7 +21,7 @@ void InputManager::setInputCallbacks(GLFWwindow* window) const {
 bool InputManager::processInput(GLFWwindow* window, float deltaTime) {
   if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
     glfwSetWindowShouldClose(window, true);
-    return false;
+    return true;
   }
 
   float speedMultiplier = 1.0f;
@@ -34,7 +34,7 @@ bool InputManager::processInput(GLFWwindow* window, float deltaTime) {
       action(deltaTime, speedMultiplier);
     }
   }
-  return true;
+  return false;
 }
 
 void InputManager::bindKey(int key, const std::function<void(float deltaTime, float speedMultiplier)>&
