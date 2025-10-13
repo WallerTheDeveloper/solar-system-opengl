@@ -56,7 +56,7 @@ void Camera::processMovement(Camera_Movement direction, float deltaTime, float s
     }
 }
 
-void Camera::processPointerMovement(float xoffset, float yoffset, GLboolean constrainPitch)
+void Camera::processPointerMovement(float xoffset, float yoffset, bool constrainPitch)
 {
     xoffset *= MouseSensitivity;
     yoffset *= MouseSensitivity;

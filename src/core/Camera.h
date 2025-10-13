@@ -1,7 +1,6 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -45,7 +44,7 @@ public:
 
     // Input callbacks
     void processMovement(Camera_Movement direction, float deltaTime, float speedMultiplier = 1.0f);
-    void processPointerMovement(float xoffset, float yoffset, GLboolean constrainPitch = true);
+    void processPointerMovement(float xoffset, float yoffset, bool constrainPitch = true);
     void processAxis(float yoffset);
 
 private:

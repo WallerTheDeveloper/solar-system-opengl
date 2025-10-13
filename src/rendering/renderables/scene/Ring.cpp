@@ -10,37 +10,32 @@
 
 #include <vector>
 
-
 Ring::Ring(BufferManager& bufferManager, TextureManager& textureManager)
     : bufferManager_(bufferManager),
       textureManager_(textureManager),
-      textureID(0) {}
-
-Ring::~Ring() = default;
-
-void Ring::create(const char* texturePath) {
+      textureID(0) {
   try {
     std::vector ringVertices = {
-        // Positions (x, y, z)    // Texture coords (u, v)
-        -3.0f, 0.0f, -3.0f, 0.0f, 0.0f,  // Bottom left
-        3.0f,  0.0f, -3.0f, 1.0f, 0.0f,  // Bottom right
-        3.0f,  0.0f, 3.0f,  1.0f, 1.0f,  // Top right
-        -3.0f, 0.0f, 3.0f,  0.0f, 1.0f   // Top left
-    };
+      // Positions (x, y, z)    // Texture coords (u, v)
+      -3.0f, 0.0f, -3.0f, 0.0f, 0.0f,  // Bottom left
+      3.0f,  0.0f, -3.0f, 1.0f, 0.0f,  // Bottom right
+      3.0f,  0.0f, 3.0f,  1.0f, 1.0f,  // Top right
+      -3.0f, 0.0f, 3.0f,  0.0f, 1.0f   // Top left
+  };
 
     std::vector<unsigned int> indices = {0, 1, 2, 2, 3, 0};
 
     std::vector<VertexAttribute> attributes = {
-        // position
-        {0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0},
-        // texCoord
-        {1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float),
-         (void*)(3 * sizeof(float))}};
+      // position
+      {0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0},
+      // texCoord
+      {1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float),
+       (void*)(3 * sizeof(float))}};
 
     bufferHandle = bufferManager_.createBufferSet("Saturn_Ring", ringVertices,
                                                   indices, attributes);
 
-    textureID = textureManager_.createTexture(texturePath, GL_TEXTURE_2D,
+    textureID = textureManager_.createTexture("../textures/saturn_ring.png", GL_TEXTURE_2D,
                                               GL_REPEAT, GL_LINEAR);
 
     shader = std::make_unique<Shader>("../shaders/ring.vert",

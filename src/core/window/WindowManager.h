@@ -22,7 +22,7 @@ public:
   float getGLFWTime() const;
   void shutdown() const;
 private:
-  GLFWwindow* window = nullptr;
+  GLFWwindow* window;
 
   // Fullscreen state
   bool isFullscreen = false;

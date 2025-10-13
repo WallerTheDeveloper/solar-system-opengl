@@ -5,10 +5,10 @@
 #ifndef PLANET_FACTORY_H
 #define PLANET_FACTORY_H
 
+#include <CelestialBodyTypes.h>
+
 #include <memory>
 #include <vector>
-
-#include <CelestialBodyTypes.h>
 
 class CelestialBody;
 class BufferManager;

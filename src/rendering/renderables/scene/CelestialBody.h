@@ -1,6 +1,7 @@
 #ifndef CELESTIALBODY_H
 #define CELESTIALBODY_H
 
+#include <core/Shader.h>
 #include <core/texturing/TextureManager.h>
 
 #include <graphics/buffer/BufferManager.h>
@@ -16,8 +17,6 @@
 
 #include "glm/detail/type_vec3.hpp"
 
-class Shader;
-
 class CelestialBody : public ISceneRenderable {
  public:
   std::string typeToString(BodyType body);
@@ -28,13 +27,13 @@ class CelestialBody : public ISceneRenderable {
 
   CelestialBody(const BodyProps& bodyProperties, BufferManager& bufferManager,
                 MeshGenerator& meshGenerator, TextureManager& textureManager);
-  ~CelestialBody() = default;
+  ~CelestialBody() override = default;
 
-  void updateOrbitalPositions(float deltaTime);
   void create(const char* texturePath);
 
   void render(glm::mat4 model, glm::mat4 view,
               glm::mat4 projection) const override;
+  void update(float deltaTime) override;
 
  private:
   BufferManager& bufferManager_;
@@ -60,6 +59,7 @@ class CelestialBody : public ISceneRenderable {
   glm::vec3 position;
   glm::vec3 velocity;
 
+  void updateOrbitalPositions(float deltaTime);
 };
 
 #endif

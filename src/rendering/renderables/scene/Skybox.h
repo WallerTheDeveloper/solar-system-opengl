@@ -14,9 +14,8 @@ class Shader;
 class Skybox : ISceneRenderable {
  public:
   Skybox(BufferManager& bufferManager, TextureManager& textureManager);
-  ~Skybox() = default;
+  ~Skybox() override = default;
 
-  void create(const std::vector<std::string>& facesTextures);
   void render(glm::mat4 model, glm::mat4 view, glm::mat4 projection) const override;
 
  private:
@@ -30,7 +29,6 @@ class Skybox : ISceneRenderable {
 
   unsigned int m_indexCount;
 
-  bool m_initialized;
   bool m_enabled;
 };
 

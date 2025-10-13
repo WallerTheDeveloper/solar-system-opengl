@@ -1,25 +1,18 @@
 #include "Skybox.h"
 
 #include <core/Shader.h>
+#include <graphics/buffer/BufferManager.h>
 
 #include <iostream>
 
-#include <graphics/buffer/BufferManager.h>
+#include <AppConfig.h>
 
 Skybox::Skybox(BufferManager& bufferManager, TextureManager& textureManager)
     : textureManager_(textureManager),
       bufferManager_(bufferManager),
       m_textureID(0),
       m_indexCount(0),
-      m_initialized(false),
-      m_enabled(true) {}
-
-void Skybox::create(const std::vector<std::string>& facesTextures) {
-  if (m_initialized) {
-    std::cerr << "Skybox already initialized! Check if you calling Skybox::create more that once!" << std::endl;
-    return;
-  }
-
+      m_enabled(true) {
   std::cout << "\n=== SKYBOX CREATION ===" << std::endl;
 
   try {
@@ -30,7 +23,7 @@ void Skybox::create(const std::vector<std::string>& facesTextures) {
       std::cerr << "SKYBOX CREATION ERROR: failed to create shader" << std::endl;
     }
 
-    this->m_textureID = textureManager_.createCubemap(facesTextures);
+    this->m_textureID = textureManager_.createCubemap(AppConfig::SKYBOX_FACES);
 
     if (m_textureID == 0) {
       std::cerr << "ERROR: Failed to create cubemap texture" << std::endl;
@@ -91,7 +84,6 @@ void Skybox::create(const std::vector<std::string>& facesTextures) {
       attributes
     );
 
-    m_initialized = true;
     std::cout << "Skybox initialized successfully!" << std::endl;
     std::cout << "========================\n" << std::endl;
   } catch (const std::exception& e) {
@@ -101,7 +93,7 @@ void Skybox::create(const std::vector<std::string>& facesTextures) {
 
 void Skybox::render(const glm::mat4 model, const glm::mat4 view,
                     const glm::mat4 projection) const {
-  if (!m_initialized || !m_enabled) {
+  if (!m_enabled) {
     return;
   }
 

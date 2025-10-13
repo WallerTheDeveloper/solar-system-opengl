@@ -1,9 +1,7 @@
 #include "CelestialBody.h"
 
-#include <core/Shader.h>
-#include <utils/math_utils.h>
 #include <utils/debug_utils.h>
-
+#include <utils/math_utils.h>
 
 std::string CelestialBody::typeToString(BodyType body) {
     switch (body) {
@@ -129,4 +127,8 @@ void CelestialBody::render(const glm::mat4 model, const glm::mat4 view,
   glDrawElements(GL_TRIANGLES, meshData.indicesCount, GL_UNSIGNED_INT, 0);
 
   glBindVertexArray(0);
+}
+
+void CelestialBody::update(float deltaTime) {
+  updateOrbitalPositions(deltaTime);
 }

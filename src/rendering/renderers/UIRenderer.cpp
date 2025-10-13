@@ -6,12 +6,12 @@
 
 #include <rendering/RenderContext.h>
 
-UIRenderer::UIRenderer(const std::vector<std::unique_ptr<CelestialBody>>& celestialBodies,
-                       TextRenderer& textRenderer,
-                       CelestialBodyInfoPanel& bodyInfoPanel)
-    : celestialBodies_(celestialBodies), textRenderer_(textRenderer), bodyInfoPanel_(bodyInfoPanel) {}
+#include <rendering/renderables/ui/CelestialBodyInfoPanel.h>
 
-void UIRenderer::render(const RenderContext& renderContext) {
+UIRenderer::UIRenderer(TextRenderer& textRenderer)
+    : textRenderer_(textRenderer){}
+
+void UIRenderer::render(const RenderContext& renderContext) const {
   renderFPS(renderContext);
   renderControls();
   renderTitle(renderContext);
@@ -93,7 +93,8 @@ void UIRenderer::renderCrosshair(const RenderContext& renderContext) const {
                             glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
-void UIRenderer::renderCelestialBodyInfo(const glm::vec3& bodyPosition,
-                                  const CelestialBodyInfo& info, const RenderContext& renderContext) const {
-    bodyInfoPanel_.renderPanel(bodyPosition, info, renderContext);
+void UIRenderer::renderCelestialBodyInfo(
+    const glm::vec3& bodyPosition, CelestialBodyInfoPanel& bodyInfoPanel,
+    const CelestialBodyInfo& info, const RenderContext& renderContext) const {
+  bodyInfoPanel.renderPanel(bodyPosition, info, renderContext);
 }

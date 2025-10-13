@@ -12,16 +12,7 @@ TextRenderer::TextRenderer(BufferManager& bufferManager, const int screenWidth,
                            const int screenHeight)
     : bufferManager_(bufferManager),
       screenWidth_(screenWidth),
-      screenHeight_(screenHeight)
-{
-
-}
-
-TextRenderer::~TextRenderer() {
-  cleanup();
-}
-
-void TextRenderer::create() {
+      screenHeight_(screenHeight) {
   try {
     textShader = std::make_unique<Shader>("../shaders/uiText.vert",
                                           "../shaders/uiText.frag");
@@ -44,6 +35,15 @@ void TextRenderer::create() {
 
   loadFont();
   std::cout << "Text renderer initialized successfully" << std::endl;
+}
+
+TextRenderer::~TextRenderer() {
+  for (auto& pair : Characters) {
+    glDeleteTextures(1, &pair.second.TextureID);
+  }
+  Characters.clear();
+
+  std::cout << "Text renderer cleaned up" << std::endl;
 }
 
 bool TextRenderer::loadFont() {
@@ -220,13 +220,4 @@ void TextRenderer::setScreenSize() const {
     textShader->use();
     textShader->setMat4("projection", projection);
   }
-}
-
-void TextRenderer::cleanup() {
-  for (auto& pair : Characters) {
-    glDeleteTextures(1, &pair.second.TextureID);
-  }
-  Characters.clear();
-
-  std::cout << "Text renderer cleaned up" << std::endl;
 }

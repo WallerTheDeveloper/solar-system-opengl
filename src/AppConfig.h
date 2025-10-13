@@ -6,6 +6,7 @@
 #define SOLAR_SYSTEM_OPENGL_APPCONFIG_H
 
 #include <string>
+#include <vector>
 
 struct AppConfig {
   static constexpr const char* WINDOW_NAME = "Solar System Simulation";

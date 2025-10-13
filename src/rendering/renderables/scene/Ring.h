@@ -17,8 +17,7 @@ class Shader;
 class Ring : public ISceneRenderable {
  public:
   Ring(BufferManager& bufferManager, TextureManager& textureManager);
-  ~Ring() override;
-  void create(const char* texturePath);
+  ~Ring() override = default;
   void render(glm::mat4 model, glm::mat4 view, glm::mat4 projection) const override;
 
 private:

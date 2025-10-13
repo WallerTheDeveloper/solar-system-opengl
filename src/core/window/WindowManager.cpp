@@ -73,6 +73,7 @@ void WindowManager::toggleFullscreen() {
 GLFWwindow* WindowManager::getWindow() const {
   return window;
 }
+
 float WindowManager::getGLFWTime() const {
   return currentTime;
 }

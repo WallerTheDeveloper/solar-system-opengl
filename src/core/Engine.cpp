@@ -1,27 +1,46 @@
 #include "Engine.h"
-
 #include <utils/debug_utils.h>
 
 #include <core/input/InputManager.h>
 #include <core/window/WindowManager.h>
 
+#include <graphics/buffer/BufferManager.h>
+
 #include <rendering/RenderContext.h>
 #include <rendering/renderers/SceneRenderer.h>
 #include <rendering/renderers/UIRenderer.h>
 
-Engine::Engine(const EngineContext& engineContext, bool enable_gl_depth_test)
-    : engineContext_(engineContext),
-      isInitialized(false) {
+#include <AppConfig.h>
+
+Engine::Engine(bool enable_gl_depth_test, BufferManager& bufferManager)
+    : context_(std::make_unique<EngineContext>()), bufferManager_(bufferManager),  isInitialized(false) {
   try {
     initGLFW();
 
-    engineContext_.WindowManager->create(
+    context_->windowManager = std::make_unique<WindowManager>();
+    context_->windowManager->create(
         AppConfig::SCR_WIDTH, AppConfig::SCR_HEIGHT, AppConfig::WINDOW_NAME,
-        [this, &engineContext] {
-          engineContext.InputManager.get()->setInputCallbacks(engineContext.WindowManager.get()->getWindow());
+        [this] {
+          context_->inputManager->setInputCallbacks(
+              context_->windowManager->getWindow());
         });
 
+    context_->camera =
+        std::make_unique<Camera>(glm::vec3(0.0f, 5.0f, 20.0f),
+                                 glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, -15.0f);
+    context_->inputManager = std::make_unique<InputManager>(AppConfig::SCR_WIDTH,
+        AppConfig::SCR_HEIGHT);
+
+
     initGLAD();
+
+    context_->textRenderer = std::make_unique<TextRenderer>(bufferManager_, AppConfig::SCR_WIDTH, AppConfig::SCR_HEIGHT);
+    context_->bodyInfoPanel = std::make_unique<CelestialBodyInfoPanel>(*context_->textRenderer);
+    context_->uiRenderer = std::make_unique<UIRenderer>(*context_->textRenderer);
+    context_->sceneRenderer = std::make_unique<SceneRenderer>();
+
+    context_->sceneRenderer = std::make_unique<SceneRenderer>();
+
 
     initializeBasicDebugging();
 
@@ -35,7 +54,7 @@ Engine::Engine(const EngineContext& engineContext, bool enable_gl_depth_test)
     // GL_CHECK(glCullFace(GL_BACK));
     // GL_CHECK(glFrontFace(GL_CCW));
 
-    std::cout << "OpenGL state configured successfully" << std::endl;
+    setupInputConfig();
 
     isInitialized = true;
     std::cout << "Engine initialized successfully" << std::endl;
@@ -43,6 +62,34 @@ Engine::Engine(const EngineContext& engineContext, bool enable_gl_depth_test)
     std::cerr << "Engine initialization failed: " << e.what() << std::endl;
     isInitialized = false;
   }
+}
+
+Engine::~Engine() {
+  if (context_->uiRenderer) {
+    std::cout << "\nDestroying UI renderer\n" << std::endl;
+    context_->uiRenderer.reset();
+  }
+  if (context_->textRenderer) {
+    std::cout << "\nDestroying text renderer...\n" << std::endl;
+    context_->textRenderer.reset();
+  }
+  if (context_->camera) {
+    std::cout << "\nDestroying Camera\n" << std::endl;
+    context_->camera.reset();
+  }
+  if (context_->sceneRenderer) {
+    std::cout << "\nDestroying Scene renderer\n" << std::endl;
+    context_->sceneRenderer.reset();
+  }
+  if (context_->inputManager) {
+    std::cout << "\nDestroying Input manager\n" << std::endl;
+    context_->inputManager.reset();
+  }
+  if (context_->windowManager) {
+    std::cout << "\nDestroying Window manager\n" << std::endl;
+    context_->windowManager.reset();
+  }
+
 }
 
 void Engine::calculateFPS(float currentTime) {
@@ -56,7 +103,9 @@ void Engine::calculateFPS(float currentTime) {
   }
 }
 
-void Engine::run(std::function<void(FrameContext&)> frameCallback) {
+void Engine::run(
+    std::function<void(FrameContext&)> frameCallback,
+    const std::deque<std::unique_ptr<ISceneRenderable>>& renderables) {
   if (!isInitialized) {
     std::cerr << "Engine not properly initialized. Cannot start render loop."
               << std::endl;
@@ -65,33 +114,31 @@ void Engine::run(std::function<void(FrameContext&)> frameCallback) {
 
   std::cout << "Running engine loop..." << std::endl;
 
-  engineContext_.WindowManager.get()->run([this, &frameCallback] {
+  context_->windowManager->run([this, &frameCallback, &renderables] {
     FrameContext frameContext;
 
-    frameContext.currentTime =
-        engineContext_.WindowManager.get()->getGLFWTime();
+    frameContext.currentTime = context_->windowManager->getGLFWTime();
     frameContext.deltaTime = frameContext.currentTime - frameContext.lastFrame;
     frameContext.lastFrame = frameContext.currentTime;
 
-    frameContext.shouldTerminate =
-        engineContext_.InputManager.get()->processInput(
-            engineContext_.WindowManager.get()->getWindow(),
-            frameContext.deltaTime);
+    frameContext.shouldTerminate = context_->inputManager->processInput(
+        context_->windowManager->getWindow(), frameContext.deltaTime);
 
-    render(frameContext.currentTime);
+    render(frameContext.currentTime, renderables);
     calculateFPS(frameContext.currentTime);
     frameCallback(frameContext);
   });
 }
 
-void Engine::render(float currentTime) const {
-  RenderContext context{*engineContext_.Camera.get(), AppConfig::SCR_WIDTH, AppConfig::SCR_HEIGHT,
+void Engine::render(
+    float currentTime,
+    const std::deque<std::unique_ptr<ISceneRenderable>>& renderables) const {
+  RenderContext renderContext{*context_->camera, AppConfig::SCR_WIDTH, AppConfig::SCR_HEIGHT,
                         currentTime, currentFPS_};
   // Render 3D scene
-  engineContext_.SceneRenderer->render(engineContext_.Renderables, context);
-
+  context_->sceneRenderer->render(renderables, renderContext);
   // Render UI
-  engineContext_.UiRenderer->render(context);
+  context_->uiRenderer->render(renderContext);
 }
 
 void Engine::initGLFW() {
@@ -116,4 +163,37 @@ void Engine::initGLAD() {
   }
 
   std::cout << "GLAD initialized" << std::endl;
+}
+
+void Engine::setupInputConfig() const {
+  context_->inputManager->bindKey(GLFW_KEY_W, [&](float dt, float sp) {
+    context_->camera->processMovement(FORWARD, dt, sp);
+  });
+  context_->inputManager->bindKey(GLFW_KEY_S, [&](float dt, float sp) {
+    context_->camera->processMovement(BACKWARD, dt, sp);
+  });
+  context_->inputManager->bindKey(GLFW_KEY_A, [&](float dt, float sp) {
+    context_->camera->processMovement(LEFT, dt, sp);
+  });
+  context_->inputManager->bindKey(GLFW_KEY_D, [&](float dt, float sp) {
+    context_->camera->processMovement(RIGHT, dt, sp);
+  });
+  context_->inputManager->bindKey(GLFW_KEY_Q, [&](float dt, float sp) {
+    context_->camera->processMovement(DOWN, dt, sp);
+  });
+  context_->inputManager->bindKey(GLFW_KEY_E, [&](float dt, float sp) {
+    context_->camera->processMovement(UP, dt, sp);
+  });
+
+
+  context_->inputManager->setPointerMovementCallback(
+      [this](float xoffset, float yoffset) {
+        context_->camera->processPointerMovement(xoffset, yoffset);
+      });
+
+  context_->inputManager->setAxisCallback(
+      [this](float value) { context_->camera->processAxis(value); });
+
+  // context_->InputManager->setPrimaryActionCallback(
+      // [this]() { handlePlanetSelection(*cam); });
 }

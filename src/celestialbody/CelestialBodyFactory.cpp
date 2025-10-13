@@ -78,9 +78,7 @@ CelestialBodyFactory::createSolarSystem(BufferManager& bufferManager,
                                         MeshGenerator& meshGenerator,
                                         TextureManager& textureManager) {
     std::vector<std::unique_ptr<CelestialBody>> celestialBodies;
-    auto configs = getSolarSystemConfig();
-
-    celestialBodies.reserve(configs.size());
+    const auto configs = getSolarSystemConfig();
 
     for (const auto& config : configs) {
       BodyProps bodyProps {

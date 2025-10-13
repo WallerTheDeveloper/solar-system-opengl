@@ -1,9 +1,13 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 
+#include <core/EngineContext.h>
+#include <rendering/renderers/TextRenderer.h>
+
+#include <deque>
 #include <functional>
 
-#include <core/EngineContext.h>
+class ISceneRenderable;
 
 class Engine {
  public:
@@ -14,14 +18,19 @@ class Engine {
     float currentTime = 0.0f;
   };
 
-  Engine(const EngineContext& engineContext, bool enable_gl_depth_test);
+  Engine(bool enable_gl_depth_test, BufferManager& bufferManager);
+  ~Engine();
 
-  void run(std::function<void(FrameContext&)> frameCallback);
+  void run(std::function<void(FrameContext&)> frameCallback,
+           const std::deque<std::unique_ptr<ISceneRenderable>>& renderables);
 
  private:
-  const EngineContext& engineContext_;
+  std::unique_ptr<EngineContext> context_;
+  BufferManager& bufferManager_;
 
-  void render(float currentTime) const;
+  void render(
+      float currentTime,
+      const std::deque<std::unique_ptr<ISceneRenderable>>& renderables) const;
 
   // Time & performance tracking
   float lastFPSTime_ = 0.0f;
@@ -38,6 +47,9 @@ class Engine {
   // Core system functions
   void initGLFW();
   void initGLAD();
+
+  // Input
+  void setupInputConfig() const;
 };
 
 #endif
