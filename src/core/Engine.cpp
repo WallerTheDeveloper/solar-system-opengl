@@ -112,22 +112,26 @@ void Engine::run(
     return;
   }
 
-  std::cout << "Running engine loop..." << std::endl;
+  try {
+    std::cout << "Running engine loop..." << std::endl;
 
-  context_->windowManager->run([this, &frameCallback, &renderables] {
     FrameContext frameContext;
+    context_->windowManager->run([this, &frameCallback, &renderables, &frameContext] {
 
-    frameContext.currentTime = context_->windowManager->getGLFWTime();
-    frameContext.deltaTime = frameContext.currentTime - frameContext.lastFrame;
-    frameContext.lastFrame = frameContext.currentTime;
+      frameContext.currentTime = context_->windowManager->getGLFWTime();
+      frameContext.deltaTime = frameContext.currentTime - frameContext.lastFrame;
+      frameContext.lastFrame = frameContext.currentTime;
 
-    frameContext.shouldTerminate = context_->inputManager->processInput(
-        context_->windowManager->getWindow(), frameContext.deltaTime);
+      frameContext.shouldTerminate = context_->inputManager->processInput(
+          context_->windowManager->getWindow(), frameContext.deltaTime);
 
-    render(frameContext.currentTime, renderables);
-    calculateFPS(frameContext.currentTime);
-    frameCallback(frameContext);
-  });
+      render(frameContext.currentTime, renderables);
+      calculateFPS(frameContext.currentTime);
+      frameCallback(frameContext);
+    });
+  } catch ( const std::exception& e ) {
+    std::cerr << "Exception appeared when running the engine: " << e.what() << std::endl;
+  }
 }
 
 void Engine::render(

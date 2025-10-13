@@ -8,19 +8,15 @@
 #include <core/Engine.h>
 #include <core/texturing/TextureManager.h> // glad
 #include <core/input/InputManager.h> // glfw
-#include <core/Camera.h>
 
 #include <graphics/buffer/BufferManager.h>
 #include <graphics/mesh/MeshGenerator.h>
 #include <rendering/renderables/scene/CelestialBody.h>
 #include <rendering/renderables/scene/Ring.h>
 #include <rendering/renderables/scene/Skybox.h>
-#include <rendering/renderables/ui/CelestialBodyInfoPanel.h>
 
 #include <celestialbody/CelestialBodyFactory.h>
 
-#include <glm/detail/type_vec.hpp>
-#include <glm/detail/type_vec3.hpp>
 #include <iostream>
 
 const std::vector<std::string> AppConfig::SKYBOX_FACES = {
@@ -37,47 +33,35 @@ SolarSystemApp::SolarSystemApp() {
 }
 
 SolarSystemApp::~SolarSystemApp() {
-  if (!isCleanedUp) {
-    std::cout << "Warning: cleanup() was not called explicitly, cleaning up in "
-                 "destructor\n";
-    shutdown();
-  }
+  shutdown();
 }
 
 bool SolarSystemApp::initialize() {
+  try {
     std::cout << "Initializing Solar System Application..." << std::endl;
 
     bufferManager_ = std::make_unique<BufferManager>();
     textureManager_ = std::make_unique<TextureManager>();
     meshGenerator_ = std::make_unique<MeshGenerator>();
 
-    if (!initializeCoreSystems(*bufferManager_, *textureManager_)) {
-      std::cerr << "Failed to initialize core systems" << std::endl;
-      return false;
-    }
+    engine_ = std::make_unique<Engine>(AppConfig::ENABLE_GL_DEPTH_TEST,
+                                       *bufferManager_);
 
-    if (!initializePlanets(*bufferManager_, *textureManager_, *meshGenerator_)) {
+    if (!initializePlanets(*bufferManager_, *textureManager_,
+                           *meshGenerator_)) {
       std::cerr << "Failed to initialize planets" << std::endl;
       return false;
     }
 
-    std::cout << "Solar System Application initialized successfully!" << std::endl;
+    skybox_ = std::make_unique<Skybox>(*bufferManager_, *textureManager_);
+    saturnRing_ = std::make_unique<Ring>(*bufferManager_, *textureManager_);
+
+    std::cout << "Solar System Application initialized successfully!"
+              << std::endl;
     return true;
-}
-
-bool SolarSystemApp::initializeCoreSystems(BufferManager& bufferManager,
-                                           TextureManager& textureManager) {
-  try {
-    engine_ = std::make_unique<Engine>(AppConfig::ENABLE_GL_DEPTH_TEST, bufferManager);
-
-    skybox_ = std::make_unique<Skybox>(bufferManager, textureManager);
-    saturnRing_ = std::make_unique<Ring>(bufferManager, textureManager);
-
-    // renderables_.push_back(skybox_);
-    std::cout << "Core systems initialized successfully" << std::endl;
-    return true;
-  } catch (const std::exception& e) {
-    std::cerr << "Failed to initialize core systems: " << e.what() << std::endl;
+  } catch (std::exception& e) {
+    std::cerr << "Failed to initialize Solar System Application" << e.what()
+              << std::endl;
     return false;
   }
 }
@@ -139,7 +123,7 @@ void SolarSystemApp::run() {
         body->update(frameContext.deltaTime * AppConfig::TIME_SCALE);
     }
 
-    if (frameContext.shouldTerminate && !isCleanedUp) {
+    if (frameContext.shouldTerminate) {
       shutdown();
       // glfwSetWindowShouldClose(, true);
     }
@@ -147,11 +131,6 @@ void SolarSystemApp::run() {
 }
 
 void SolarSystemApp::shutdown() {
-  if (isCleanedUp) {
-    std::cout << "Already cleaned up, skipping..." << std::endl;
-    return;
-  }
-
   std::cout << "\n=== Starting Solar System Cleanup ===\n";
 
   if (skybox_) {
@@ -186,6 +165,4 @@ void SolarSystemApp::shutdown() {
   }
 
   std::cout << "=== Solar System Cleanup Complete ===\n\n";
-
-  isCleanedUp = true;
 }

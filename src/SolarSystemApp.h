@@ -38,15 +38,6 @@ class SolarSystemApp {
   void shutdown();
 
  private:
-  // // -- Engine Context Systems --
-  // std::unique_ptr<WindowManager> windowManager_;
-  // std::unique_ptr<InputManager> inputManager_;
-  // std::unique_ptr<Camera> camera_;
-  // std::unique_ptr<SceneRenderer> sceneRenderer_;
-  // std::unique_ptr<UIRenderer> uiRenderer_;
-  // std::unique_ptr<SceneData> sceneData_;
-
-  // -- Core Systems --
   std::unique_ptr<Engine> engine_;
   std::unique_ptr<BufferManager> bufferManager_;
   std::unique_ptr<Skybox> skybox_;
@@ -58,21 +49,9 @@ class SolarSystemApp {
   // std::vector<std::unique_ptr<CelestialBody>> celestialBodies_;
   // int selectedPlanetIndex_;
 
-  // Cleanup
-  bool isCleanedUp = false;
-
-  // Initialization
-  bool initializeCoreSystems(BufferManager& bufferManager,
-                             TextureManager& textureManager);
-
   bool initializePlanets(BufferManager& bufferManager,
                          TextureManager& textureManager,
                          MeshGenerator& meshGenerator);
-
-  // bool initializeRenderers(BufferManager& bufferManager, CelestialBodyInfoPanel& celestialBodyInfo);
-
-  // void setupInputConfig();
-
   // Helpers
   void handlePlanetSelection(const Camera& camera);
 };
