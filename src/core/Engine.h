@@ -40,7 +40,6 @@ class Engine {
   // Helpers
   void calculateFPS(float currentTime);
 
-  bool isInitialized;
 
   bool enableCullFaceState = false;
 

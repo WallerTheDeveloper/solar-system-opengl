@@ -13,7 +13,7 @@
 #include <AppConfig.h>
 
 Engine::Engine(bool enable_gl_depth_test, BufferManager& bufferManager)
-    : context_(std::make_unique<EngineContext>()), bufferManager_(bufferManager),  isInitialized(false) {
+    : context_(std::make_unique<EngineContext>()), bufferManager_(bufferManager){
   try {
     initGLFW();
 
@@ -56,11 +56,9 @@ Engine::Engine(bool enable_gl_depth_test, BufferManager& bufferManager)
 
     setupInputConfig();
 
-    isInitialized = true;
     std::cout << "Engine initialized successfully" << std::endl;
   } catch (const std::exception& e) {
     std::cerr << "Engine initialization failed: " << e.what() << std::endl;
-    isInitialized = false;
   }
 }
 
@@ -89,7 +87,6 @@ Engine::~Engine() {
     std::cout << "\nDestroying Window manager\n" << std::endl;
     context_->windowManager.reset();
   }
-
 }
 
 void Engine::calculateFPS(float currentTime) {
@@ -106,18 +103,11 @@ void Engine::calculateFPS(float currentTime) {
 void Engine::run(
     std::function<void(FrameContext&)> frameCallback,
     const std::deque<std::unique_ptr<ISceneRenderable>>& renderables) {
-  if (!isInitialized) {
-    std::cerr << "Engine not properly initialized. Cannot start render loop."
-              << std::endl;
-    return;
-  }
-
   try {
     std::cout << "Running engine loop..." << std::endl;
 
     FrameContext frameContext;
     context_->windowManager->run([this, &frameCallback, &renderables, &frameContext] {
-
       frameContext.currentTime = context_->windowManager->getGLFWTime();
       frameContext.deltaTime = frameContext.currentTime - frameContext.lastFrame;
       frameContext.lastFrame = frameContext.currentTime;
