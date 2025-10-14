@@ -52,22 +52,22 @@ std::vector<CelestialBodyConfig> CelestialBodyFactory::getSolarSystemConfig() {
         // Saturn
         {
             Saturn, 5.683e26f, 58232000.0f,
-            20.0f, 0.057f, 180.0f, 0.0f,
-            glm::vec3(20.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+            25.0f, 0.057f, 180.0f, 0.0f,  // Increased from 24.0 to 25.0
+            glm::vec3(25.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
             "../textures/saturn.jpg", true
         },
         // Uranus
         {
             Uranus, 8.681e25f, 25362000.0f,
-            25.0f, 0.046f, 250.0f, 0.0f,
-            glm::vec3(25.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+            34.0f, 0.046f, 250.0f, 0.0f,  // Increased from 30.0 to 34.0
+            glm::vec3(34.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
             "../textures/uranus.jpg"
         },
         // Neptune
         {
             Neptune, 1.024e26f, 24622000.0f,
-            30.0f, 0.009f, 350.0f, 0.0f,
-            glm::vec3(30.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+            40.0f, 0.009f, 350.0f, 0.0f,  // Increased from 36.0 to 40.0
+            glm::vec3(40.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
             "../textures/neptune.jpg"
         }
     };

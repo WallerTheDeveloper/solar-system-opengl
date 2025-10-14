@@ -59,6 +59,11 @@ void CelestialBody::updateOrbitalPositions(float deltaTime) {
     this->velocity.x = -speed * sin(this->currentAngle);
     this->velocity.z = speed * cos(this->currentAngle);
     this->velocity.y = 0.0f;
+
+    this->props_.position = this->position;
+    this->props_.velocity = this->velocity;
+    this->props_.currentAngle = this->currentAngle;
+    this->props_.orbitalPeriod = this->orbitalPeriod;
   }
 }
 void CelestialBody::createRing() {
