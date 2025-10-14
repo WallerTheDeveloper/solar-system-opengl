@@ -148,11 +148,6 @@ void SolarSystemApp::shutdown() {
     renderables_.clear();
   }
 
-  // if (saturnRing_) {
-  //   std::cout << "\nDestroying saturn ring...\n" << std::endl;
-  //   saturnRing_.reset();
-  // }
-
   if (meshGenerator_) {
     std::cout << "\nDestroying mesh generator...\n" << std::endl;
     meshGenerator_.reset();
