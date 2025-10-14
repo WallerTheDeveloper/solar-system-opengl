@@ -40,9 +40,6 @@ Engine::Engine(bool enable_gl_depth_test, BufferManager& bufferManager)
     context_->uiRenderer = std::make_unique<UIRenderer>(*context_->textRenderer);
     context_->sceneRenderer = std::make_unique<SceneRenderer>();
 
-    context_->sceneRenderer = std::make_unique<SceneRenderer>();
-
-
     initializeBasicDebugging();
 
     if (enable_gl_depth_test) {
