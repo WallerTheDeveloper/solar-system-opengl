@@ -65,10 +65,10 @@ void CelestialBody::createRing() {
   try {
     std::vector ringVertices = {
       // Positions (x, y, z)    // Texture coords (u, v)
-      -3.0f, 0.0f, -3.0f, 0.0f, 0.0f,  // Bottom left
-      3.0f,  0.0f, -3.0f, 1.0f, 0.0f,  // Bottom right
-      3.0f,  0.0f, 3.0f,  1.0f, 1.0f,  // Top right
-      -3.0f, 0.0f, 3.0f,  0.0f, 1.0f   // Top left
+      -3.0f, 0.0f, -3.0f,       0.0f, 0.0f,  // Bottom left
+      3.0f,  0.0f, -3.0f,       1.0f, 0.0f,  // Bottom right
+      3.0f,  0.0f, 3.0f,        1.0f, 1.0f,  // Top right
+      -3.0f, 0.0f, 3.0f,        0.0f, 1.0f   // Top left
   };
 
     std::vector<unsigned int> indices = {0, 1, 2, 2, 3, 0};
