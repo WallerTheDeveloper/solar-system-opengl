@@ -17,6 +17,9 @@ Engine::Engine(bool enable_gl_depth_test, BufferManager& bufferManager)
   try {
     initGLFW();
 
+    context_->inputManager = std::make_unique<InputManager>(AppConfig::SCR_WIDTH,
+        AppConfig::SCR_HEIGHT);
+
     context_->windowManager = std::make_unique<WindowManager>();
     context_->windowManager->create(
         AppConfig::SCR_WIDTH, AppConfig::SCR_HEIGHT, AppConfig::WINDOW_NAME,
@@ -28,8 +31,6 @@ Engine::Engine(bool enable_gl_depth_test, BufferManager& bufferManager)
     context_->camera =
         std::make_unique<Camera>(glm::vec3(0.0f, 5.0f, 20.0f),
                                  glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, -15.0f);
-    context_->inputManager = std::make_unique<InputManager>(AppConfig::SCR_WIDTH,
-        AppConfig::SCR_HEIGHT);
 
 
     initGLAD();

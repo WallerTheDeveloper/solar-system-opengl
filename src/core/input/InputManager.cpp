@@ -9,6 +9,8 @@ InputManager::InputManager(int windowWidth,
     : windowWidth_(windowWidth), windowHeight_(windowHeight) {}
 
 void InputManager::setInputCallbacks(GLFWwindow* window) const {
+  glfwSetWindowUserPointer(window, const_cast<InputManager*>(this));
+
   glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
   glfwSetCursorPosCallback(window, pointer_position_callback);
   glfwSetScrollCallback(window, scroll_callback);
@@ -55,7 +57,7 @@ void InputManager::setPrimaryActionCallback(PrimaryActionCallback callback) {
 }
 
 void InputManager::framebuffer_size_callback(GLFWwindow* window, int width,
-                                       int height) {
+                                             int height) {
   glViewport(0, 0, width, height);
 }
 
@@ -96,7 +98,6 @@ void InputManager::framebuffer_size_callback(GLFWwindow* window, int width,
 //     toggleFullscreen();
 //   }
 // }
-
 void InputManager::pointer_position_callback(GLFWwindow* window, double xposIn, double yposIn) {
   auto* manager = static_cast<InputManager*>(glfwGetWindowUserPointer(window));
   if (manager) {
@@ -121,7 +122,7 @@ void InputManager::button_callback(GLFWwindow* window, int button, int action, i
 void InputManager::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
   auto* manager = static_cast<InputManager*>(glfwGetWindowUserPointer(window));
   if (manager) {
-    manager->handleFullscreenKey(key, scancode, action, mods);
+    manager->handleFullscreenKey(window, key, scancode, action, mods);
   }
 }
 
@@ -146,13 +147,13 @@ void InputManager::handlePointerMovement(double xposIn, double yposIn) {
   }
 }
 
-void InputManager::handleAxis(double yoffset) {
+void InputManager::handleAxis(double yoffset) const {
   if (scrollCallback_) {
     scrollCallback_(static_cast<float>(yoffset));
   }
 }
 
-void InputManager::handlePrimaryActionKey(int button, int action) {
+void InputManager::handlePrimaryActionKey(int button, int action) const {
   if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
     if (primaryActionCallback_) {
       primaryActionCallback_();
@@ -160,9 +161,9 @@ void InputManager::handlePrimaryActionKey(int button, int action) {
   }
 }
 
-void InputManager::handleFullscreenKey(int key, int scancode, int action, int mods) {
+void InputManager::handleFullscreenKey(GLFWwindow* window, int key, int scancode, int action, int mods) {
   // ENTER + SHIFT = fullscreen mode
   if (key == GLFW_KEY_ENTER && action == GLFW_PRESS && (mods & GLFW_MOD_SHIFT)) {
-    // Handle special key combinations
+    // Handle fullscreen logic here
   }
 }

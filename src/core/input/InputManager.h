@@ -33,6 +33,8 @@ private:
   float lastPointerY_ = static_cast<float>(windowHeight_) / 2.0f;;
   bool firstPointer_ = true;
 
+  bool isFullscreen_ = false;
+
   std::function<void(float deltaTime, float speedMultiplier)> onKeyBind_;
 
   std::unordered_map<int, std::function<void(float deltaTime, float speedMultiplier)>> keyBindings;
@@ -49,8 +51,8 @@ private:
   static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
   void handlePointerMovement(double xposIn, double yposIn);
-  void handleAxis(double yoffset);
-  void handlePrimaryActionKey(int button, int action);
-  void handleFullscreenKey(int key, int scancode, int action, int mods);
+  void handleAxis(double yoffset) const;
+  void handlePrimaryActionKey(int button, int action) const;
+  void handleFullscreenKey(GLFWwindow* window, int key, int scancode, int action, int mods);
 };
 #endif  // SOLAR_SYSTEM_OPENGL_INPUTMANAGER_H
