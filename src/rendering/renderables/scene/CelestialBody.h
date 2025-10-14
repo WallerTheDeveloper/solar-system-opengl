@@ -37,16 +37,18 @@ class CelestialBody : public ISceneRenderable {
 
  private:
   BufferManager& bufferManager_;
-  BufferHandle bufferHandle;
+  BufferHandle bufferHandle_;
+  BufferHandle ringBufferHandle_;
   MeshGenerator& meshGenerator_;
   TextureManager& textureManager_;
 
   bool created = false;
   unsigned int textureID;
+  unsigned int ringTextureID;
   SphereMeshData meshData;
 
   std::unique_ptr<Shader> shader;
-
+  std::unique_ptr<Shader> ringShader;
   BodyProps props_;
 
   BodyType type;
@@ -58,8 +60,12 @@ class CelestialBody : public ISceneRenderable {
   float currentAngle;
   glm::vec3 position;
   glm::vec3 velocity;
+  bool hasRing = false;
 
   void updateOrbitalPositions(float deltaTime);
+  void createRing();
+  void renderRing(const glm::mat4& model, const glm::mat4& view,
+                  const glm::mat4& projection) const;
 };
 
 #endif

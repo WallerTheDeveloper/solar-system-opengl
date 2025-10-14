@@ -54,7 +54,7 @@ std::vector<CelestialBodyConfig> CelestialBodyFactory::getSolarSystemConfig() {
             Saturn, 5.683e26f, 58232000.0f,
             20.0f, 0.057f, 180.0f, 0.0f,
             glm::vec3(20.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-            "../textures/saturn.jpg"
+            "../textures/saturn.jpg", true
         },
         // Uranus
         {
@@ -83,7 +83,7 @@ CelestialBodyFactory::createSolarSystem(BufferManager& bufferManager,
     for (const auto& config : configs) {
       BodyProps bodyProps {
         config.type, config.mass, config.radius, config.orbitalRadius, config.eccentricity,
-        config.orbitalPeriod, config.rotationAngle, config.position, config.velocity
+        config.orbitalPeriod, config.rotationAngle, config.position, config.velocity, config.hasRing
       };
       celestialBodies.push_back(std::make_unique<CelestialBody>(
           bodyProps, bufferManager, meshGenerator, textureManager));

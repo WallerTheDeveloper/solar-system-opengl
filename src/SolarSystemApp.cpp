@@ -12,7 +12,6 @@
 #include <graphics/buffer/BufferManager.h>
 #include <graphics/mesh/MeshGenerator.h>
 #include <rendering/renderables/scene/CelestialBody.h>
-#include <rendering/renderables/scene/Ring.h>
 #include <rendering/renderables/scene/Skybox.h>
 
 #include <celestialbody/CelestialBodyFactory.h>
@@ -55,9 +54,6 @@ bool SolarSystemApp::initialize() {
       std::cerr << "Failed to initialize planets" << std::endl;
       return false;
     }
-
-    saturnRing_ = std::make_unique<Ring>(*bufferManager_, *textureManager_);
-    renderables_.push_back(std::move(saturnRing_));
 
     std::cout << "Solar System Application initialized successfully!"
               << std::endl;
@@ -152,10 +148,10 @@ void SolarSystemApp::shutdown() {
     renderables_.clear();
   }
 
-  if (saturnRing_) {
-    std::cout << "\nDestroying saturn ring...\n" << std::endl;
-    saturnRing_.reset();
-  }
+  // if (saturnRing_) {
+  //   std::cout << "\nDestroying saturn ring...\n" << std::endl;
+  //   saturnRing_.reset();
+  // }
 
   if (meshGenerator_) {
     std::cout << "\nDestroying mesh generator...\n" << std::endl;

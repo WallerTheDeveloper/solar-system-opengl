@@ -34,8 +34,9 @@ CelestialBody::CelestialBody(const BodyProps& bodyProperties,
       bufferManager_(bufferManager),
       meshGenerator_(meshGenerator),
       textureManager_(textureManager),
-      props_(bodyProperties)
-{}
+      props_(bodyProperties),
+      hasRing(bodyProperties.hasRing) {}
+
 void CelestialBody::updateOrbitalPositions(float deltaTime) {
   if (this->type == Sun) {
     return;
@@ -60,9 +61,72 @@ void CelestialBody::updateOrbitalPositions(float deltaTime) {
     this->velocity.y = 0.0f;
   }
 }
+void CelestialBody::createRing() {
+  try {
+    std::vector ringVertices = {
+      // Positions (x, y, z)    // Texture coords (u, v)
+      -3.0f, 0.0f, -3.0f, 0.0f, 0.0f,  // Bottom left
+      3.0f,  0.0f, -3.0f, 1.0f, 0.0f,  // Bottom right
+      3.0f,  0.0f, 3.0f,  1.0f, 1.0f,  // Top right
+      -3.0f, 0.0f, 3.0f,  0.0f, 1.0f   // Top left
+  };
+
+    std::vector<unsigned int> indices = {0, 1, 2, 2, 3, 0};
+
+    std::vector<VertexAttribute> attributes = {
+      // position
+      {0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0},
+      // texCoord
+      {1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float),
+       (void*)(3 * sizeof(float))}};
+
+    ringBufferHandle_ = bufferManager_.createBufferSet("Saturn_Ring", ringVertices,
+                                                  indices, attributes);
+
+    ringTextureID = textureManager_.createTexture("../textures/saturn_ring.png", GL_TEXTURE_2D,
+                                              GL_REPEAT, GL_LINEAR);
+
+    ringShader = std::make_unique<Shader>("../shaders/ring.vert",
+                                      "../shaders/ring.frag");
+  } catch (std::exception& e) {
+    std::cout << "Failed to create ring: " << e.what() << std::endl;
+  }
+}
+
+void CelestialBody::renderRing(const glm::mat4& model, const glm::mat4& view,
+                  const glm::mat4& projection) const {
+  bool cullFaceWasEnabled = glIsEnabled(GL_CULL_FACE);
+  if (cullFaceWasEnabled) {
+    glDisable(GL_CULL_FACE);
+  }
+
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+  ringShader->use();
+  ringShader->setMat4("model", model);
+  ringShader->setMat4("view", view);
+  ringShader->setMat4("projection", projection);
+
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, ringTextureID);
+  ringShader->setInt("ringTexture", 0);
+
+  glBindVertexArray(ringBufferHandle_.getVAO());
+  glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+  if (cullFaceWasEnabled) {
+    glEnable(GL_CULL_FACE);
+  }
+  glDisable(GL_BLEND);
+}
+
 void CelestialBody::create(const char* texturePath) {
   std::cout << "Creating planet: " << type << std::endl;
 
+  if (hasRing) {
+    createRing();
+  }
   meshData = meshGenerator_.generateSphereMesh(1.0f, 36, 18);
   std::cout << "Generated mesh with " << meshData.vertices.size()
             << " vertices and " << meshData.indices.size() << " indices"
@@ -74,7 +138,7 @@ void CelestialBody::create(const char* texturePath) {
       // texCoord
       {1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float))}
   };
-  bufferHandle = bufferManager_.createBufferSet(
+  bufferHandle_ = bufferManager_.createBufferSet(
         "Body_" + typeToString(type),
         meshData.vertices,
         meshData.indices,
@@ -123,10 +187,14 @@ void CelestialBody::render(const glm::mat4 model, const glm::mat4 view,
   glBindTexture(GL_TEXTURE_2D, textureID);
   shader->setInt("texture", 0);
 
-  glBindVertexArray(bufferHandle.getVAO());
+  glBindVertexArray(bufferHandle_.getVAO());
   glDrawElements(GL_TRIANGLES, meshData.indicesCount, GL_UNSIGNED_INT, 0);
 
   glBindVertexArray(0);
+
+  if (hasRing) {
+    renderRing(model, view, projection);
+  }
 }
 
 void CelestialBody::update(float deltaTime) {

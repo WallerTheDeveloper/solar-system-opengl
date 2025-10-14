@@ -29,6 +29,7 @@ struct BodyProps {
   float currentAngle;   // current position in orbit (radians)
   glm::vec3 position;
   glm::vec3 velocity;
+  bool hasRing = false;
 };
 
 #endif  // SOLAR_SYSTEM_OPENGL_BODYTYPE_H

@@ -26,6 +26,7 @@ struct CelestialBodyConfig {
   glm::vec3 position;
   glm::vec3 velocity;
   const char* texturePath;
+  bool hasRing = false;
 };
 
 class CelestialBodyFactory {

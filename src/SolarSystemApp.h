@@ -41,7 +41,6 @@ class SolarSystemApp {
   std::unique_ptr<Engine> engine_;
   std::unique_ptr<BufferManager> bufferManager_;
   std::unique_ptr<Skybox> skybox_;
-  std::unique_ptr<Ring> saturnRing_;
   std::unique_ptr<MeshGenerator> meshGenerator_;
   std::unique_ptr<TextureManager> textureManager_;
 
