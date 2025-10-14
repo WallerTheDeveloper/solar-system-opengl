@@ -13,6 +13,7 @@ class SceneRenderer;
 class UIRenderer;
 class TextRenderer;
 class CelestialBodyInfoPanel;
+class AudioManager;
 
 struct EngineContext {
   // Core system instances
@@ -25,6 +26,8 @@ struct EngineContext {
   std::unique_ptr<TextRenderer> textRenderer;
   // UI
   std::unique_ptr<CelestialBodyInfoPanel> bodyInfoPanel;
+  // Audio
+  std::unique_ptr<AudioManager> audioManager;
 };
 
 #endif  // SOLAR_SYSTEM_OPENGL_ENGINECONTEXT_H

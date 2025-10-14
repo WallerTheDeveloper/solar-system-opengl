@@ -1,16 +1,15 @@
 #include "Engine.h"
+
 #include <utils/debug_utils.h>
 
+#include <AppConfig.h>
 #include <core/input/InputManager.h>
 #include <core/window/WindowManager.h>
-
+#include <core/audio/AudioManager.h>
 #include <graphics/buffer/BufferManager.h>
-
 #include <rendering/RenderContext.h>
 #include <rendering/renderers/SceneRenderer.h>
 #include <rendering/renderers/UIRenderer.h>
-
-#include <AppConfig.h>
 
 Engine::Engine(bool enable_gl_depth_test, BufferManager& bufferManager)
     : context_(std::make_unique<EngineContext>()), bufferManager_(bufferManager){
@@ -39,6 +38,7 @@ Engine::Engine(bool enable_gl_depth_test, BufferManager& bufferManager)
     context_->bodyInfoPanel = std::make_unique<CelestialBodyInfoPanel>(*context_->textRenderer);
     context_->uiRenderer = std::make_unique<UIRenderer>(*context_->textRenderer);
     context_->sceneRenderer = std::make_unique<SceneRenderer>();
+    context_->audioManager = std::make_unique<AudioManager>();
 
     initializeBasicDebugging();
 
@@ -52,8 +52,11 @@ Engine::Engine(bool enable_gl_depth_test, BufferManager& bufferManager)
     // GL_CHECK(glCullFace(GL_BACK));
     // GL_CHECK(glFrontFace(GL_CCW));
 
+
     setupInputConfig();
 
+    context_->audioManager->playBackgroundMusic("../audio/dnb.mp3");
+    context_->audioManager->setVolume(0.5f);
     std::cout << "Engine initialized successfully" << std::endl;
   } catch (const std::exception& e) {
     std::cerr << "Engine initialization failed: " << e.what() << std::endl;
@@ -84,6 +87,10 @@ Engine::~Engine() {
   if (context_->windowManager) {
     std::cout << "\nDestroying Window manager\n" << std::endl;
     context_->windowManager.reset();
+  }
+  if (context_->audioManager) {
+    std::cout << "\nDestroying Audio manager\n" << std::endl;
+    context_->audioManager.reset();
   }
 }
 
