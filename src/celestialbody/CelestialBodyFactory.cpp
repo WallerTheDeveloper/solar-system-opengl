@@ -87,12 +87,6 @@ CelestialBodyFactory::createSolarSystem(BufferManager& bufferManager,
       };
       celestialBodies.push_back(std::make_unique<CelestialBody>(
           bodyProps, bufferManager, meshGenerator, textureManager));
-        // celestialBodies.push_back(
-        //     std::make_unique<CelestialBody>(config.type, config.mass, config.radius,
-        //     config.orbitalRadius, config.eccentricity, config.orbitalPeriod,
-        //     config.rotationAngle, config.position, config.velocity)
-        // );
-
       celestialBodies.back()->create(config.texturePath);
     }
 
