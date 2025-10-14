@@ -7,8 +7,10 @@ uniform sampler2D ringTexture;
 void main() {
     vec4 texColor = texture(ringTexture, TexCoord);
 
-    float dist = distance(TexCoord, vec2(0.5, 0.5));
-    float alpha = texColor.a * (1.0 - smoothstep(0.3, 0.5, dist));
+    FragColor = texColor;
 
-    FragColor = vec4(texColor.rgb, alpha);
+    // Discard fully transparent pixels to avoid z-fighting
+    if (FragColor.a < 0.01) {
+        discard;
+    }
 }

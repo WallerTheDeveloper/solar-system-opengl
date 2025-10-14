@@ -83,8 +83,10 @@ void CelestialBody::createRing() {
     ringBufferHandle_ = bufferManager_.createBufferSet("Saturn_Ring", ringVertices,
                                                   indices, attributes);
 
-    ringTextureID = textureManager_.createTexture("../textures/saturn_ring.png", GL_TEXTURE_2D,
-                                              GL_REPEAT, GL_LINEAR);
+    ringTextureID = textureManager_.createTexture("../textures/saturn_ring.png",
+                                              GL_TEXTURE_2D,
+                                              GL_CLAMP_TO_EDGE,
+                                              GL_LINEAR);
 
     ringShader = std::make_unique<Shader>("../shaders/ring.vert",
                                       "../shaders/ring.frag");
@@ -96,10 +98,21 @@ void CelestialBody::createRing() {
 void CelestialBody::renderRing(const glm::mat4& model, const glm::mat4& view,
                   const glm::mat4& projection) const {
   bool cullFaceWasEnabled = glIsEnabled(GL_CULL_FACE);
+  bool depthTestWasEnabled = glIsEnabled(GL_DEPTH_TEST);
+
+  // Disable face culling (ring should be visible from both sides)
   if (cullFaceWasEnabled) {
     glDisable(GL_CULL_FACE);
   }
 
+  // CRITICAL: Keep depth testing ON but disable depth writing
+  // This prevents the ring from blocking objects behind it
+  if (!depthTestWasEnabled) {
+    glEnable(GL_DEPTH_TEST);
+  }
+  glDepthMask(GL_FALSE);  // Don't write to depth buffer
+
+  // Enable blending for transparency
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -114,10 +127,18 @@ void CelestialBody::renderRing(const glm::mat4& model, const glm::mat4& view,
 
   glBindVertexArray(ringBufferHandle_.getVAO());
   glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+  glBindVertexArray(0);
+
+  glDepthMask(GL_TRUE);
 
   if (cullFaceWasEnabled) {
     glEnable(GL_CULL_FACE);
   }
+
+  if (!depthTestWasEnabled) {
+    glDisable(GL_DEPTH_TEST);
+  }
+
   glDisable(GL_BLEND);
 }
 
