@@ -11,7 +11,7 @@
 
 class Shader;
 
-class Skybox : ISceneRenderable {
+class Skybox : public ISceneRenderable {
  public:
   Skybox(BufferManager& bufferManager, TextureManager& textureManager);
   ~Skybox() override = default;

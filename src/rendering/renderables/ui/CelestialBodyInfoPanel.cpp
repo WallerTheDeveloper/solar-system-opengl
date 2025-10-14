@@ -39,9 +39,7 @@ CelestialBodyInfo CelestialBodyInfoPanel::getBodyInfo(BodyType type) {
 }
 
 CelestialBodyInfoPanel::ScreenPosition CelestialBodyInfoPanel::worldToScreen(
-    const glm::vec3& worldPos,
-    const RenderContext& renderContext) {
-
+    const glm::vec3& worldPos, const RenderContext& renderContext) const {
     ScreenPosition result;
 
     // Get view and projection matrices
@@ -90,8 +88,9 @@ CelestialBodyInfoPanel::ScreenPosition CelestialBodyInfoPanel::worldToScreen(
 //     }
 // }
 
-void CelestialBodyInfoPanel::renderPanel(const glm::vec3& worldPosition,
-                                  const CelestialBodyInfo& info, const RenderContext& renderContext) {
+void CelestialBodyInfoPanel::renderPanel(
+    const glm::vec3& worldPosition, const CelestialBodyInfo& info,
+    const RenderContext& renderContext) const {
   // Calculate the position above the planet
     glm::vec3 panelWorldPos = worldPosition + glm::vec3(0.0f, 2.0f, 0.0f);
 
@@ -116,8 +115,6 @@ void CelestialBodyInfoPanel::renderPanel(const glm::vec3& worldPosition,
     if (panelX < 10.0f) panelX = 10.0f;
     if (panelX + panelWidth > renderContext.screenWidth - 10.0f) panelX = renderContext.screenWidth - panelWidth - 10.0f;
     if (panelY < 10.0f) panelY = 10.0f;
-
-    // Render background (optional - we'll skip for now since we don't have quad rendering)
 
     // Render title
     textRenderer_.renderText(info.name, panelX + 10.0f, panelY + 10.0f, titleScale,

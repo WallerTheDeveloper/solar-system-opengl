@@ -47,14 +47,17 @@ bool SolarSystemApp::initialize() {
     engine_ = std::make_unique<Engine>(AppConfig::ENABLE_GL_DEPTH_TEST,
                                        *bufferManager_);
 
+    skybox_ = std::make_unique<Skybox>(*bufferManager_, *textureManager_);
+    renderables_.push_back(std::move(skybox_));
+
     if (!initializePlanets(*bufferManager_, *textureManager_,
                            *meshGenerator_)) {
       std::cerr << "Failed to initialize planets" << std::endl;
       return false;
     }
 
-    skybox_ = std::make_unique<Skybox>(*bufferManager_, *textureManager_);
     saturnRing_ = std::make_unique<Ring>(*bufferManager_, *textureManager_);
+    renderables_.push_back(std::move(saturnRing_));
 
     std::cout << "Solar System Application initialized successfully!"
               << std::endl;

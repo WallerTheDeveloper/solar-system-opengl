@@ -46,7 +46,6 @@ class SolarSystemApp {
   std::unique_ptr<TextureManager> textureManager_;
 
   std::deque<std::unique_ptr<ISceneRenderable>> renderables_;
-  // std::vector<std::unique_ptr<CelestialBody>> celestialBodies_;
   // int selectedPlanetIndex_;
 
   bool initializePlanets(BufferManager& bufferManager,

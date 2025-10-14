@@ -24,7 +24,7 @@ class CelestialBodyInfoPanel {
   CelestialBodyInfoPanel(TextRenderer& textRenderer);
 
   void renderPanel(const glm::vec3& worldPosition, const CelestialBodyInfo& info,
-                   const RenderContext& renderContext);
+                   const RenderContext& renderContext) const;
 
   static CelestialBodyInfo getBodyInfo( BodyType type);
 
@@ -37,7 +37,7 @@ class CelestialBodyInfoPanel {
     bool visible;
   };
 
-  ScreenPosition worldToScreen(const glm::vec3& worldPos, const RenderContext& renderContext);
+  ScreenPosition worldToScreen(const glm::vec3& worldPos, const RenderContext& renderContext) const;
 
   // void renderBackground(float x, float y, float width, float height);
 };

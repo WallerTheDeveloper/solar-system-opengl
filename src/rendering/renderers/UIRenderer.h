@@ -9,8 +9,6 @@
 #include <rendering/renderables/ui/CelestialBodyInfoPanel.h>
 
 #include <glm/glm.hpp>
-#include <memory>
-#include <vector>
 
 struct RenderContext;
 class CelestialBody;
@@ -31,7 +29,7 @@ class UIRenderer {
   void renderCameraPosition(const RenderContext& renderContext) const;
   void renderCrosshair(const RenderContext& renderContext) const;
   void renderCelestialBodyInfo(const glm::vec3& bodyPosition,
-                               CelestialBodyInfoPanel& bodyInfoPanel,
+                               const CelestialBodyInfoPanel& bodyInfoPanel,
                                const CelestialBodyInfo& info,
                                const RenderContext& renderContext) const;
 };

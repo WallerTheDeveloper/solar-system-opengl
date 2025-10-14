@@ -94,7 +94,7 @@ void UIRenderer::renderCrosshair(const RenderContext& renderContext) const {
 }
 
 void UIRenderer::renderCelestialBodyInfo(
-    const glm::vec3& bodyPosition, CelestialBodyInfoPanel& bodyInfoPanel,
+    const glm::vec3& bodyPosition, const CelestialBodyInfoPanel& bodyInfoPanel,
     const CelestialBodyInfo& info, const RenderContext& renderContext) const {
   bodyInfoPanel.renderPanel(bodyPosition, info, renderContext);
 }
