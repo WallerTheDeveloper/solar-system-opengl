@@ -89,7 +89,7 @@ void UIRenderer::renderCameraPosition(const RenderContext& renderContext) const 
 void UIRenderer::renderCrosshair(const RenderContext& renderContext) const {
   float centerX = renderContext.screenWidth / 2.0f;
   float centerY = renderContext.screenHeight / 2.0f;
-  textRenderer_.renderText(":+:", centerX - 12.0f, centerY - 12.0f, 4.0f,
+  textRenderer_.renderText(":+:", centerX - 12.0f, centerY - 12.0f, 3.0f,
                             glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
