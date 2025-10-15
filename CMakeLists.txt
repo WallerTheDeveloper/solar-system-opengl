@@ -32,10 +32,10 @@ file(GLOB_RECURSE SOURCES
         "src/*.c"
 )
 
-# Create executable FIRST
+# Create executable
 add_executable(${PROJECT_NAME} ${SOURCES})
 
-# THEN add include directories (moved here, after add_executable)
+# Add include directories
 target_include_directories(${PROJECT_NAME} PRIVATE
         ${CMAKE_SOURCE_DIR}/src
         ${CMAKE_SOURCE_DIR}/include
@@ -48,8 +48,6 @@ if(MSVC)
     target_compile_definitions(${PROJECT_NAME} PRIVATE
             $<$<CONFIG:Debug>:_CRTDBG_MAP_ALLOC>
     )
-    # Disable some MSVC warnings if needed
-    # target_compile_options(${PROJECT_NAME} PRIVATE /wd4996) # Disable deprecated warnings
 else()
     # Enable address sanitizer for debug builds on GCC/Clang
     if(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -58,19 +56,50 @@ else()
     endif()
 endif()
 
-# Link libraries
-target_link_libraries(${PROJECT_NAME}
-        OpenGL::GL
-        ${CMAKE_SOURCE_DIR}/lib/glfw3.lib
-)
-
-# Windows specific libraries
+# Platform-specific GLFW and library linking
 if(WIN32)
+    # Windows: Use local glfw3.lib if it exists, otherwise try to find it
+    if(EXISTS "${CMAKE_SOURCE_DIR}/lib/glfw3.lib")
+        message(STATUS "Using local GLFW library: ${CMAKE_SOURCE_DIR}/lib/glfw3.lib")
+        target_link_libraries(${PROJECT_NAME}
+                OpenGL::GL
+                ${CMAKE_SOURCE_DIR}/lib/glfw3.lib
+                gdi32
+                user32
+                kernel32
+                shell32
+        )
+    else()
+        # Try to find installed GLFW
+        find_package(glfw3 REQUIRED)
+        target_link_libraries(${PROJECT_NAME}
+                OpenGL::GL
+                glfw
+                gdi32
+                user32
+                kernel32
+                shell32
+        )
+    endif()
+
+elseif(APPLE)
+    # macOS: Use system GLFW
+    find_package(glfw3 REQUIRED)
+    find_library(COCOA_LIBRARY Cocoa REQUIRED)
+    find_library(IOKIT_LIBRARY IOKit REQUIRED)
+    find_library(COREVIDEO_LIBRARY CoreVideo REQUIRED)
+
     target_link_libraries(${PROJECT_NAME}
-            gdi32
-            user32
-            kernel32
-            shell32
+            OpenGL::GL
+            glfw
+            ${COCOA_LIBRARY}
+            ${IOKIT_LIBRARY}
+            ${COREVIDEO_LIBRARY}
+    )
+
+    # Optional: Create macOS app bundle
+    set_target_properties(${PROJECT_NAME} PROPERTIES
+            MACOSX_BUNDLE FALSE  # Set to TRUE if you want .app bundle
     )
 endif()
 
@@ -86,6 +115,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 # Print build configuration
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 message(STATUS "Compiler: ${CMAKE_CXX_COMPILER_ID}")
+message(STATUS "Platform: ${CMAKE_SYSTEM_NAME}")
 if(MSVC)
     message(STATUS "MSVC version: ${MSVC_VERSION}")
 endif()
