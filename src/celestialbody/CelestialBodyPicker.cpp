@@ -69,11 +69,12 @@ CelestialBodyPicker::SelectionResult CelestialBodyPicker::pickBody(
 
     if (selectedPlanetIndex >= 0 &&
         selectedPlanetIndex < static_cast<int>(celestialBodies.size())) {
-      onBodyPicked(selectedPlanetIndex);
     }
   } else {
     selectedPlanetIndex = -1;
     std::cout << "No celestial body selected" << std::endl;
   }
+
+  onBodyPicked(selectedPlanetIndex);
   return result;
 }
