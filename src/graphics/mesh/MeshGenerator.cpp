@@ -34,8 +34,7 @@ SphereMeshData MeshGenerator::generateSphereMesh(float radius,
 
       // Texture coordinates
       float u = (float)j / sectorCount;
-      float v = 1.0f - (float)i / stackCount;
-
+      float v = (float)i / stackCount;
       data.vertices.push_back(u);
       data.vertices.push_back(v);
     }
