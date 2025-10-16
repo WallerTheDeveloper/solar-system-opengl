@@ -3,40 +3,41 @@
 #include <utils/debug_utils.h>
 
 #include <AppConfig.h>
+#include <celestialbody/CelestialBodyPicker.h>
+#include <core/audio/AudioManager.h>
 #include <core/input/InputManager.h>
 #include <core/window/WindowManager.h>
-#include <core/audio/AudioManager.h>
 #include <graphics/buffer/BufferManager.h>
 #include <rendering/RenderContext.h>
 #include <rendering/renderers/SceneRenderer.h>
 #include <rendering/renderers/UIRenderer.h>
 
 Engine::Engine(bool enable_gl_depth_test, BufferManager& bufferManager)
-    : context_(std::make_unique<EngineContext>()), bufferManager_(bufferManager){
+    : context_(std::make_unique<EngineContext>()),
+      bufferManager_(bufferManager) {
   try {
     initGLFW();
 
-    context_->inputManager = std::make_unique<InputManager>(AppConfig::SCR_WIDTH,
-        AppConfig::SCR_HEIGHT);
+    context_->inputManager = std::make_unique<InputManager>(
+        AppConfig::SCR_WIDTH, AppConfig::SCR_HEIGHT);
 
     context_->windowManager = std::make_unique<WindowManager>();
-    context_->windowManager->create(
-        AppConfig::SCR_WIDTH, AppConfig::SCR_HEIGHT, AppConfig::WINDOW_NAME,
-        [this] {
-          context_->inputManager->setInputCallbacks(
-              context_->windowManager->getWindow());
-        });
+    context_->windowManager->create(AppConfig::SCR_WIDTH, AppConfig::SCR_HEIGHT,
+                                    AppConfig::WINDOW_NAME, [this] {
+                                      context_->inputManager->setInputCallbacks(
+                                          context_->windowManager->getWindow());
+                                    });
 
     context_->camera =
         std::make_unique<Camera>(glm::vec3(0.0f, 5.0f, 20.0f),
                                  glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, -15.0f);
 
-
     initGLAD();
 
-    context_->textRenderer = std::make_unique<TextRenderer>(bufferManager_, AppConfig::SCR_WIDTH, AppConfig::SCR_HEIGHT);
-    context_->bodyInfoPanel = std::make_unique<CelestialBodyInfoPanel>(*context_->textRenderer);
-    context_->uiRenderer = std::make_unique<UIRenderer>(*context_->textRenderer);
+    context_->textRenderer = std::make_unique<TextRenderer>(
+        bufferManager_, AppConfig::SCR_WIDTH, AppConfig::SCR_HEIGHT);
+    context_->uiRenderer =
+        std::make_unique<UIRenderer>(*context_->textRenderer);
     context_->sceneRenderer = std::make_unique<SceneRenderer>();
     context_->audioManager = std::make_unique<AudioManager>();
 
@@ -51,7 +52,6 @@ Engine::Engine(bool enable_gl_depth_test, BufferManager& bufferManager)
     // GL_CHECK(glEnable(GL_CULL_FACE));
     // GL_CHECK(glCullFace(GL_BACK));
     // GL_CHECK(glFrontFace(GL_CCW));
-
 
     setupInputConfig();
 
@@ -105,35 +105,37 @@ void Engine::calculateFPS(float currentTime) {
   }
 }
 
-void Engine::run(
-    std::function<void(FrameContext&)> frameCallback,
-    const std::deque<std::unique_ptr<ISceneRenderable>>& renderables) {
+void Engine::run(std::function<void(FrameContext&)> frameCallback,
+                 const std::deque<ISceneRenderable*>& renderables) {
   try {
     std::cout << "Running engine loop..." << std::endl;
 
     FrameContext frameContext;
-    context_->windowManager->run([this, &frameCallback, &renderables, &frameContext] {
-      frameContext.currentTime = context_->windowManager->getGLFWTime();
-      frameContext.deltaTime = frameContext.currentTime - frameContext.lastFrame;
-      frameContext.lastFrame = frameContext.currentTime;
+    context_->windowManager->run(
+        [this, &frameCallback, &renderables, &frameContext] {
+          frameContext.currentTime = context_->windowManager->getGLFWTime();
+          frameContext.deltaTime =
+              frameContext.currentTime - frameContext.lastFrame;
+          frameContext.lastFrame = frameContext.currentTime;
 
-      frameContext.shouldTerminate = context_->inputManager->processInput(
-          context_->windowManager->getWindow(), frameContext.deltaTime);
+          frameContext.shouldTerminate = context_->inputManager->processInput(
+              context_->windowManager->getWindow(), frameContext.deltaTime);
 
-      render(frameContext.currentTime, renderables);
-      calculateFPS(frameContext.currentTime);
-      frameCallback(frameContext);
-    });
-  } catch ( const std::exception& e ) {
-    std::cerr << "Exception appeared when running the engine: " << e.what() << std::endl;
+          render(frameContext.currentTime, renderables);
+          calculateFPS(frameContext.currentTime);
+          frameCallback(frameContext);
+        });
+  } catch (const std::exception& e) {
+    std::cerr << "Exception appeared when running the engine: " << e.what()
+              << std::endl;
   }
 }
 
-void Engine::render(
-    float currentTime,
-    const std::deque<std::unique_ptr<ISceneRenderable>>& renderables) const {
-  RenderContext renderContext{*context_->camera, AppConfig::SCR_WIDTH, AppConfig::SCR_HEIGHT,
-                        currentTime, currentFPS_};
+void Engine::render(float currentTime,
+                    const std::deque<ISceneRenderable*>& renderables) const {
+  RenderContext renderContext{*context_->camera,     AppConfig::SCR_WIDTH,
+                              AppConfig::SCR_HEIGHT, currentTime,
+                              currentFPS_,           canRenderPanel};
   // Render 3D scene
   context_->sceneRenderer->render(renderables, renderContext);
   // Render UI
@@ -184,7 +186,6 @@ void Engine::setupInputConfig() const {
     context_->camera->processMovement(UP, dt, sp);
   });
 
-
   context_->inputManager->setPointerMovementCallback(
       [this](float xoffset, float yoffset) {
         context_->camera->processPointerMovement(xoffset, yoffset);
@@ -193,6 +194,13 @@ void Engine::setupInputConfig() const {
   context_->inputManager->setAxisCallback(
       [this](float value) { context_->camera->processAxis(value); });
 
-  // context_->InputManager->setPrimaryActionCallback(
-      // [this]() { handlePlanetSelection(*cam); });
+  context_->inputManager->setPrimaryActionCallback([this]() {
+    CelestialBodyPicker::pickBody(*context_->camera, [](int selectedBodyIndex) {
+      if (selectedBodyIndex >= 0) {
+        canRenderPanel = true;
+      } else {
+        canRenderPanel = false;
+      }
+    });
+  });
 }

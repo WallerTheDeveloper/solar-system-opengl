@@ -6,6 +6,7 @@
 #define SOLAR_SYSTEM_OPENGL_RENDERCONTEXT_H
 
 #include <core/Camera.h>
+#include <CelestialBodyTypes.h>
 
 struct RenderContext {
   const Camera& camera;
@@ -13,6 +14,7 @@ struct RenderContext {
   unsigned int screenHeight;
   float currentTime;
   float fps;
+  bool canRenderPanel;
 };
 
 #endif  // SOLAR_SYSTEM_OPENGL_RENDERCONTEXT_H

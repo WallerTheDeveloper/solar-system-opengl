@@ -22,15 +22,16 @@ class Engine {
   ~Engine();
 
   void run(std::function<void(FrameContext&)> frameCallback,
-           const std::deque<std::unique_ptr<ISceneRenderable>>& renderables);
+           const std::deque<ISceneRenderable*>& renderables);
 
  private:
   std::unique_ptr<EngineContext> context_;
   BufferManager& bufferManager_;
 
+  static bool canRenderPanel;
   void render(
       float currentTime,
-      const std::deque<std::unique_ptr<ISceneRenderable>>& renderables) const;
+      const std::deque<ISceneRenderable*>& renderables) const;
 
   // Time & performance tracking
   float lastFPSTime_ = 0.0f;
@@ -39,7 +40,6 @@ class Engine {
 
   // Helpers
   void calculateFPS(float currentTime);
-
 
   bool enableCullFaceState = false;
 

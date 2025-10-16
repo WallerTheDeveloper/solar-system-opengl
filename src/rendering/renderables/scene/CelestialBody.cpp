@@ -28,14 +28,56 @@ CelestialBody::CelestialBody(const BodyProps& bodyProperties,
       semiMajorAxis(bodyProperties.semiMajorAxis),
       eccentricity(bodyProperties.eccentricity),
       orbitalPeriod(bodyProperties.orbitalPeriod),
-      currentAngle(bodyProperties.currentAngle),
+      currentAngle(bodyProperties.currentRotationAngle),
       position(bodyProperties.position),
       velocity(bodyProperties.velocity),
       bufferManager_(bufferManager),
       meshGenerator_(meshGenerator),
       textureManager_(textureManager),
       props_(bodyProperties),
-      hasRing(bodyProperties.hasRing) {}
+      hasRing(bodyProperties.hasRing) {
+  std::cout << "Creating planet: " << type << std::endl;
+
+  if (hasRing) {
+    createRing();
+  }
+  meshData = meshGenerator_.generateSphereMesh(1.0f, 36, 18);
+  std::cout << "Generated mesh with " << meshData.vertices.size()
+            << " vertices and " << meshData.indices.size() << " indices"
+            << std::endl;
+
+  std::vector<VertexAttribute> attributes = {
+      // position
+      {0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0},
+      // texCoord
+      {1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float),
+       (void*)(3 * sizeof(float))}};
+  bufferHandle_ = bufferManager_.createBufferSet("Body_" + typeToString(type),
+                                                 meshData.vertices,
+                                                 meshData.indices, attributes);
+
+  std::cout << "OpenGL buffers created successfully for planet " << type
+            << std::endl;
+
+  this->textureID = textureManager_.createTexture(bodyProperties.texturePath, GL_TEXTURE_2D,
+                                                  GL_REPEAT, GL_LINEAR);
+
+  try {
+    shader = std::make_unique<Shader>("../shaders/object.vert",
+                                      "../shaders/object.frag");
+    GL_CHECK(shader->use());
+    GL_CHECK(shader->setInt("texture", 0));
+    std::cout << "Shader compiled successfully for planet " << type
+              << std::endl;
+  } catch (const std::exception& e) {
+    std::cout << "ERROR: Failed to create shader for planet " << type << ": "
+              << e.what() << std::endl;
+    return;
+  }
+
+  this->created = true;
+  std::cout << "Planet " << type << " created successfully!" << std::endl;
+}
 
 void CelestialBody::updateOrbitalPositions(float deltaTime) {
   if (this->type == Sun) {
@@ -62,7 +104,7 @@ void CelestialBody::updateOrbitalPositions(float deltaTime) {
 
     this->props_.position = this->position;
     this->props_.velocity = this->velocity;
-    this->props_.currentAngle = this->currentAngle;
+    this->props_.currentRotationAngle = this->currentAngle;
     this->props_.orbitalPeriod = this->orbitalPeriod;
   }
 }
@@ -145,53 +187,6 @@ void CelestialBody::renderRing(const glm::mat4& model, const glm::mat4& view,
   }
 
   glDisable(GL_BLEND);
-}
-
-void CelestialBody::create(const char* texturePath) {
-  std::cout << "Creating planet: " << type << std::endl;
-
-  if (hasRing) {
-    createRing();
-  }
-  meshData = meshGenerator_.generateSphereMesh(1.0f, 36, 18);
-  std::cout << "Generated mesh with " << meshData.vertices.size()
-            << " vertices and " << meshData.indices.size() << " indices"
-            << std::endl;
-
-  std::vector<VertexAttribute> attributes = {
-      // position
-      {0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0},
-      // texCoord
-      {1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float))}
-  };
-  bufferHandle_ = bufferManager_.createBufferSet(
-        "Body_" + typeToString(type),
-        meshData.vertices,
-        meshData.indices,
-        attributes
-    );
-
-  std::cout << "OpenGL buffers created successfully for planet " << type
-            << std::endl;
-
-  this->textureID = textureManager_.createTexture(texturePath, GL_TEXTURE_2D,
-                                               GL_REPEAT, GL_LINEAR);
-
-  try {
-    shader = std::make_unique<Shader>("../shaders/object.vert",
-                                      "../shaders/object.frag");
-    GL_CHECK(shader->use());
-    GL_CHECK(shader->setInt("texture", 0));
-    std::cout << "Shader compiled successfully for planet " << type
-              << std::endl;
-  } catch (const std::exception& e) {
-    std::cout << "ERROR: Failed to create shader for planet " << type
-              << ": " << e.what() << std::endl;
-    return;
-  }
-
-  this->created = true;
-  std::cout << "Planet " << type << " created successfully!" << std::endl;
 }
 
 void CelestialBody::render(const glm::mat4 model, const glm::mat4 view,

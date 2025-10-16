@@ -15,32 +15,23 @@ class BufferManager;
 class MeshGenerator;
 class TextureManager;
 
-struct CelestialBodyConfig {
-  BodyType type;
-  float mass;
-  float radius;
-  float orbitalRadius;
-  float eccentricity;
-  float orbitalPeriod;
-  float rotationAngle;
-  glm::vec3 position;
-  glm::vec3 velocity;
-  const char* texturePath;
-  bool hasRing = false;
-};
-
 class CelestialBodyFactory {
-public:
-  static std::vector<std::unique_ptr<CelestialBody>> createSolarSystem(
-      BufferManager& bufferManager, MeshGenerator& meshGenerator,
-      TextureManager& textureManager);
+ public:
+  static void createSolarSystem(BufferManager& bufferManager,
+                                MeshGenerator& meshGenerator,
+                                TextureManager& textureManager);
+  static const std::vector<std::unique_ptr<CelestialBody>>& getCelestialBodies();
+  static void clear();
 
+  static std::vector<BodyProps> getSolarSystemConfig();
   static float getRotationSpeed(BodyType type);
   static glm::vec3 getScale(BodyType type);
   static glm::vec3 getRotationAxis(BodyType type);
+  static BodyInfo getBodyInfo(BodyType type);
+  static BodyProps getBodyProps(BodyType type);
 
-private:
-  static std::vector<CelestialBodyConfig> getSolarSystemConfig();
+ private:
+  static std::vector<std::unique_ptr<CelestialBody>> celestialBodies_;
 };
 
-#endif // PLANET_FACTORY_H
+#endif  // PLANET_FACTORY_H

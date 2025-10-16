@@ -4,45 +4,25 @@
 
 #include "CelestialBodyPicker.h"
 
+#include <celestialbody/CelestialBodyFactory.h>
 #include <core/Camera.h>
+#include <helpers/RayIntersection.h>
 #include <rendering/renderables/scene/CelestialBody.h>
 
 #include <iostream>
 #include <limits>
 
 #include "glm/detail/type_vec3.hpp"
+#include "glm/gtc/packing.inl"
 
-bool BodySelectionHandler::raySphereIntersection(const glm::vec3& rayOrigin,
-                                         const glm::vec3& rayDirection,
-                                         const glm::vec3& sphereCenter,
-                                         float sphereRadius, float& distance) {
-  glm::vec3 oc = rayOrigin - sphereCenter;
-  float a = glm::dot(rayDirection, rayDirection);
-  float b = 2.0f * glm::dot(oc, rayDirection);
-  float c = glm::dot(oc, oc) - sphereRadius * sphereRadius;
-  float discriminant = b * b - 4 * a * c;
+CelestialBodyPicker::SelectionResult CelestialBodyPicker::pickBody(
+    const Camera& camera,
+    const std::function<void(int)>& onBodyPicked) {
 
-  if (discriminant < 0) {
-    return false;
-  }
 
-  float t = (-b - sqrt(discriminant)) / (2.0f * a);
-  if (t < 0) {
-    t = (-b + sqrt(discriminant)) / (2.0f * a);
-  }
-
-  if (t < 0) {
-    return false;
-  }
-
-  distance = t;
-  return true;
-}
-
-BodySelectionHandler::SelectionResult BodySelectionHandler::pickPlanet(
-    const Camera& camera, const std::vector<std::unique_ptr<CelestialBody>>& celestialBodies,
-    const std::vector<glm::vec3>& scales) {
   SelectionResult result{false, 0, std::numeric_limits<float>::max()};
+  auto& celestialBodies = CelestialBodyFactory::getCelestialBodies();
+
   glm::vec3 rayOrigin = camera.Position;
   glm::vec3 rayDirection = camera.getRayDirection();
 
@@ -51,12 +31,22 @@ BodySelectionHandler::SelectionResult BodySelectionHandler::pickPlanet(
   std::cout << "Ray Direction: (" << rayDirection.x << ", " << rayDirection.y
             << ", " << rayDirection.z << ")" << std::endl;
 
+  // std::vector<glm::vec3> scales;
+  // scales.reserve(celestialBodies.size());
+  //
+  // for (const auto& body : celestialBodies) {
+  //   scales.push_back(CelestialBodyFactory::getScale(body->getBodyProps().type));
+  // }
+
   for (size_t i = 0; i < celestialBodies.size(); i++) {
-    float sphereRadius = scales[i].x;
+    // float sphereRadius = scales[i].x;
+    float sphereRadius = CelestialBodyFactory::getScale(celestialBodies[i]->getBodyProps().type).x;
     float distance;
 
-    if (raySphereIntersection(rayOrigin, rayDirection, celestialBodies[i]->getBodyProps().position,
-                              sphereRadius, distance)) {
+    if (RayIntersection::raySphereIntersection(
+            rayOrigin, rayDirection,
+            celestialBodies[i]->getBodyProps().position, sphereRadius,
+            distance)) {
       std::cout << "  Hit planet " << i << " at distance " << distance
                 << " (radius: " << sphereRadius << ")" << std::endl;
 
@@ -68,11 +58,22 @@ BodySelectionHandler::SelectionResult BodySelectionHandler::pickPlanet(
     }
   }
 
+  int selectedPlanetIndex = -1;
   if (result.hit) {
-    std::cout << "Selected celestial body " << result.planetIndex << std::endl;
+    std::cout << "Selected body: "
+              << CelestialBodyFactory::getBodyInfo(
+                     celestialBodies[result.planetIndex]->getBodyProps().type)
+                     .name
+              << std::endl;
+    selectedPlanetIndex = static_cast<int>(result.planetIndex);
+
+    if (selectedPlanetIndex >= 0 &&
+        selectedPlanetIndex < static_cast<int>(celestialBodies.size())) {
+      onBodyPicked(selectedPlanetIndex);
+    }
   } else {
+    selectedPlanetIndex = -1;
     std::cout << "No celestial body selected" << std::endl;
   }
-
   return result;
 }

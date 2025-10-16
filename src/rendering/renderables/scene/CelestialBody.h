@@ -29,8 +29,6 @@ class CelestialBody : public ISceneRenderable {
                 MeshGenerator& meshGenerator, TextureManager& textureManager);
   ~CelestialBody() override = default;
 
-  void create(const char* texturePath);
-
   void render(glm::mat4 model, glm::mat4 view,
               glm::mat4 projection) const override;
   void update(float deltaTime) override;

@@ -6,12 +6,10 @@
 #define UI_RENDERER_H
 
 #include <rendering/renderers/TextRenderer.h>
-#include <rendering/renderables/ui/CelestialBodyInfoPanel.h>
-
 #include <glm/glm.hpp>
 
+struct BodyInfo;
 struct RenderContext;
-class CelestialBody;
 
 class UIRenderer {
  public:
@@ -21,17 +19,18 @@ class UIRenderer {
  private:
   TextRenderer& textRenderer_;
 
-  bool showCelestialBodyInfo_ = false;
-
   void renderFPS(const RenderContext& renderContext) const;
   void renderControls() const;
   void renderTitle(const RenderContext& renderContext) const;
   void renderCameraPosition(const RenderContext& renderContext) const;
   void renderCrosshair(const RenderContext& renderContext) const;
-  void renderCelestialBodyInfo(const glm::vec3& bodyPosition,
-                               const CelestialBodyInfoPanel& bodyInfoPanel,
-                               const CelestialBodyInfo& info,
-                               const RenderContext& renderContext) const;
+  void renderPanel(const RenderContext& renderContext) const;
+  // void renderBackground(float x, float y, float width, float height);
+
+  // void renderCelestialBodyInfo(const glm::vec3& bodyPosition,
+  //                              const CelestialBodyInfoPanel& bodyInfoPanel,
+  //                              const CelestialBodyInfo& info,
+  //                              const RenderContext& renderContext) const;
 };
 
 #endif  // UI_RENDERER_H

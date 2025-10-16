@@ -19,7 +19,7 @@ class SceneRenderer {
  public:
   SceneRenderer();
   ~SceneRenderer();
-  void render(const std::deque<std::unique_ptr<ISceneRenderable>>& renderables,
+  void render(const std::deque<ISceneRenderable*>& renderables,
                    const RenderContext& context) const;
 
  private:

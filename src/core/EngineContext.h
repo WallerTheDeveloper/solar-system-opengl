@@ -12,7 +12,6 @@ class InputManager;
 class SceneRenderer;
 class UIRenderer;
 class TextRenderer;
-class CelestialBodyInfoPanel;
 class AudioManager;
 
 struct EngineContext {
@@ -24,8 +23,6 @@ struct EngineContext {
   std::unique_ptr<SceneRenderer> sceneRenderer;
   std::unique_ptr<UIRenderer> uiRenderer;
   std::unique_ptr<TextRenderer> textRenderer;
-  // UI
-  std::unique_ptr<CelestialBodyInfoPanel> bodyInfoPanel;
   // Audio
   std::unique_ptr<AudioManager> audioManager;
 };

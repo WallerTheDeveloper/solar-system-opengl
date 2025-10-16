@@ -9,7 +9,7 @@
 
 class ISceneRenderable {
  public:
-  virtual ~ISceneRenderable() {};
+  virtual ~ISceneRenderable() = default;
   virtual void render(glm::mat4 model, glm::mat4 view,
                       glm::mat4 projection) const = 0;
   virtual void update(float deltaTime) {};

@@ -21,7 +21,6 @@ class BufferManager;
 class Skybox;
 class Ring;
 class TextRenderer;
-class CelestialBodyInfoPanel;
 class MeshGenerator;
 class TextureManager;
 
@@ -44,14 +43,11 @@ class SolarSystemApp {
   std::unique_ptr<MeshGenerator> meshGenerator_;
   std::unique_ptr<TextureManager> textureManager_;
 
-  std::deque<std::unique_ptr<ISceneRenderable>> renderables_;
-  // int selectedPlanetIndex_;
+  std::deque<ISceneRenderable*> renderables_;
 
   bool initializePlanets(BufferManager& bufferManager,
                          TextureManager& textureManager,
                          MeshGenerator& meshGenerator);
-  // Helpers
-  void handlePlanetSelection(const Camera& camera);
 };
 
 #endif  // SOLAR_SYSTEM_APP_H

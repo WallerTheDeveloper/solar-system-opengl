@@ -27,9 +27,7 @@ const std::vector<std::string> AppConfig::SKYBOX_FACES = {
     "../textures/skybox6.png"
 };
 
-SolarSystemApp::SolarSystemApp() {
-
-}
+SolarSystemApp::SolarSystemApp() = default;
 
 SolarSystemApp::~SolarSystemApp() {
   shutdown();
@@ -47,7 +45,7 @@ bool SolarSystemApp::initialize() {
                                        *bufferManager_);
 
     skybox_ = std::make_unique<Skybox>(*bufferManager_, *textureManager_);
-    renderables_.push_back(std::move(skybox_));
+    renderables_.push_back(skybox_.get());
 
     if (!initializePlanets(*bufferManager_, *textureManager_,
                            *meshGenerator_)) {
@@ -68,52 +66,23 @@ bool SolarSystemApp::initialize() {
 bool SolarSystemApp::initializePlanets(BufferManager& bufferManager,
                                        TextureManager& textureManager,
                                        MeshGenerator& meshGenerator) {
-  std::vector<std::unique_ptr<CelestialBody>> celestialBodies = CelestialBodyFactory::createSolarSystem(
-      bufferManager, meshGenerator, textureManager);
+  CelestialBodyFactory::createSolarSystem(bufferManager, meshGenerator,
+                                          textureManager);
 
-    if (celestialBodies.empty()) {
-        std::cerr << "Failed to create any planets" << std::endl;
-        return false;
-    }
+  auto& bodies = CelestialBodyFactory::getCelestialBodies();
+  if (bodies.empty()) {
+    std::cerr << "Failed to create any planets" << std::endl;
+    return false;
+  }
 
-    std::cout << "Created " << celestialBodies.size() << " celestial bodies" << std::endl;
+  for (const auto& body : bodies) {
+    renderables_.push_back(body.get());
+  }
 
-    for (auto& body : celestialBodies) {
-      renderables_.push_back(std::move(body));
-    }
+  std::cout << "Created " << bodies.size() << " celestial bodies"
+            << std::endl;
 
-    return true;
-}
-
-void SolarSystemApp::handlePlanetSelection(const Camera& camera) {
-    // Gather scales for all planets
-    // std::vector<glm::vec3> scales;
-    // scales.reserve(celestialBodies_.size());
-    //
-    // for (const auto& body : celestialBodies_) {
-    //   scales.push_back(CelestialBodyFactory::getScale(body->getBodyProps().type));
-    // }
-
-    // Perform ray-sphere intersection test
-    // auto result = CelestialBodyPicker::pickPlanet(
-    // camera,
-    //     celestialBodies_,
-    //     scales
-    // );
-    //
-    // if (result.hit) {
-    //     selectedPlanetIndex_ = static_cast<int>(result.planetIndex);
-    //     uiRenderer_->setShowCelestialBodyInfo(true);
-    //
-    //     std::cout << "✓ Selected planet: "
-    //               << CelestialBodyInfoPanel::getBodyInfo(
-    //                      celestialBodies_[result.planetIndex]->type).name
-    //               << std::endl;
-    // } else {
-    //     selectedPlanetIndex_ = -1;
-    //     uiRenderer_->setShowCelestialBodyInfo(false);
-    //     std::cout << "✓ Deselected planet" << std::endl;
-    // }
+  return true;
 }
 
 void SolarSystemApp::run() {

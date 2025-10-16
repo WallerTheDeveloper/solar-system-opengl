@@ -1,9 +1,8 @@
 ﻿#include "SceneRenderer.h"
 
+#include <celestialbody/CelestialBodyFactory.h>
 #include <rendering/RenderContext.h>
 #include <rendering/renderables/scene/CelestialBody.h>
-
-#include <celestialbody/CelestialBodyFactory.h>
 
 #include "glm/detail/func_trigonometric.hpp"
 #include "glm/detail/type_mat4x4.hpp"
@@ -12,7 +11,8 @@
 SceneRenderer::SceneRenderer() = default;
 SceneRenderer::~SceneRenderer() = default;
 
-void SceneRenderer::render(const std::deque<std::unique_ptr<ISceneRenderable>>& renderables, const RenderContext& context) const {
+void SceneRenderer::render(const std::deque<ISceneRenderable*>& renderables,
+                           const RenderContext& context) const {
   glm::mat4 view = context.camera.getViewMatrix();
   glm::mat4 projection =
       glm::perspective(glm::radians(context.camera.Zoom),
@@ -20,15 +20,13 @@ void SceneRenderer::render(const std::deque<std::unique_ptr<ISceneRenderable>>& 
                            static_cast<float>(context.screenHeight),
                        0.1f, 10000.0f);
 
-  for (const auto& renderablePtr : renderables) {
-    auto renderable = renderablePtr.get();
-
+  for (auto& renderable : renderables) {
     // If IRenderable is a type of CelestialBody
-    if (const CelestialBody* body = dynamic_cast<CelestialBody*>(renderable)) {
+    if (const auto body = dynamic_cast<CelestialBody*>(renderable)) {
       glm::mat4 model = calculateModelMatrix(*body, context.currentTime);
       renderable->render(model, view, projection);
     } else {
-      glm::mat4 model = glm::mat4(1.0f);
+      auto model = glm::mat4(1.0f);
       renderable->render(model, view, projection);
     }
   }
@@ -42,8 +40,10 @@ glm::mat4 SceneRenderer::calculateModelMatrix(const CelestialBody& body,
   model = glm::translate(model, body.getBodyProps().position);
 
   // Rotation
-  float rotationSpeed = CelestialBodyFactory::getRotationSpeed(body.getBodyProps().type);
-  glm::vec3 rotationAxis = CelestialBodyFactory::getRotationAxis(body.getBodyProps().type);
+  float rotationSpeed =
+      CelestialBodyFactory::getRotationSpeed(body.getBodyProps().type);
+  glm::vec3 rotationAxis =
+      CelestialBodyFactory::getRotationAxis(body.getBodyProps().type);
   model = glm::rotate(model, currentTime * glm::radians(rotationSpeed),
                       rotationAxis);
 
