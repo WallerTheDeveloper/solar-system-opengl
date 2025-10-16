@@ -7,7 +7,7 @@
 #include <deque>
 #include <functional>
 
-#include "CelestialBodyTypes.h"
+#include <CelestialBodyTypes.h>
 
 class ISceneRenderable;
 
@@ -52,6 +52,9 @@ class Engine {
 
   // Input
   void setupInputConfig() const;
+
+  // Cleanup
+  bool stopEngine = false;
 };
 
 #endif

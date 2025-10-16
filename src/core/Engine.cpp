@@ -67,13 +67,23 @@ Engine::Engine(bool enable_gl_depth_test, BufferManager& bufferManager)
 }
 
 Engine::~Engine() {
+  stopEngine = true;
+
+  if (context_->inputManager) {
+    std::cout << "\nDestroying Input manager\n" << std::endl;
+    context_->inputManager.reset();
+  }
+  if (context_->audioManager) {
+    std::cout << "\nDestroying Audio manager\n" << std::endl;
+    context_->audioManager.reset();
+  }
+  if (context_->textRenderer) {
+    std::cout << "\nDestroying text renderer\n" << std::endl;
+    context_->textRenderer.reset();
+  }
   if (context_->uiRenderer) {
     std::cout << "\nDestroying UI renderer\n" << std::endl;
     context_->uiRenderer.reset();
-  }
-  if (context_->textRenderer) {
-    std::cout << "\nDestroying text renderer...\n" << std::endl;
-    context_->textRenderer.reset();
   }
   if (context_->camera) {
     std::cout << "\nDestroying Camera\n" << std::endl;
@@ -83,17 +93,9 @@ Engine::~Engine() {
     std::cout << "\nDestroying Scene renderer\n" << std::endl;
     context_->sceneRenderer.reset();
   }
-  if (context_->inputManager) {
-    std::cout << "\nDestroying Input manager\n" << std::endl;
-    context_->inputManager.reset();
-  }
   if (context_->windowManager) {
     std::cout << "\nDestroying Window manager\n" << std::endl;
     context_->windowManager.reset();
-  }
-  if (context_->audioManager) {
-    std::cout << "\nDestroying Audio manager\n" << std::endl;
-    context_->audioManager.reset();
   }
 }
 
@@ -111,11 +113,18 @@ void Engine::calculateFPS(float currentTime) {
 void Engine::run(std::function<void(FrameContext&)> frameCallback,
                  const std::deque<ISceneRenderable*>& renderables) {
   try {
-    std::cout << "Running engine loop..." << std::endl;
+    if (stopEngine) {
+      return;
+    }
 
+    std::cout << "Running engine loop..." << std::endl;
     FrameContext frameContext;
     context_->windowManager->run(
         [this, &frameCallback, &renderables, &frameContext] {
+          if (stopEngine) {
+            return;
+          }
+
           frameContext.currentTime = context_->windowManager->getGLFWTime();
           frameContext.deltaTime =
               frameContext.currentTime - frameContext.lastFrame;
