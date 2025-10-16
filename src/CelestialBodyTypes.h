@@ -18,7 +18,8 @@ enum BodyType {
   Jupiter,
   Saturn,
   Uranus,
-  Neptune
+  Neptune,
+  Unknown
 };
 
 struct BodyProps {

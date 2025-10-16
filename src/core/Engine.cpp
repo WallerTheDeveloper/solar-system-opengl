@@ -13,6 +13,7 @@
 #include <rendering/renderers/UIRenderer.h>
 
 bool Engine::canRenderPanel = false;
+BodyType Engine::currentSelectedBodyType = Unknown;
 
 Engine::Engine(bool enable_gl_depth_test, BufferManager& bufferManager)
     : context_(std::make_unique<EngineContext>()),
@@ -135,9 +136,10 @@ void Engine::run(std::function<void(FrameContext&)> frameCallback,
 
 void Engine::render(float currentTime,
                     const std::deque<ISceneRenderable*>& renderables) const {
-  RenderContext renderContext{*context_->camera,     AppConfig::SCR_WIDTH,
-                              AppConfig::SCR_HEIGHT, currentTime,
-                              currentFPS_,           canRenderPanel};
+  RenderContext renderContext{*context_->camera,    currentSelectedBodyType,
+                              AppConfig::SCR_WIDTH, AppConfig::SCR_HEIGHT,
+                              currentTime,          currentFPS_,
+                              canRenderPanel};
   // Render 3D scene
   context_->sceneRenderer->render(renderables, renderContext);
   // Render UI
@@ -197,16 +199,57 @@ void Engine::setupInputConfig() const {
       [this](float value) { context_->camera->processAxis(value); });
 
   context_->inputManager->setPrimaryActionCallback([this]() {
-    CelestialBodyPicker::pickBody(*context_->camera, [](int selectedBodyIndex) {
-      if (selectedBodyIndex >= 0) {
-        canRenderPanel = true;
-      } else {
-        canRenderPanel = false;
-      }
-    });
+    CelestialBodyPicker::pickBody(
+        *context_->camera, [this](const int selectedBodyIndex) {
+          if (selectedBodyIndex >= 0) {
+            Engine::canRenderPanel = true;
+          } else {
+            Engine::canRenderPanel = false;
+          }
+          switch (selectedBodyIndex) {
+            case 0: {
+              Engine::currentSelectedBodyType = Sun;
+              break;
+            }
+            case 1: {
+              Engine::currentSelectedBodyType = Mercury;
+              break;
+            }
+            case 2: {
+              Engine::currentSelectedBodyType = Venus;
+              break;
+            }
+            case 3: {
+              Engine::currentSelectedBodyType = Earth;
+              break;
+            }
+            case 4: {
+              Engine::currentSelectedBodyType = Mars;
+              break;
+            }
+            case 5: {
+              Engine::currentSelectedBodyType = Jupiter;
+              break;
+            }
+            case 6: {
+              Engine::currentSelectedBodyType = Saturn;
+              break;
+            }
+            case 7: {
+              Engine::currentSelectedBodyType = Uranus;
+              break;
+            }
+            case 8: {
+              Engine::currentSelectedBodyType = Neptune;
+              break;
+            }
+            default: {
+              Engine::currentSelectedBodyType = Unknown;
+              break;
+            }
+          }
+        });
   });
-
-  context_->inputManager->setFullscreenActionCallback([this]() {
-    context_->windowManager->toggleFullscreen();
-  });
+  context_->inputManager->setFullscreenActionCallback(
+      [this]() { context_->windowManager->toggleFullscreen(); });
 }

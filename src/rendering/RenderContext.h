@@ -10,6 +10,7 @@
 
 struct RenderContext {
   const Camera& camera;
+  const BodyType& selectedBodyType;
   unsigned int screenWidth;
   unsigned int screenHeight;
   float currentTime;

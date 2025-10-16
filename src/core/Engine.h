@@ -7,6 +7,8 @@
 #include <deque>
 #include <functional>
 
+#include "CelestialBodyTypes.h"
+
 class ISceneRenderable;
 
 class Engine {
@@ -28,6 +30,7 @@ class Engine {
   std::unique_ptr<EngineContext> context_;
   BufferManager& bufferManager_;
 
+  static BodyType currentSelectedBodyType;
   static bool canRenderPanel;
   void render(
       float currentTime,

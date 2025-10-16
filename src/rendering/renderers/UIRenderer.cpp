@@ -5,15 +5,14 @@
 #include "UIRenderer.h"
 
 #include <CelestialBodyTypes.h>
+#include <celestialbody/CelestialBodyFactory.h>
 #include <helpers/RenderHelper.h>
 #include <rendering/RenderContext.h>
 #include <rendering/ScreenPosition.h>
-#include <celestialbody/CelestialBodyFactory.h>
 
 #include <iomanip>
 #include <ios>
 #include <sstream>
-
 
 UIRenderer::UIRenderer(TextRenderer& textRenderer)
     : textRenderer_(textRenderer) {}
@@ -99,8 +98,8 @@ void UIRenderer::renderPanel(const RenderContext& renderContext) const {
     return;
   }
   // Calculate the position above the planet
-  glm::vec3 panelWorldPos =
-      CelestialBodyFactory::getBodyProps(Sun).position + glm::vec3(0.0f, 2.0f, 0.0f);
+  glm::vec3 panelWorldPos = CelestialBodyFactory::getBodyProps(renderContext.selectedBodyType).position +
+                            glm::vec3(0.0f, 2.0f, 0.0f);
 
   ScreenPosition screenPos =
       RenderHelper::worldToScreen(panelWorldPos, renderContext);
@@ -128,29 +127,30 @@ void UIRenderer::renderPanel(const RenderContext& renderContext) const {
   if (panelY < 10.0f) panelY = 10.0f;
 
   // Render title
-  textRenderer_.renderText(CelestialBodyFactory::getBodyInfo(Sun).name, panelX + 10.0f,
-                           panelY + 10.0f, titleScale,
+  textRenderer_.renderText(CelestialBodyFactory::getBodyInfo(renderContext.selectedBodyType).name,
+                           panelX + 10.0f, panelY + 10.0f, titleScale,
                            glm::vec3(1.0f, 0.9f, 0.2f));
 
   float currentY = panelY + 45.0f;
 
   // Render type with color coding
   glm::vec3 typeColor = glm::vec3(0.5f, 0.9f, 1.0f);
-  if (CelestialBodyFactory::getBodyInfo(Sun).type == "STAR")
+  if (CelestialBodyFactory::getBodyInfo(renderContext.selectedBodyType).type == "STAR")
     typeColor = glm::vec3(1.0f, 0.9f, 0.3f);
-  else if (CelestialBodyFactory::getBodyInfo(Sun).type == "GAS GIANT")
+  else if (CelestialBodyFactory::getBodyInfo(renderContext.selectedBodyType).type == "GAS GIANT")
     typeColor = glm::vec3(0.9f, 0.7f, 0.5f);
-  else if (CelestialBodyFactory::getBodyInfo(Sun).type == "ICE GIANT")
+  else if (CelestialBodyFactory::getBodyInfo(renderContext.selectedBodyType).type == "ICE GIANT")
     typeColor = glm::vec3(0.6f, 0.8f, 1.0f);
 
-  textRenderer_.renderText("TYPE: " + CelestialBodyFactory::getBodyInfo(Sun).type,
-                           panelX + 10.0f, currentY, textScale, typeColor);
+  textRenderer_.renderText(
+      "TYPE: " + CelestialBodyFactory::getBodyInfo(renderContext.selectedBodyType).type, panelX + 10.0f,
+      currentY, textScale, typeColor);
   currentY += lineHeight;
 
   // Distance from Sun
   std::stringstream distStream;
   distStream << std::fixed << std::setprecision(2)
-             << CelestialBodyFactory::getBodyInfo(Sun).distanceFromSun;
+             << CelestialBodyFactory::getBodyInfo(renderContext.selectedBodyType).distanceFromSun;
   textRenderer_.renderText("DISTANCE: " + distStream.str() + " AU",
                            panelX + 10.0f, currentY, textScale,
                            glm::vec3(0.8f, 0.8f, 1.0f));
@@ -159,7 +159,7 @@ void UIRenderer::renderPanel(const RenderContext& renderContext) const {
   // Temperature
   std::stringstream tempStream;
   tempStream << std::fixed << std::setprecision(0)
-             << CelestialBodyFactory::getBodyInfo(Sun).temperature;
+             << CelestialBodyFactory::getBodyInfo(renderContext.selectedBodyType).temperature;
   textRenderer_.renderText("TEMP: " + tempStream.str() + " C", panelX + 10.0f,
                            currentY, textScale, glm::vec3(1.0f, 0.6f, 0.4f));
   currentY += lineHeight;
@@ -167,7 +167,7 @@ void UIRenderer::renderPanel(const RenderContext& renderContext) const {
   // Mass
   std::stringstream massStream;
   massStream << std::fixed << std::setprecision(2)
-             << CelestialBodyFactory::getBodyInfo(Sun).mass;
+             << CelestialBodyFactory::getBodyInfo(renderContext.selectedBodyType).mass;
   textRenderer_.renderText("MASS: " + massStream.str() + " EARTHS",
                            panelX + 10.0f, currentY, textScale,
                            glm::vec3(0.7f, 1.0f, 0.7f));
@@ -176,7 +176,7 @@ void UIRenderer::renderPanel(const RenderContext& renderContext) const {
   // Diameter
   std::stringstream diamStream;
   diamStream << std::fixed << std::setprecision(0)
-             << CelestialBodyFactory::getBodyInfo(Sun).diameter;
+             << CelestialBodyFactory::getBodyInfo(renderContext.selectedBodyType).diameter;
   textRenderer_.renderText("DIAMETER: " + diamStream.str() + " KM",
                            panelX + 10.0f, currentY, textScale,
                            glm::vec3(0.9f, 0.9f, 0.9f));
@@ -184,8 +184,8 @@ void UIRenderer::renderPanel(const RenderContext& renderContext) const {
 
   // Moons
   textRenderer_.renderText(
-      "MOONS: " + std::to_string(CelestialBodyFactory::getBodyInfo(Sun).moons), panelX + 10.0f,
-      currentY, textScale, glm::vec3(0.8f, 0.8f, 0.9f));
+      "MOONS: " + std::to_string(CelestialBodyFactory::getBodyInfo(renderContext.selectedBodyType).moons),
+      panelX + 10.0f, currentY, textScale, glm::vec3(0.8f, 0.8f, 0.9f));
 }
 
 // void CelestialBodyInfoPanel::renderBackground(float x, float y, float width,
