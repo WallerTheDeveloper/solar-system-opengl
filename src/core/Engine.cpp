@@ -12,6 +12,8 @@
 #include <rendering/renderers/SceneRenderer.h>
 #include <rendering/renderers/UIRenderer.h>
 
+bool Engine::canRenderPanel = false;
+
 Engine::Engine(bool enable_gl_depth_test, BufferManager& bufferManager)
     : context_(std::make_unique<EngineContext>()),
       bufferManager_(bufferManager) {
