@@ -80,7 +80,7 @@ void TextureManager::setTextureFilteringParamsInt(GLint parameter) {
 unsigned char* TextureManager::loadTextureImage(const char* filename,
                                                 int& width, int& height,
                                                 int& numberOfChannels) {
-  stbi_set_flip_vertically_on_load(true);
+  stbi_set_flip_vertically_on_load(false);
   unsigned char* data =
       stbi_load(filename, &width, &height, &numberOfChannels, 0);
   return data;
@@ -102,8 +102,7 @@ unsigned int TextureManager::loadCubemap(std::vector<std::string> faces) {
   glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 
 
-  // Don't flip cubemap textures - they need to be oriented correctly
-  stbi_set_flip_vertically_on_load(false);
+  stbi_set_flip_vertically_on_load(true);
 
   int width, height, nrChannels;
   for (unsigned int i = 0; i < faces.size(); i++) {
@@ -142,7 +141,7 @@ unsigned int TextureManager::loadCubemap(std::vector<std::string> faces) {
   glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
   // Reset stbi flip setting for other textures
-  stbi_set_flip_vertically_on_load(true);
+  stbi_set_flip_vertically_on_load(false);
 
   std::cout << "Cubemap texture created successfully with ID: " << textureID << std::endl;
   return textureID;
