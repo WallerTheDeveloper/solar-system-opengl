@@ -104,9 +104,9 @@ void CelestialBody::updateOrbitalPositions(float deltaTime) {
     this->velocity.z = speed * cos(this->currentAngle);
     this->velocity.y = 0.0f;
 
-    // this->props_.position = this->position;
-    // this->props_.velocity = this->velocity;
-    // this->props_.currentRotationAngle = this->currentAngle;
+    this->props_.position = this->position;
+    this->props_.velocity = this->velocity;
+    this->props_.currentRotationAngle = this->currentAngle;
   }
 }
 
