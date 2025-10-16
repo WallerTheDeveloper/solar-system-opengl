@@ -5,6 +5,8 @@
 
 #include <rendering/renderables/scene/CelestialBody.h>
 
+std::vector<std::unique_ptr<CelestialBody>> CelestialBodyFactory::celestialBodies_;
+
 void CelestialBodyFactory::createSolarSystem(
     BufferManager& bufferManager, MeshGenerator& meshGenerator,
     TextureManager& textureManager) {
