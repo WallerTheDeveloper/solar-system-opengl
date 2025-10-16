@@ -6,7 +6,6 @@
 #define UI_RENDERER_H
 
 #include <rendering/renderers/TextRenderer.h>
-#include <glm/glm.hpp>
 
 struct BodyInfo;
 struct RenderContext;
