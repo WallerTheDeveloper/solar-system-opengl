@@ -13,7 +13,7 @@ public:
   using PointerMovementCallback = std::function<void(float xoffset, float yoffset)>;
   using AxisCallback = std::function<void(float value)>;
   using PrimaryActionCallback = std::function<void()>;
-  using KeyActionCallback = std::function<void(float deltaTime, float speedMultiplier)>;
+  using FullscreenActionCallback = std::function<void()>;
 
   InputManager(int windowWidth, int windowHeight);
   void setInputCallbacks(GLFWwindow* window) const;
@@ -21,9 +21,10 @@ public:
   void bindKey(int key,
                const std::function<void(float deltaTime, float speedMultiplier)>& onKeyBind);
 
-  void setPointerMovementCallback(PointerMovementCallback callback);
-  void setAxisCallback(AxisCallback callback);
-  void setPrimaryActionCallback(PrimaryActionCallback callback);
+  void setPointerMovementCallback(const PointerMovementCallback& callback);
+  void setAxisCallback(const AxisCallback& callback);
+  void setPrimaryActionCallback(const PrimaryActionCallback& callback);
+  void setFullscreenActionCallback(const FullscreenActionCallback& callback);
 
 private:
   int windowWidth_;
@@ -42,6 +43,7 @@ private:
   PointerMovementCallback pointerMovementCallback_;
   AxisCallback scrollCallback_;
   PrimaryActionCallback primaryActionCallback_;
+  FullscreenActionCallback fullscreenActionCallback_;
 
   // Input callbacks
   static void framebuffer_size_callback(GLFWwindow* window, int width, int height);

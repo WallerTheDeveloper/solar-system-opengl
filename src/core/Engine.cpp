@@ -205,4 +205,8 @@ void Engine::setupInputConfig() const {
       }
     });
   });
+
+  context_->inputManager->setFullscreenActionCallback([this]() {
+    context_->windowManager->toggleFullscreen();
+  });
 }

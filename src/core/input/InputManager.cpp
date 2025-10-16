@@ -44,16 +44,23 @@ void InputManager::bindKey(int key, const std::function<void(float deltaTime, fl
   keyBindings[key] = onKeyBind;
 }
 
-void InputManager::setPointerMovementCallback(PointerMovementCallback callback) {
+void InputManager::setPointerMovementCallback(
+    const PointerMovementCallback& callback) {
   pointerMovementCallback_ = callback;
 }
 
-void InputManager::setAxisCallback(AxisCallback callback) {
+void InputManager::setAxisCallback(const AxisCallback& callback) {
   scrollCallback_ = callback;
 }
 
-void InputManager::setPrimaryActionCallback(PrimaryActionCallback callback) {
+void InputManager::setPrimaryActionCallback(
+    const PrimaryActionCallback& callback) {
   primaryActionCallback_ = callback;
+}
+
+void InputManager::setFullscreenActionCallback(
+    const FullscreenActionCallback& callback) {
+  fullscreenActionCallback_ = callback;
 }
 
 void InputManager::framebuffer_size_callback(GLFWwindow* window, int width,
@@ -61,43 +68,6 @@ void InputManager::framebuffer_size_callback(GLFWwindow* window, int width,
   glViewport(0, 0, width, height);
 }
 
-// void InputManager::cursor_position_callback(GLFWwindow* window, double xposIn, double yposIn) {
-//   float xpos = static_cast<float>(xposIn);
-//   float ypos = static_cast<float>(yposIn);
-//
-//   if (firstMouse) {
-//     lastMouseX = xpos;
-//     lastMouseY = ypos;
-//     firstMouse = false;
-//   }
-//
-//   float xoffset = xpos - lastMouseX;
-//   float yoffset = lastMouseY - ypos;
-//
-//   lastMouseX = xpos;
-//   lastMouseY = ypos;
-//
-//   camera.processMouseMovement(xoffset, yoffset);
-// }
-
-// void InputManager::scroll_callback(GLFWwindow* window, double xoffset,
-//                              double yoffset) {
-//   camera.processMouseScroll(static_cast<float>(yoffset));
-// }
-// void InputManager::look_key_callback(GLFWwindow* window, int button, int action, int mods) {
-//   if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-//     if (onLeftClickCallback) {
-//       onLeftClickCallback();
-//     }
-//   }
-// }
-
-// void InputManager::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-//   // Check for SHIFT + ENTER to toggle fullscreen
-//   if (key == GLFW_KEY_ENTER && action == GLFW_PRESS && (mods & GLFW_MOD_SHIFT)) {
-//     toggleFullscreen();
-//   }
-// }
 void InputManager::pointer_position_callback(GLFWwindow* window, double xposIn, double yposIn) {
   auto* manager = static_cast<InputManager*>(glfwGetWindowUserPointer(window));
   if (manager) {
@@ -164,6 +134,6 @@ void InputManager::handlePrimaryActionKey(int button, int action) const {
 void InputManager::handleFullscreenKey(GLFWwindow* window, int key, int scancode, int action, int mods) {
   // ENTER + SHIFT = fullscreen mode
   if (key == GLFW_KEY_ENTER && action == GLFW_PRESS && (mods & GLFW_MOD_SHIFT)) {
-    // Handle fullscreen logic here
+    fullscreenActionCallback_();
   }
 }
