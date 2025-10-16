@@ -12,9 +12,6 @@
 #include <iostream>
 #include <limits>
 
-#include "glm/detail/type_vec3.hpp"
-#include "glm/gtc/packing.inl"
-
 CelestialBodyPicker::SelectionResult CelestialBodyPicker::pickBody(
     const Camera& camera,
     const std::function<void(int)>& onBodyPicked) {
@@ -31,15 +28,7 @@ CelestialBodyPicker::SelectionResult CelestialBodyPicker::pickBody(
   std::cout << "Ray Direction: (" << rayDirection.x << ", " << rayDirection.y
             << ", " << rayDirection.z << ")" << std::endl;
 
-  // std::vector<glm::vec3> scales;
-  // scales.reserve(celestialBodies.size());
-  //
-  // for (const auto& body : celestialBodies) {
-  //   scales.push_back(CelestialBodyFactory::getScale(body->getBodyProps().type));
-  // }
-
   for (size_t i = 0; i < celestialBodies.size(); i++) {
-    // float sphereRadius = scales[i].x;
     float sphereRadius = CelestialBodyFactory::getScale(celestialBodies[i]->getBodyProps().type).x;
     float distance;
 

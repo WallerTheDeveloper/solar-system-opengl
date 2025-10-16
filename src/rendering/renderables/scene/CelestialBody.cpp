@@ -93,21 +93,23 @@ void CelestialBody::updateOrbitalPositions(float deltaTime) {
       this->currentAngle -= 2.0f * M_PI;
     }
 
-    this->position.x = this->semiMajorAxis * cos(this->currentAngle);
-    this->position.z = this->semiMajorAxis * sin(this->currentAngle);
-    this->position.y = 0.0f;  // Assuming all orbits are in the same plane
+    const float ORBIT_RADIUS = this->semiMajorAxis;
 
-    float speed = angularVelocity * this->semiMajorAxis;
+    this->position.x = ORBIT_RADIUS * cos(this->currentAngle);
+    this->position.z = ORBIT_RADIUS * sin(this->currentAngle);
+    this->position.y = 0.0f;
+
+    float speed = angularVelocity * ORBIT_RADIUS;
     this->velocity.x = -speed * sin(this->currentAngle);
     this->velocity.z = speed * cos(this->currentAngle);
     this->velocity.y = 0.0f;
 
-    this->props_.position = this->position;
-    this->props_.velocity = this->velocity;
-    this->props_.currentRotationAngle = this->currentAngle;
-    this->props_.orbitalPeriod = this->orbitalPeriod;
+    // this->props_.position = this->position;
+    // this->props_.velocity = this->velocity;
+    // this->props_.currentRotationAngle = this->currentAngle;
   }
 }
+
 void CelestialBody::createRing() {
   try {
     std::vector ringVertices = {
