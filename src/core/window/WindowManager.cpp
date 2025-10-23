@@ -26,6 +26,8 @@ void WindowManager::create(int width, int height, const std::string& title,
   this->windowedWidth = width;
   this->windowedHeight = height;
 
+  isTerminated = false;
+
   if (onWindowCreated) {
     onWindowCreated();
   }
@@ -33,6 +35,10 @@ void WindowManager::create(int width, int height, const std::string& title,
 
 void WindowManager::run(const std::function<void()>& onFrame) {
   while (!glfwWindowShouldClose(window)) {
+    if (isTerminated) {
+      glfwSetWindowShouldClose(window, true);
+      return;
+    }
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     currentTime = static_cast<float>(glfwGetTime());
@@ -78,10 +84,11 @@ float WindowManager::getGLFWTime() const {
   return currentTime;
 }
 
-void WindowManager::shutdown() const {
+void WindowManager::shutdown() {
   if (window) {
     glfwDestroyWindow(window);
   }
   glfwTerminate();
+  isTerminated = true;
   std::cout << "Window manager cleaned up" << std::endl;
 }

@@ -20,7 +20,7 @@ public:
   void toggleFullscreen();
   GLFWwindow* getWindow() const;
   float getGLFWTime() const;
-  void shutdown() const;
+  void shutdown();
 private:
   GLFWwindow* window;
 
@@ -32,5 +32,8 @@ private:
   int windowedPosY = 0;
 
   float currentTime = 0.0f;
+
+  // Cleanup
+  bool isTerminated = false;
 };
 #endif  // SOLAR_SYSTEM_OPENGL_WINDOWMANAGER_H

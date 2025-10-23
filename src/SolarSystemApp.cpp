@@ -101,19 +101,9 @@ void SolarSystemApp::run() {
 void SolarSystemApp::shutdown() {
   std::cout << "\n=== Starting Solar System Cleanup ===\n";
 
-  if (engine_) {
-    std::cout << "\nDestroying engine...\n" << std::endl;
-    engine_.reset();
-  }
-
   if (skybox_) {
     std::cout << "\nDestroying skybox...\n" << std::endl;
     skybox_.reset();
-  }
-
-  if (bufferManager_) {
-    std::cout << "\nDestroying buffer manager...\n" << std::endl;
-    bufferManager_.reset();
   }
 
   if (!renderables_.empty()) {
@@ -121,10 +111,22 @@ void SolarSystemApp::shutdown() {
               << " renderables...\n" << std::endl;
     renderables_.clear();
   }
+  CelestialBodyFactory::clear();
 
   if (meshGenerator_) {
     std::cout << "\nDestroying mesh generator...\n" << std::endl;
     meshGenerator_.reset();
   }
+
+  if (engine_) {
+    std::cout << "\nDestroying engine...\n" << std::endl;
+    engine_.reset();
+  }
+
+  if (bufferManager_) {
+    std::cout << "\nDestroying buffer manager...\n" << std::endl;
+    bufferManager_.reset();
+  }
+
   std::cout << "=== Solar System Cleanup Complete ===\n\n";
 }

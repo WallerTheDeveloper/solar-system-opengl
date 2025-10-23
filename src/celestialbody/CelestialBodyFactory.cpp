@@ -36,6 +36,7 @@ const std::vector<std::unique_ptr<CelestialBody>>& CelestialBodyFactory::getCele
 
 void CelestialBodyFactory::clear() {
   celestialBodies_.clear();
+  std::cout << "CelestialBodyFactory::clear()" << std::endl;
 }
 
 std::vector<BodyProps> CelestialBodyFactory::getSolarSystemConfig() {
