@@ -32,7 +32,7 @@ struct BodyProps {
   float currentRotationAngle;   // current position in orbit (radians)
   glm::vec3 position;
   glm::vec3 velocity;
-  const char* texturePath;
+  const std::string texturePath;
   bool hasRing = false;
 };
 

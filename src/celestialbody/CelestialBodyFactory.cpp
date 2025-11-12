@@ -52,47 +52,47 @@ std::vector<BodyProps> CelestialBodyFactory::getSolarSystemConfig() {
   return {
     // Sun (at origin)
     {Sun, 1.989e30f, 696340000.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-     glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), ResourcePath::get("textures/sun.jpg").c_str()},
+     glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), ResourcePath::get("/textures/sun.jpg")},
 
     // Mercury - 0.387 AU from Sun
     {Mercury, 3.285e23f, 2439700.0f, 0.387f / scale, 0.206f, 7.6f, 0.0f,
      glm::vec3(0.387f / scale, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-     ResourcePath::get("/textures/mercury.jpg").c_str()},
+     ResourcePath::get("/textures/mercury.jpg")},
 
     // Venus - 0.723 AU from Sun
     {Venus, 4.867e24f, 6051800.0f, 0.723f / scale, 0.007f, 19.4f, 0.0f,
      glm::vec3(0.723f / scale, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-     ResourcePath::get("/textures/venus.jpg").c_str()},
+     ResourcePath::get("/textures/venus.jpg")},
 
     // Earth - 1.0 AU from Sun (reference distance)
     {Earth, 5.972e24f, 6371000.0f, 1.0f / scale, 0.017f, 31.5f, 0.0f,
      glm::vec3(1.0f / scale, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-     ResourcePath::get("/textures/earth.jpg").c_str()},
+     ResourcePath::get("/textures/earth.jpg")},
 
     // Mars - 1.524 AU from Sun
     {Mars, 6.417e23f, 3389500.0f, 1.524f / scale, 0.094f, 47.0f, 0.0f,
      glm::vec3(1.524f / scale, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-     ResourcePath::get("/textures/mars.jpg").c_str()},
+     ResourcePath::get("/textures/mars.jpg")},
 
     // Jupiter - 5.203 AU from Sun
     {Jupiter, 1.898e27f, 69911000.0f, 5.203f / scale, 0.049f, 120.0f, 0.0f,
      glm::vec3(5.203f / scale, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-     ResourcePath::get("/textures/jupiter.jpg").c_str()},
+     ResourcePath::get("/textures/jupiter.jpg")},
 
     // Saturn - 9.537 AU from Sun
     {Saturn, 5.683e26f, 58232000.0f, 9.537f / scale, 0.057f, 180.0f, 0.0f,
      glm::vec3(9.537f / scale, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-     ResourcePath::get("/textures/saturn.jpg").c_str(), true},
+     ResourcePath::get("/textures/saturn.jpg"), true},
 
     // Uranus - 19.191 AU from Sun
     {Uranus, 8.681e25f, 25362000.0f, 19.191f / scale, 0.046f, 250.0f, 0.0f,
      glm::vec3(19.191f / scale, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-     ResourcePath::get("/textures/uranus.jpg").c_str()},
+     ResourcePath::get("/textures/uranus.jpg")},
 
     // Neptune - 30.07 AU from Sun
     {Neptune, 1.024e26f, 24622000.0f, 30.07f / scale, 0.009f, 350.0f, 0.0f,
      glm::vec3(30.07f / scale, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-     ResourcePath::get("/textures/neptune.jpg").c_str()}
+     ResourcePath::get("/textures/neptune.jpg")}
   };
 }
 
