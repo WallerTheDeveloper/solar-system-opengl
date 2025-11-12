@@ -18,13 +18,15 @@
 
 #include <iostream>
 
+#include "core/ResourcePath.h"
+
 const std::vector<std::string> AppConfig::SKYBOX_FACES = {
-    "../textures/skybox1.png",
-    "../textures/skybox2.png",
-    "../textures/skybox3.png",
-    "../textures/skybox4.png",
-    "../textures/skybox5.png",
-    "../textures/skybox6.png"
+  ResourcePath::get("texture/skybox/right.jpg"),
+  ResourcePath::get("texture/skybox/left.jpg"),
+  ResourcePath::get("texture/skybox/top.jpg"),
+  ResourcePath::get("texture/skybox/bottom.jpg"),
+  ResourcePath::get("texture/skybox/front.jpg"),
+  ResourcePath::get("texture/skybox/back.jpg")
 };
 
 SolarSystemApp::SolarSystemApp() = default;
@@ -37,6 +39,7 @@ bool SolarSystemApp::initialize() {
   try {
     std::cout << "Initializing Solar System Application..." << std::endl;
 
+    resourcePath_ = std::make_unique<ResourcePath>();
     bufferManager_ = std::make_unique<BufferManager>();
     textureManager_ = std::make_unique<TextureManager>();
     meshGenerator_ = std::make_unique<MeshGenerator>();

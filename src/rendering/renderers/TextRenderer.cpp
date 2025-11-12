@@ -1,6 +1,7 @@
 ﻿#include "TextRenderer.h"
 
 #include <core/Shader.h>
+#include <core/ResourcePath.h>
 
 #include <graphics/buffer/BufferManager.h>
 
@@ -14,8 +15,8 @@ TextRenderer::TextRenderer(BufferManager& bufferManager, const int screenWidth,
       screenWidth_(screenWidth),
       screenHeight_(screenHeight) {
   try {
-    textShader = std::make_unique<Shader>("../shaders/uiText.vert",
-                                          "../shaders/uiText.frag");
+    textShader = std::make_unique<Shader>(ResourcePath::get("shaders/uiText.vert").c_str(),
+                                          ResourcePath::get("shaders/uiText.frag").c_str());
   } catch (const std::exception& e) {
     std::cerr << "ERROR: Failed to load text shader: " << e.what() << std::endl;
   }

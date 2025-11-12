@@ -7,10 +7,12 @@
 #include <core/audio/AudioManager.h>
 #include <core/input/InputManager.h>
 #include <core/window/WindowManager.h>
+#include <core/ResourcePath.h>
 #include <graphics/buffer/BufferManager.h>
 #include <rendering/RenderContext.h>
 #include <rendering/renderers/SceneRenderer.h>
 #include <rendering/renderers/UIRenderer.h>
+
 
 bool Engine::canRenderPanel = false;
 BodyType Engine::currentSelectedBodyType = Unknown;
@@ -58,7 +60,7 @@ Engine::Engine(bool enable_gl_depth_test, BufferManager& bufferManager)
 
     setupInputConfig();
 
-    context_->audioManager->playBackgroundMusic("../audio/dnb.mp3");
+    context_->audioManager->playBackgroundMusic(ResourcePath::get("audio/dnb.mp3"));
     context_->audioManager->setVolume(0.5f);
     std::cout << "Engine initialized successfully" << std::endl;
   } catch (const std::exception& e) {

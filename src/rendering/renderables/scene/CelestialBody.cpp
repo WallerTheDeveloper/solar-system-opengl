@@ -1,7 +1,10 @@
 #include "CelestialBody.h"
 
+#include <core/ResourcePath.h>
+
 #include <utils/debug_utils.h>
 #include <utils/math_utils.h>
+
 
 std::string CelestialBody::typeToString(BodyType body) {
     switch (body) {
@@ -63,10 +66,10 @@ CelestialBody::CelestialBody(const BodyProps& bodyProperties,
                                                   GL_REPEAT, GL_LINEAR);
 
   try {
-    shader = std::make_unique<Shader>("../shaders/object.vert",
-                                      "../shaders/object.frag");
+    shader = std::make_unique<Shader>(ResourcePath::get("shaders/skybox.vert").c_str(),
+                                      ResourcePath::get("shaders/skybox.frag").c_str());
     GL_CHECK(shader->use());
-    GL_CHECK(shader->setInt("texture", 0));
+    GL_CHECK(shader->setInt("textureSampler", 0));
     std::cout << "Shader compiled successfully for planet " << type
               << std::endl;
   } catch (const std::exception& e) {
@@ -132,13 +135,13 @@ void CelestialBody::createRing() {
     ringBufferHandle_ = bufferManager_.createBufferSet("Saturn_Ring", ringVertices,
                                                   indices, attributes);
 
-    ringTextureID = textureManager_.createTexture("../textures/saturn_ring.png",
+    ringTextureID = textureManager_.createTexture(ResourcePath::get("textures/saturn_ring.png"),
                                               GL_TEXTURE_2D,
                                               GL_CLAMP_TO_EDGE,
                                               GL_LINEAR);
 
-    ringShader = std::make_unique<Shader>("../shaders/ring.vert",
-                                      "../shaders/ring.frag");
+    ringShader = std::make_unique<Shader>(ResourcePath::get("shaders/ring.vert").c_str(),
+                                          ResourcePath::get("shaders/ring.frag").c_str());
   } catch (std::exception& e) {
     std::cout << "Failed to create ring: " << e.what() << std::endl;
   }
@@ -208,7 +211,7 @@ void CelestialBody::render(const glm::mat4 model, const glm::mat4 view,
 
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, textureID);
-  shader->setInt("texture", 0);
+  shader->setInt("textureSampler", 0);
 
   glBindVertexArray(bufferHandle_.getVAO());
   glDrawElements(GL_TRIANGLES, meshData.indicesCount, GL_UNSIGNED_INT, 0);

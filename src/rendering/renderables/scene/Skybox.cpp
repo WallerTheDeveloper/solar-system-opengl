@@ -7,6 +7,8 @@
 
 #include <AppConfig.h>
 
+#include <core/ResourcePath.h>
+
 Skybox::Skybox(BufferManager& bufferManager, TextureManager& textureManager)
     : textureManager_(textureManager),
       bufferManager_(bufferManager),
@@ -16,8 +18,8 @@ Skybox::Skybox(BufferManager& bufferManager, TextureManager& textureManager)
   std::cout << "\n=== SKYBOX CREATION ===" << std::endl;
 
   try {
-    m_shader = std::make_unique<Shader>("../shaders/skybox.vert",
-                                        "../shaders/skybox.frag");
+    m_shader = std::make_unique<Shader>(ResourcePath::get("shaders/skybox.vert").c_str(),
+                                        ResourcePath::get("shaders/skybox.frag").c_str());
 
     if (m_shader == nullptr) {
       std::cerr << "SKYBOX CREATION ERROR: failed to create shader" << std::endl;

@@ -11,6 +11,7 @@
 
 #include <rendering/renderables/scene/ISceneRenderable.h>
 
+class ResourcePath;
 class WindowManager;
 class InputManager;
 class Camera;
@@ -37,6 +38,7 @@ class SolarSystemApp {
   void shutdown();
 
  private:
+ std::unique_ptr<ResourcePath> resourcePath_;
   std::unique_ptr<Engine> engine_;
   std::unique_ptr<BufferManager> bufferManager_;
   std::unique_ptr<Skybox> skybox_;
