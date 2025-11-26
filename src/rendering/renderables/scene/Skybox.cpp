@@ -25,7 +25,7 @@ Skybox::Skybox(BufferManager& bufferManager, TextureManager& textureManager)
       std::cerr << "SKYBOX CREATION ERROR: failed to create shader" << std::endl;
     }
 
-    this->m_textureID = textureManager_.createCubemap(AppConfig::SKYBOX_FACES);
+    this->m_textureID = textureManager_.createCubemap(AppConfig::getSkyboxFaces());
 
     if (m_textureID == 0) {
       std::cerr << "ERROR: Failed to create cubemap texture" << std::endl;

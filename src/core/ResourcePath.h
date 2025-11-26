@@ -6,7 +6,7 @@
 
 class ResourcePath {
 public:
-    ResourcePath(const std::string& baseDir = "../");
+    explicit ResourcePath(const std::string& baseDir = "../");
     static std::string get(const std::string& relativePath);
     static std::string getBaseDir();
     static bool exists(const std::string& relativePath);
