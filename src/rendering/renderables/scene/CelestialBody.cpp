@@ -66,8 +66,8 @@ CelestialBody::CelestialBody(const BodyProps& bodyProperties,
                                                   GL_REPEAT, GL_LINEAR);
 
   try {
-    shader = std::make_unique<Shader>(ResourcePath::get("shaders/skybox.vert").c_str(),
-                                      ResourcePath::get("shaders/skybox.frag").c_str());
+    shader = std::make_unique<Shader>(ResourcePath::get("shaders/object.vert").c_str(),
+                                  ResourcePath::get("shaders/object.frag").c_str());
     GL_CHECK(shader->use());
     GL_CHECK(shader->setInt("textureSampler", 0));
     std::cout << "Shader compiled successfully for planet " << type
